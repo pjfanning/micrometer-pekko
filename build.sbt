@@ -2,7 +2,7 @@ organization := "com.workday"
 
 name := "prometheus-akka"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.4"
 
 crossScalaVersions := Seq("2.11.12", "2.12.4")
 
@@ -16,8 +16,6 @@ val aspectjweaverVersion = "1.8.13"
 val prometheusVersion = "0.2.0"
 
 checksums in update := Nil
-
-resolvers += Resolver.bintrayRepo("kamon-io", "releases")
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.25",
