@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017, 2018 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -21,8 +21,6 @@ import scala.util.control.NonFatal
 
 import org.slf4j.LoggerFactory
 
-import io.prometheus.client.{Counter, Gauge}
-
 object ActorMetrics {
   private val logger = LoggerFactory.getLogger(ActorMetrics.getClass)
   private val map = TrieMap[Entity, ActorMetrics]()
@@ -40,10 +38,11 @@ object ActorMetrics {
 }
 
 class ActorMetrics(entity: Entity) {
+  import AkkaMetricRegistry._
   val actorName = metricFriendlyActorName(entity.name)
-  val mailboxSize = Gauge.build().name(s"akka_actor_mailbox_size_$actorName").help("Akka Actor mailbox size").register()
-  val processingTime = Gauge.build().name(s"akka_actor_processing_time_$actorName").help("Akka Actor processing time (Seconds)").register()
-  val timeInMailbox = Gauge.build().name(s"akka_actor_time_in_mailbox_$actorName").help("Akka Actor time in mailbox (Seconds)").register()
-  val messages = Counter.build().name(s"akka_actor_message_count_$actorName").help("Akka Actor messages").register()
-  val errors = Counter.build().name(s"akka_actor_error_count_$actorName").help("Akka Actor errors").register()
+  val mailboxSize = gauge(s"akka_actor_mailbox_size_$actorName", Seq.empty)
+  val processingTime = timer(s"akka_actor_processing_time_$actorName", Seq.empty)
+  val timeInMailbox = timer(s"akka_actor_time_in_mailbox_$actorName", Seq.empty)
+  val messages = counter(s"akka_actor_message_count_$actorName", Seq.empty)
+  val errors = counter(s"akka_actor_error_count_$actorName", Seq.empty)
 }

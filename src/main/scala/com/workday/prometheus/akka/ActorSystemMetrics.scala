@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,14 +16,20 @@
  */
 package com.workday.prometheus.akka
 
-import io.prometheus.client.{Counter, Gauge}
+import io.micrometer.core.instrument.{ImmutableTag, Tag}
 
 object ActorSystemMetrics {
+
+  val ActorSystem = "actorSystem"
+
   private[akka] val ActorCountMetricName = "akka_system_actor_count"
   private[akka] val DeadLetterCountMetricName = "akka_system_dead_letter_count"
   private[akka] val UnhandledMessageCountMetricName = "akka_system_unhandled_message_count"
 
-  val actorCount = Gauge.build().name(ActorCountMetricName).help("Actor System Actor count").labelNames("actorSystem").register()
-  val deadLetterCount = Counter.build().name(DeadLetterCountMetricName).help("Actor System Dead Letter count").labelNames("actorSystem").register()
-  val unhandledMessageCount = Counter.build().name(UnhandledMessageCountMetricName).help("Actor System Unhandled Message count").labelNames("actorSystem").register()
+  import AkkaMetricRegistry._
+
+  def actorCount(system: String) = gauge(ActorCountMetricName, tagSeq(system))
+  def deadLetterCount(system: String) = counter(DeadLetterCountMetricName, tagSeq(system))
+  def unhandledMessageCount(system: String) = counter(UnhandledMessageCountMetricName, tagSeq(system))
+  private def tagSeq(system: String): Iterable[Tag] = Seq(new ImmutableTag(ActorSystem, system))
 }

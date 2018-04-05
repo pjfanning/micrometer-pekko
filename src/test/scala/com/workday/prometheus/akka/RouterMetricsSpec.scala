@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -40,7 +40,7 @@ class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") {
 
       val metrics = routerMetricsRecorderOf(trackedRouter).get
       metrics.actorName shouldEqual "routermetricsspec_user_tracked_pool_router"
-      metrics.messages.get shouldEqual 1.0
+      metrics.messages.count() shouldEqual 1.0
     }
 
     "handle concurrent metric getOrElseUpdate calls" in {

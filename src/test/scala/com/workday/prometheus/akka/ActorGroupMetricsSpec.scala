@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,7 +16,6 @@
  */
 package com.workday.prometheus.akka
 
-import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 import org.scalatest.BeforeAndAfterEach
@@ -25,7 +24,7 @@ import org.scalatest.concurrent.Eventually
 import akka.actor._
 import akka.routing.RoundRobinPool
 import akka.testkit.TestProbe
-import io.prometheus.client.Collector
+import io.micrometer.core.instrument.ImmutableTag
 
 class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") with BeforeAndAfterEach with Eventually {
 
@@ -95,26 +94,11 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
   }
 
   def findGroupRecorder(groupName: String): Map[String, Double] = {
-    val metrics: List[Collector.MetricFamilySamples] =
-      ActorGroupMetrics.errors.collect().asScala.toList ++
-      ActorGroupMetrics.actorCount.collect().asScala.toList ++
-      ActorGroupMetrics.mailboxSize.collect().asScala.toList ++
-      ActorGroupMetrics.messages.collect().asScala.toList ++
-      ActorGroupMetrics.processingTime.collect().asScala.toList ++
-      ActorGroupMetrics.timeInMailbox.collect().asScala.toList
-    val values = for(samples <- metrics;
-      sample <- samples.samples.asScala if sample.labelValues.contains(groupName))
-      yield (sample.name, sample.value)
-    values.toMap
+    AkkaMetricRegistry.metricsForTags(Seq(new ImmutableTag(ActorGroupMetrics.GroupName, groupName)))
   }
 
   def clearGroupMetrics: Unit = {
-    ActorGroupMetrics.errors.clear()
-    ActorGroupMetrics.actorCount.clear()
-    ActorGroupMetrics.mailboxSize.clear()
-    ActorGroupMetrics.messages.clear()
-    ActorGroupMetrics.processingTime.clear()
-    ActorGroupMetrics.timeInMailbox.clear()
+    AkkaMetricRegistry.clear()
   }
 
   def createTestActor(name: String): ActorRef = {

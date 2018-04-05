@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,24 +16,26 @@
  */
 package com.workday.prometheus.akka
 
+import scala.collection.JavaConverters._
+
 import com.typesafe.config.{Config, ConfigFactory, ConfigParseOptions, ConfigResolveOptions}
 import com.workday.prometheus.akka.impl.{EntityFilter, GlobPathFilter, RegexPathFilter}
 
 object MetricsConfig {
+  private val BaseConfig = "prometheus.akka"
   val Dispatcher = "akka-dispatcher"
   val Router = "akka-router"
   val Actor = "akka-actor"
   val ActorGroups = "akka-actor-groups"
 
   private val defaultConfig = ConfigFactory.load(this.getClass.getClassLoader, ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-  private val metricFiltersConfig = defaultConfig.getConfig("prometheus.akka.metric.filters")
+  private val metricFiltersConfig = defaultConfig.getConfig(s"$BaseConfig.metric.filters")
 
-  lazy val matchEvents: Boolean = defaultConfig.getBoolean("prometheus.akka.match.events")
+  lazy val matchEvents: Boolean = defaultConfig.getBoolean(s"$BaseConfig.match.events")
+  lazy val histogramBucketsEnabled: Boolean = defaultConfig.getBoolean(s"$BaseConfig.histogram.buckets.enabled")
 
   implicit class Syntax(val config: Config) extends AnyVal {
     def firstLevelKeys: Set[String] = {
-      import scala.collection.JavaConverters._
-
       config.entrySet().asScala.map {
         case entry ⇒ entry.getKey.takeWhile(_ != '.')
       } toSet

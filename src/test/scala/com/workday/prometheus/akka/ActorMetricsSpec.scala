@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -39,7 +39,7 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") {
 
       val metrics = actorMetricsRecorderOf(trackedActor).get
       metrics.actorName shouldEqual "actormetricsspec_user_tracked_actor"
-      metrics.messages.get shouldEqual 1.0
+      metrics.messages.count() shouldEqual 1.0
     }
 
     "handle concurrent metric getOrElseUpdate calls" in {

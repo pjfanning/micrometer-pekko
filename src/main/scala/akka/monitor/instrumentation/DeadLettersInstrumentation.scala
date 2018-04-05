@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -59,8 +59,8 @@ class DeadLettersInstrumentation {
   private def trackEvent(stream: HasSystem, event: AnyRef): Unit = {
     if (MetricsConfig.matchEvents) {
       event match {
-        case _: DeadLetter => ActorSystemMetrics.deadLetterCount.labels(stream.system.name).inc()
-        case _: UnhandledMessage => ActorSystemMetrics.unhandledMessageCount.labels(stream.system.name).inc()
+        case _: DeadLetter => ActorSystemMetrics.deadLetterCount(stream.system.name).increment()
+        case _: UnhandledMessage => ActorSystemMetrics.unhandledMessageCount(stream.system.name).increment()
         case _ =>
       }
     }

@@ -1,6 +1,6 @@
 /*
  * =========================================================================================
- * Copyright © 2017 Workday, Inc.
+ * Copyright © 2017,2018 Workday, Inc.
  * Copyright © 2013-2017 the kamon project <http://kamon.io/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
@@ -16,6 +16,8 @@
  */
 package akka.monitor.instrumentation
 
+import java.util.concurrent.TimeUnit
+
 import org.aspectj.lang.ProceedingJoinPoint
 import org.slf4j.LoggerFactory
 
@@ -23,7 +25,6 @@ import com.workday.prometheus.akka._
 
 import akka.actor.{ActorRef, ActorSystem, Cell}
 import akka.monitor.instrumentation.ActorMonitors.{TrackedActor, TrackedRoutee}
-import io.prometheus.client.Collector
 
 trait ActorMonitor {
   def captureEnvelopeContext(): EnvelopeContext
@@ -87,20 +88,20 @@ object ActorMonitors {
 
     override def captureEnvelopeContext(): EnvelopeContext = {
       actorMetrics.foreach { am =>
-        am.mailboxSize.inc()
-        am.messages.inc()
+        am.mailboxSize.increment()
+        am.messages.increment()
       }
       super.captureEnvelopeContext()
     }
 
     def processMessage(pjp: ProceedingJoinPoint, envelopeContext: EnvelopeContext): AnyRef = {
-      val timeInMailbox: Double = (System.nanoTime() - envelopeContext.nanoTime).toDouble / Collector.NANOSECONDS_PER_SECOND
+      val timeInMailbox: Long = System.nanoTime() - envelopeContext.nanoTime
 
       val actorProcessingTimers = actorMetrics.map { am =>
         am.processingTime.startTimer()
       }
       val actorGroupProcessingTimers = trackingGroups.map { group =>
-        ActorGroupMetrics.processingTime.labels(group).startTimer()
+        ActorGroupMetrics.processingTime(group).startTimer()
       }
 
       try {
@@ -110,8 +111,8 @@ object ActorMonitors {
         actorGroupProcessingTimers.foreach { _.close() }
 
         actorMetrics.foreach { am =>
-          am.timeInMailbox.inc(timeInMailbox)
-          am.mailboxSize.dec()
+          am.timeInMailbox.timer.record(timeInMailbox, TimeUnit.NANOSECONDS)
+          am.mailboxSize.decrement()
         }
         recordGroupMetrics(timeInMailbox)
       }
@@ -119,7 +120,7 @@ object ActorMonitors {
 
     override def processFailure(failure: Throwable): Unit = {
       actorMetrics.foreach { am =>
-        am.errors.inc()
+        am.errors.increment()
       }
       super.processFailure(failure)
     }
@@ -134,16 +135,16 @@ object ActorMonitors {
     }
 
     override def captureEnvelopeContext(): EnvelopeContext = {
-      routerMetrics.messages.inc()
+      routerMetrics.messages.increment()
       super.captureEnvelopeContext()
     }
 
     def processMessage(pjp: ProceedingJoinPoint, envelopeContext: EnvelopeContext): AnyRef = {
-      val timeInMailbox: Double = (System.nanoTime() - envelopeContext.nanoTime).toDouble / Collector.NANOSECONDS_PER_SECOND
+      val timeInMailbox: Long = System.nanoTime() - envelopeContext.nanoTime
 
       val processingTimer = routerMetrics.processingTime.startTimer()
       val actorGroupProcessingTimers = trackingGroups.map { group =>
-        ActorGroupMetrics.processingTime.labels(group).startTimer()
+        ActorGroupMetrics.processingTime(group).startTimer()
       }
 
       try {
@@ -151,13 +152,13 @@ object ActorMonitors {
       } finally {
         processingTimer.close()
         actorGroupProcessingTimers.foreach { _.close() }
-        routerMetrics.timeInMailbox.inc(timeInMailbox)
+        routerMetrics.timeInMailbox.timer.record(timeInMailbox, TimeUnit.NANOSECONDS)
         recordGroupMetrics(timeInMailbox)
       }
     }
 
     override def processFailure(failure: Throwable): Unit = {
-      routerMetrics.errors.inc()
+      routerMetrics.errors.increment()
       super.processFailure(failure)
     }
   }
@@ -165,38 +166,38 @@ object ActorMonitors {
   abstract class GroupMetricsTrackingActor(entity: Entity, actorSystemName: String,
       trackingGroups: List[String], actorCellCreation: Boolean) extends ActorMonitor {
     if (actorCellCreation) {
-      ActorSystemMetrics.actorCount.labels(actorSystemName).inc()
+      ActorSystemMetrics.actorCount(actorSystemName).increment()
       trackingGroups.foreach { group =>
-        ActorGroupMetrics.actorCount.labels(group).inc()
+        ActorGroupMetrics.actorCount(group).increment()
       }
     }
 
     def captureEnvelopeContext(): EnvelopeContext = {
       trackingGroups.foreach { group =>
-        ActorGroupMetrics.mailboxSize.labels(group).inc()
-        ActorGroupMetrics.messages.labels(group).inc()
+        ActorGroupMetrics.mailboxSize(group).increment()
+        ActorGroupMetrics.messages(group).increment()
       }
       EnvelopeContext()
     }
 
-    protected def recordGroupMetrics(timeInMailbox: Double): Unit = {
+    protected def recordGroupMetrics(timeInMailbox: Long): Unit = {
       trackingGroups.foreach { group =>
-        ActorGroupMetrics.timeInMailbox.labels(group).inc(timeInMailbox)
-        ActorGroupMetrics.mailboxSize.labels(group).dec()
+        ActorGroupMetrics.timeInMailbox(group).timer.record(timeInMailbox, TimeUnit.NANOSECONDS)
+        ActorGroupMetrics.mailboxSize(group).decrement()
       }
     }
 
     def processFailure(failure: Throwable): Unit = {
       trackingGroups.foreach { group =>
-        ActorGroupMetrics.errors.labels(group).inc()
+        ActorGroupMetrics.errors(group).increment()
       }
     }
 
     def cleanup(): Unit = {
       if (actorCellCreation) {
-        ActorSystemMetrics.actorCount.labels(actorSystemName).dec()
+        ActorSystemMetrics.actorCount(actorSystemName).decrement()
         trackingGroups.foreach { group =>
-          ActorGroupMetrics.actorCount.labels(group).dec()
+          ActorGroupMetrics.actorCount(group).decrement()
         }
       }
     }
