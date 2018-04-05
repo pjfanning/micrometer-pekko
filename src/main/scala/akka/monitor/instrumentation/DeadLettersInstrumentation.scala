@@ -19,7 +19,7 @@ package akka.monitor.instrumentation
 import akka.actor.{ActorSystem, DeadLetter, UnhandledMessage}
 import org.aspectj.lang.annotation.{After, Aspect, DeclareMixin, Pointcut}
 
-import com.workday.prometheus.akka.{ActorSystemMetrics, MetricsConfig}
+import io.kontainers.micrometer.akka.{ActorSystemMetrics, MetricsConfig}
 
 trait HasSystem {
   def system: ActorSystem

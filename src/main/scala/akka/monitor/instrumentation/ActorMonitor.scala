@@ -21,10 +21,9 @@ import java.util.concurrent.TimeUnit
 import org.aspectj.lang.ProceedingJoinPoint
 import org.slf4j.LoggerFactory
 
-import com.workday.prometheus.akka._
-
 import akka.actor.{ActorRef, ActorSystem, Cell}
 import akka.monitor.instrumentation.ActorMonitors.{TrackedActor, TrackedRoutee}
+import io.kontainers.micrometer.akka._
 
 trait ActorMonitor {
   def captureEnvelopeContext(): EnvelopeContext

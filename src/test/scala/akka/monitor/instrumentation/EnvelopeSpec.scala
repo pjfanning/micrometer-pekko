@@ -17,9 +17,9 @@
 
 package akka.monitor.instrumentation
 
-import com.workday.prometheus.akka.TestKitBaseSpec
 import akka.actor.{Actor, ExtendedActorSystem, Props}
 import akka.dispatch.Envelope
+import io.kontainers.micrometer.akka.TestKitBaseSpec
 
 class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
 

@@ -7,7 +7,7 @@
 
     <logger name="akka.monitor.instrumentation" level="DEBUG"/>
 
-    <logger name="com.workday.prometheus" level="DEBUG"/>
+    <logger name="io.kontainers.micrometer" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

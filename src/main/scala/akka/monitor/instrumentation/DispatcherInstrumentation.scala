@@ -18,19 +18,20 @@
 package akka.monitor.instrumentation
 
 import java.lang.reflect.Method
-import java.util.concurrent.{ ExecutorService, ThreadPoolExecutor }
+import java.util.concurrent.{ExecutorService, ThreadPoolExecutor}
 
 import scala.util.control.NonFatal
 
 import org.aspectj.lang.ProceedingJoinPoint
-import org.aspectj.lang.annotation.{ After, AfterReturning, Around, Aspect, Before, DeclareMixin, Pointcut }
+import org.aspectj.lang.annotation.{After, AfterReturning, Around, Aspect, Before, DeclareMixin, Pointcut}
 import org.slf4j.LoggerFactory
 
-import com.workday.prometheus.akka.{ ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics }
+import io.kontainers.micrometer.akka.{ForkJoinPoolLike, MetricsConfig}
 
-import akka.actor.{ ActorContext, ActorSystem, ActorSystemImpl, Props }
-import akka.dispatch.{ Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher }
+import akka.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
+import akka.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
 import akka.monitor.instrumentation.LookupDataAware.LookupData
+import io.kontainers.micrometer.akka.{ForkJoinPoolMetrics, ThreadPoolMetrics}
 
 @Aspect
 class DispatcherInstrumentation {
