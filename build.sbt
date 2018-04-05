@@ -1,10 +1,10 @@
-organization := "com.workday"
+organization := "io.kontainers"
 
 name := "micrometer-akka"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.5"
 
-crossScalaVersions := Seq("2.11.12", "2.12.4", "2.13.0-M3")
+crossScalaVersions := Seq("2.11.12", "2.12.5", "2.13.0-M3")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -54,7 +54,7 @@ publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
-homepage := Some(url("https://github.com/Workday/prometheus-akka"))
+homepage := Some(url("https://github.com/kontainers/micrometer-akka"))
 
 licenses := Seq("The Apache Software License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 
@@ -62,8 +62,8 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 pomExtra := (
   <scm>
-    <url>git@github.com:Workday/prometheus-akka.git</url>
-    <connection>scm:git:git@github.com:Workday/prometheus-akka.git</connection>
+    <url>git@github.com:kontainers/micrometer-akka.git</url>
+    <connection>scm:git:git@github.com:kontainers/micrometer-akka.git</connection>
   </scm>
   <developers>
     <developer>
