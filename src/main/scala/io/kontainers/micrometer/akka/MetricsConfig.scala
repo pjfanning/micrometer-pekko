@@ -22,7 +22,7 @@ import com.typesafe.config.{Config, ConfigFactory, ConfigParseOptions, ConfigRes
 import io.kontainers.micrometer.akka.impl.{EntityFilter, GlobPathFilter, RegexPathFilter}
 
 object MetricsConfig {
-  private val BaseConfig = "prometheus.akka"
+  private val BaseConfig = "micrometer.akka"
   val Dispatcher = "akka-dispatcher"
   val Router = "akka-router"
   val Actor = "akka-actor"

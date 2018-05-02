@@ -16,10 +16,8 @@ Differences from Kamon-Akka:
 - records time in seconds as opposed to nanoseconds (the data is still a double) - since 0.8.0
 
 ```sbt
-"com.workday" %% "micrometer-akka" % "0.8.5-SNAPSHOT"
+"io.kontainers" %% "micrometer-akka" % "0.9.0-SNAPSHOT"
 ```
-
-This will soon move to io.kontainers groupId.
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
 
@@ -27,9 +25,9 @@ There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
 
 ## Usage
 
-To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of prometheus-akka):
+To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-akka):
 
--javaagent:/path/to/aspectjweaver-1.8.13.jar
+-javaagent:/path/to/aspectjweaver-1.9.1.jar
 
 ## Configuration
 
@@ -45,7 +43,6 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 
 #### Actor System
 
-- Only added in v0.8.2
 - Actor Count
 - Unhandled Message Count
 - Dead Letter Count
