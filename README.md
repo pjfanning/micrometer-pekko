@@ -12,11 +12,10 @@ Differences from Kamon-Akka:
 - we do not support Kamon TraceContexts, as we currently have no use case for them
 - we only support Scala 2.11 and Scala 2.12
 - we only build with Akka 2.4 but we test the build with Akka 2.5 too
-- we have added Actor Group support (similar support was recently added to kamon-akka) - see description in Metrics section
-- records time in seconds as opposed to nanoseconds (the data is still a double) - since 0.8.0
+- records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"io.kontainers" %% "micrometer-akka" % "0.9.0-SNAPSHOT"
+"io.kontainers" %% "micrometer-akka" % "0.9.0"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
