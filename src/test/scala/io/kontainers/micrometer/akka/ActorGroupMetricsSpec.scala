@@ -75,7 +75,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       findGroupRecorder("exclusive") shouldBe empty
       val map = findGroupRecorder("tracked")
       map.getOrElse(ActorCountMetricName, -1.0) shouldEqual 2.0
-      map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 4.0
+      map.getOrElse(MessageCountMetricName, -1.0) should (be >= 3.0)
       map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
       system.stop(trackedRouter)
