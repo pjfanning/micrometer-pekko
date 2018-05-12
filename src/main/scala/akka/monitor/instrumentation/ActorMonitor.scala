@@ -130,7 +130,7 @@ object ActorMonitors {
       extends GroupMetricsTrackingActor(entity, actorSystemName, trackingGroups, actorCellCreation) {
 
     if (logger.isDebugEnabled()) {
-      logger.debug(s"tracking ${entity.name} router: true actor-group: ${trackingGroups}")
+      logger.debug(s"tracking ${entity.name} router: true actor-group: ${trackingGroups} actorCellCreation: ${actorCellCreation}")
     }
 
     override def captureEnvelopeContext(): EnvelopeContext = {

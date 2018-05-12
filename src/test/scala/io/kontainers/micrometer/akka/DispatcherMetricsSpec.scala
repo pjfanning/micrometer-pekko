@@ -21,7 +21,6 @@ import scala.concurrent.Future
 import akka.actor._
 import akka.dispatch.MessageDispatcher
 import akka.testkit.TestProbe
-import io.kontainers.micrometer.akka.DispatcherMetricsSpec.SystemName
 import io.kontainers.micrometer.akka.ThreadPoolMetrics.DispatcherName
 import io.micrometer.core.instrument.ImmutableTag
 
@@ -49,7 +48,6 @@ class DispatcherMetricsSpec extends TestKitBaseSpec(DispatcherMetricsSpec.System
       val excludedDispatcher = forceInit(system.dispatchers.lookup("explicitly-excluded"))
 
       import DispatcherMetricsSpec.findDispatcherRecorder
-      findDispatcherRecorder(s"${SystemName}_${defaultDispatcher.id}") shouldNot be(empty)
       findDispatcherRecorder(fjpDispatcher.id) shouldNot be(empty)
       findDispatcherRecorder(tpeDispatcher.id) shouldNot be(empty)
       findDispatcherRecorder(excludedDispatcher.id) should be(empty)
