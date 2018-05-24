@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/kontainers/micrometer-akka.svg?branch=master)](https://travis-ci.org/kontainers/micrometer-akka)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.12)
-[![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=master)](https://codecov.io/gh/Workday/prometheus-akka/branch/master)
+[![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=master)](https://codecov.io/gh/kontainers/micrometer-akka/branch/master)
 
 # micrometer-akka
 
