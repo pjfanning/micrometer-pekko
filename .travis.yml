@@ -3,11 +3,11 @@ jdk:
   - oraclejdk8
 scala:
   - 2.11.12
-  - 2.12.5
+  - 2.12.6
   - 2.13.0-M3
 env:
   - AKKA_VERSION=
-  - AKKA_VERSION=2.5.12
+  - AKKA_VERSION=2.5.13
 matrix:
   exclude:
   - jdk: oraclejdk8
