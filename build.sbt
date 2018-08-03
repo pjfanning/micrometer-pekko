@@ -4,7 +4,7 @@ name := "micrometer-akka"
 
 scalaVersion := "2.12.6"
 
-crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.0-M4")
+crossScalaVersions := Seq("2.11.12", "2.12.6", "2.13.0-M3")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.3",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion(scalaVersion.value) % "test",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.5-M1" % "test",
   "ch.qos.logback" % "logback-classic" % "1.2.3" % "test"
 )
 
