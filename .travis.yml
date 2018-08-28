@@ -7,12 +7,12 @@ scala:
   - 2.13.0-M3
 env:
   - AKKA_VERSION=
-  - AKKA_VERSION=2.5.13
+  - AKKA_VERSION=2.5.15
 matrix:
   exclude:
   - jdk: oraclejdk8
     scala: 2.13.0-M3
-    env: AKKA_VERSION=2.5.12
+    env: AKKA_VERSION=2.5.15
 script:
   - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport -Dakka.version=$AKKA_VERSION
 after_success:
