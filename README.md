@@ -28,6 +28,10 @@ To enable monitoring, include the appropriate jar as a dependency and include th
 
 -javaagent:/path/to/aspectjweaver-1.9.1.jar
 
+You will also need to set up the Micrometer Meter Registry.
+
+io.kontainers.micrometer.akka.AkkaMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/master/src/main/scala/com/example/akka/Main.scala))
+
 ## Configuration
 
 The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/kontainers/micrometer-akka/blob/master/src/main/resources/reference.conf) that enables only some metrics.
