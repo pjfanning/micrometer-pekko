@@ -23,14 +23,14 @@ resolvers += "Spring Milestone" at "http://repo.spring.io/milestone"
 checksums in update := Nil
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "1.7.25",
+  "org.slf4j" % "slf4j-api" % "1.7.26",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "com.typesafe.akka" %% "akka-actor" % akkaVersion(scalaVersion.value),
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion(scalaVersion.value),
   "com.typesafe" % "config" % "1.3.3",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion(scalaVersion.value) % Test,
-  "org.scalatest" %% "scalatest" % "3.0.6-SNAP5" % Test,
+  "org.scalatest" %% "scalatest" % "3.0.6" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.3" % Test
 )
 
