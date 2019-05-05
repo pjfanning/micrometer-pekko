@@ -16,15 +16,13 @@
  */
 package io.kontainers.micrometer.akka
 
-import scala.concurrent.duration._
-
+import akka.actor.Props
+import io.kontainers.micrometer.akka.ActorSystemMetrics._
+import io.micrometer.core.instrument.ImmutableTag
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.Eventually
 
-import io.kontainers.micrometer.akka.ActorSystemMetrics._
-
-import akka.actor.Props
-import io.micrometer.core.instrument.ImmutableTag
+import scala.concurrent.duration.DurationInt
 
 class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") with BeforeAndAfterEach with Eventually {
 
@@ -33,13 +31,13 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
       val originalMetrics = findSystemMetricsRecorder(system.name)
       val originalCount = originalMetrics.getOrElse(ActorCountMetricName, 0.0)
       val trackedActor = system.actorOf(Props[ActorMetricsTestActor])
-      eventually(timeout(5 seconds)) {
+      eventually(timeout(5.seconds)) {
         val map = findSystemMetricsRecorder(system.name)
         map should not be empty
         map.getOrElse(ActorCountMetricName, -1.0) shouldEqual (originalCount + 1.0)
       }
       system.stop(trackedActor)
-      eventually(timeout(5 seconds)) {
+      eventually(timeout(5.seconds)) {
         val metrics = findSystemMetricsRecorder(system.name)
         metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual originalCount
       }
@@ -48,7 +46,7 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
       val count = findSystemMetricsRecorder(system.name).getOrElse(UnhandledMessageCountMetricName, 0.0)
       val trackedActor = system.actorOf(Props[ActorMetricsTestActor])
       trackedActor ! "unhandled"
-      eventually(timeout(5 seconds)) {
+      eventually(timeout(5.seconds)) {
         findSystemMetricsRecorder(system.name).getOrElse(UnhandledMessageCountMetricName, -1.0) shouldEqual (count + 1.0)
       }
     }
@@ -56,7 +54,7 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
       val count = findSystemMetricsRecorder(system.name).getOrElse(DeadLetterCountMetricName, 0.0)
       val trackedActor = system.actorOf(Props[ActorMetricsTestActor])
       system.stop(trackedActor)
-      eventually(timeout(5 seconds)) {
+      eventually(timeout(5.seconds)) {
         trackedActor ! "dead"
         findSystemMetricsRecorder(system.name).getOrElse(DeadLetterCountMetricName, -1.0) shouldBe > (count)
       }

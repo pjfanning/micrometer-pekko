@@ -17,6 +17,7 @@
 package io.kontainers.micrometer.akka
 
 import scala.collection.JavaConverters._
+import scala.language.postfixOps
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigParseOptions, ConfigResolveOptions}
 import io.kontainers.micrometer.akka.impl.{EntityFilter, GlobPathFilter, RegexPathFilter}

@@ -16,15 +16,14 @@
  */
 package io.kontainers.micrometer.akka
 
-import scala.concurrent.duration._
-
-import org.scalatest.BeforeAndAfterEach
-import org.scalatest.concurrent.Eventually
-
 import akka.actor._
 import akka.routing.RoundRobinPool
 import akka.testkit.TestProbe
 import io.micrometer.core.instrument.ImmutableTag
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.Eventually
+
+import scala.concurrent.duration.DurationInt
 
 class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") with BeforeAndAfterEach with Eventually {
 
@@ -49,7 +48,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
       system.stop(trackedActor)
-      eventually(timeout(5 seconds)) {
+      eventually(timeout(5.seconds)) {
         val metrics = findGroupRecorder("tracked")
         metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
         metrics.getOrElse(ProcessingTimeMetricName, -1.0) should (be >= 0.0)
@@ -79,7 +78,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       //map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
       system.stop(trackedRouter)
-      eventually(timeout(5 seconds)) {
+      eventually(timeout(5.seconds)) {
         findGroupRecorder("tracked").getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
       }
 
