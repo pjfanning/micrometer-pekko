@@ -10,8 +10,8 @@ See also [Prometheus-Akka](https://github.com/Workday/prometheus-akka).
 
 Differences from Kamon-Akka:
 - we do not support Kamon TraceContexts, as we currently have no use case for them
-- we support Scala 2.11, Scala 2.12 and Scala 2.13.0-M5
-- we only build with Akka 2.4 but we test the build with Akka 2.5 too (Akka 2.5.19 is the min version needed for Scala 2.13.0-M5)
+- we support Scala 2.11, Scala 2.12 and Scala 2.13.0-RC1 (message counts do not work with 2.13.0-RC1)
+- we only build with Akka 2.4 but we test the build with Akka 2.5 and Akka 2.6.0-M1 too
 - records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
