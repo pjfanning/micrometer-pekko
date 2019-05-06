@@ -68,12 +68,12 @@ class ActorCellInstrumentation {
   def sendMessageInUnstartedActorCell(cell: Cell, envelope: Envelope): Unit = {}
 
   @Before("sendMessageInActorCell(cell, envelope)")
-  def afterSendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {
+  def beforeSendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {
     setEnvelopeContext(cell, envelope)
   }
 
   @Before("sendMessageInUnstartedActorCell(cell, envelope)")
-  def afterSendMessageInUnstartedActorCell(cell: Cell, envelope: Envelope): Unit = {
+  def beforeSendMessageInUnstartedActorCell(cell: Cell, envelope: Envelope): Unit = {
     setEnvelopeContext(cell, envelope)
   }
 
