@@ -4,7 +4,7 @@ name := "micrometer-akka"
 
 scalaVersion := "2.12.8"
 
-crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.0-RC2")
+crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.0-RC3")
 
 scalacOptions += "-target:jvm-1.8"
 
