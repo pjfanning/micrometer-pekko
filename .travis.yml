@@ -12,7 +12,7 @@ matrix:
   exclude:
   - scala: 2.13.0
     env: AKKA_VERSION=2.5.23
-  - scala: 2.13.0-RC3
+  - scala: 2.13.0
     env: AKKA_VERSION=2.6.0-M2
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test -Dakka.version=$AKKA_VERSION
