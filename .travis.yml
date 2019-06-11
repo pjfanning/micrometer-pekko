@@ -3,18 +3,16 @@ jdk:
   - openjdk8
 scala:
   - 2.12.8
-  - 2.13.0-RC3
+  - 2.13.0
 env:
   - AKKA_VERSION=
   - AKKA_VERSION=2.5.23
   - AKKA_VERSION=2.6.0-M2
 matrix:
   exclude:
-  - scala: 2.13.0-RC3
+  - scala: 2.13.0
     env: AKKA_VERSION=2.5.23
   - scala: 2.13.0-RC3
     env: AKKA_VERSION=2.6.0-M2
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport -Dakka.version=$AKKA_VERSION
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - sbt ++$TRAVIS_SCALA_VERSION test -Dakka.version=$AKKA_VERSION
