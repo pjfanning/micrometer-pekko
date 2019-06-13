@@ -15,4 +15,6 @@ matrix:
   - scala: 2.13.0
     env: AKKA_VERSION=2.6.0-M2
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test -Dakka.version=$AKKA_VERSION
+  - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport -Dakka.version=$AKKA_VERSION
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
