@@ -15,7 +15,7 @@ Differences from Kamon-Akka:
 - records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"io.kontainers" %% "micrometer-akka" % "0.10.1"
+"io.kontainers" %% "micrometer-akka" % "0.10.2"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
@@ -26,7 +26,7 @@ There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
 
 To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-akka):
 
--javaagent:/path/to/aspectjweaver-1.9.2.jar
+-javaagent:/path/to/aspectjweaver-1.9.4.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
