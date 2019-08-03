@@ -56,6 +56,6 @@ class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
 
 class NoReply extends Actor {
   override def receive = {
-    case any ⇒
+    case any =>
   }
 }

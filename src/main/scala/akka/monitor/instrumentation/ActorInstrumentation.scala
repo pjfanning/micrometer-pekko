@@ -92,7 +92,7 @@ class ActorCellInstrumentation {
     val queue = unstartedCellQueueField.get(unStartedCell).asInstanceOf[java.util.LinkedList[_]]
     val lock = unstartedCellLockField.get(unStartedCell).asInstanceOf[ReentrantLock]
 
-    def locked[T](body: ⇒ T): T = {
+    def locked[T](body: => T): T = {
       lock.lock()
       try body finally lock.unlock()
     }
@@ -101,9 +101,9 @@ class ActorCellInstrumentation {
       try {
         while (!queue.isEmpty) {
           queue.poll() match {
-            case s: SystemMessage ⇒ cell.sendSystemMessage(s) // TODO: ============= CHECK SYSTEM MESSAGESSSSS =========
-            case e: Envelope with InstrumentedEnvelope ⇒ cell.sendMessage(e)
-            case e: Envelope ⇒ cell.sendMessage(e)
+            case s: SystemMessage => cell.sendSystemMessage(s) // TODO: ============= CHECK SYSTEM MESSAGESSSSS =========
+            case e: Envelope with InstrumentedEnvelope => cell.sendMessage(e)
+            case e: Envelope => cell.sendMessage(e)
           }
         }
       } finally {
@@ -138,10 +138,10 @@ object ActorCellInstrumentation {
   private val (unstartedCellQueueField, unstartedCellLockField) = {
     val unstartedCellClass = classOf[UnstartedCell]
     val queueFieldName = Properties.versionNumberString.split("\\.").take(2).mkString(".") match {
-      case _@ "2.11" ⇒ "akka$actor$UnstartedCell$$queue"
-      case _@ "2.12" ⇒ "queue"
-      case _@ "2.13" ⇒ "queue"
-      case v         ⇒ throw new IllegalStateException(s"Incompatible Scala version: $v")
+      case _@ "2.11" => "akka$actor$UnstartedCell$$queue"
+      case _@ "2.12" => "queue"
+      case _@ "2.13" => "queue"
+      case v         => throw new IllegalStateException(s"Incompatible Scala version: $v")
     }
 
     val queueField = unstartedCellClass.getDeclaredField(queueFieldName)

@@ -62,10 +62,10 @@ class DispatcherInstrumentation {
     }
 
     dispatcher match {
-      case x: Dispatcher ⇒
+      case x: Dispatcher =>
         val executor = executorServiceMethod.invoke(x) match {
-          case delegate: ExecutorServiceDelegate ⇒ delegate.executor
-          case other                             ⇒ other
+          case delegate: ExecutorServiceDelegate => delegate.executor
+          case other                             => other
         }
         executor.asInstanceOf[ExecutorService]
     }
@@ -79,7 +79,7 @@ class DispatcherInstrumentation {
     }
     if (MetricsConfig.shouldTrack(MetricsConfig.Dispatcher, prefixedName)) {
       executorService match {
-        case tpe: ThreadPoolExecutor ⇒ ThreadPoolMetrics.add(prefixedName, tpe)
+        case tpe: ThreadPoolExecutor => ThreadPoolMetrics.add(prefixedName, tpe)
         case other => {
           try {
             val fjp = other.asInstanceOf[ForkJoinPoolLike]
@@ -191,7 +191,7 @@ object LookupDataAware {
 
   def currentLookupData: LookupData = _currentDispatcherLookupData.get()
 
-  def withLookupData[T](lookupData: LookupData)(thunk: ⇒ T): T = {
+  def withLookupData[T](lookupData: LookupData)(thunk: => T): T = {
     _currentDispatcherLookupData.set(lookupData)
     val result = thunk
     _currentDispatcherLookupData.remove()

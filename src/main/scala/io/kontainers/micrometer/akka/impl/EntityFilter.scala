@@ -31,8 +31,8 @@ private[akka] case class RegexPathFilter(path: String) extends PathFilter {
   private val pathRegex = path.r
   override def accept(path: String): Boolean = {
     path match {
-      case pathRegex(_*) ⇒ true
-      case _             ⇒ false
+      case pathRegex(_*) => true
+      case _             => false
     }
   }
 }

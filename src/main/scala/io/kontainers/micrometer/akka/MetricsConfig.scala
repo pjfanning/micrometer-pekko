@@ -38,7 +38,7 @@ object MetricsConfig {
   implicit class Syntax(val config: Config) extends AnyVal {
     def firstLevelKeys: Set[String] = {
       config.entrySet().asScala.map {
-        case entry ⇒ entry.getKey.takeWhile(_ != '.')
+        case entry => entry.getKey.takeWhile(_ != '.')
       } toSet
     }
   }
@@ -55,11 +55,11 @@ object MetricsConfig {
 
   private def createFilters(cfg: Config, categories: Set[String]): Map[String, EntityFilter] = {
     import scala.collection.JavaConverters._
-    categories map { category: String ⇒
+    categories map { category: String =>
       val asRegex = if (cfg.hasPath(s"$category.asRegex")) cfg.getBoolean(s"$category.asRegex") else false
-      val includes = cfg.getStringList(s"$category.includes").asScala.map(inc ⇒
+      val includes = cfg.getStringList(s"$category.includes").asScala.map(inc =>
         if (asRegex) RegexPathFilter(inc) else new GlobPathFilter(inc)).toList
-      val excludes = cfg.getStringList(s"$category.excludes").asScala.map(exc ⇒
+      val excludes = cfg.getStringList(s"$category.excludes").asScala.map(exc =>
         if (asRegex) RegexPathFilter(exc) else new GlobPathFilter(exc)).toList
 
       (category, EntityFilter(includes, excludes))
