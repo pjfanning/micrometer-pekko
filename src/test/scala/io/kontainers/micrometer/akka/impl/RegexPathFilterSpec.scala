@@ -30,7 +30,7 @@ class RegexPathFilterSpec extends WordSpecLike with Matchers {
       filter.accept("/user/actor/somethingElse") shouldBe false
     }
 
-    "match arbitray expressions ending with wildcard" in {
+    "match arbitrary expressions ending with wildcard" in {
       val filter = new RegexPathFilter("/user/.*")
 
       filter.accept("/user/actor") shouldBe true
