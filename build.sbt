@@ -18,9 +18,9 @@ def akkaVersion(scalaVersion: String) = sysPropOrDefault("akka.version", akkaDef
 val aspectjweaverVersion = "1.9.4"
 val micrometerVersion = "1.2.1"
 
-resolvers += "Spring Milestone" at "http://repo.spring.io/milestone"
-
 checksums in update := Nil
+
+Global / useGpg := false
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.28",
