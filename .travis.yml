@@ -9,7 +9,7 @@ scala:
 env:
   - AKKA_VERSION=
   - AKKA_VERSION=2.5.25
-  - AKKA_VERSION=2.6.0-M6
+  - AKKA_VERSION=2.6.0-M7
 matrix:
   exclude:
   - scala: 2.11.12
