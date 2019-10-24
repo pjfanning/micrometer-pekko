@@ -26,9 +26,9 @@ object AkkaMetricRegistry {
   private var simpleRegistry = new SimpleMeterRegistry
   private var registry: Option[MeterRegistry] = None
   private case class MeterKey(name: String, tags: Iterable[Tag])
-  private var counterRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, Counter]]()
-  private var gaugeRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, GaugeWrapper]]()
-  private var timerRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, Timer]]()
+  private val counterRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, Counter]]()
+  private val gaugeRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, GaugeWrapper]]()
+  private val timerRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, Timer]]()
 
   def getRegistry: MeterRegistry = registry.getOrElse(simpleRegistry)
 
