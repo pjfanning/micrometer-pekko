@@ -33,7 +33,7 @@ class ForkJoinPoolMetricsSpec extends BaseSpec {
       val pool = new java.util.concurrent.ForkJoinPool
       try {
         ForkJoinPoolMetrics.add(name, pool.asInstanceOf[ForkJoinPoolLike])
-        DispatcherMetricsSpec.findDispatcherRecorder(name) should not be(empty)
+        DispatcherMetricsSpec.findDispatcherRecorder(ForkJoinPoolMetrics.DispatcherName, name) should not be(empty)
       } finally {
         pool.shutdownNow()
       }
@@ -46,7 +46,7 @@ class ForkJoinPoolMetricsSpec extends BaseSpec {
         val pool = clazz.newInstance
         try {
           ForkJoinPoolMetrics.add(name, pool.asInstanceOf[ForkJoinPoolLike])
-          DispatcherMetricsSpec.findDispatcherRecorder(name) should not be (empty)
+          DispatcherMetricsSpec.findDispatcherRecorder(ForkJoinPoolMetrics.DispatcherName, name) should not be (empty)
         } finally {
           val method = clazz.getMethod("shutdownNow")
           method.invoke(pool)

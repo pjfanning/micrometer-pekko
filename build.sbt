@@ -42,6 +42,8 @@ testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 parallelExecution in Test := false
 logBuffered := false
 
+javaOptions in Test += s"""-Dconfig.resource=${sysPropOrDefault("config.resource", "application.conf")}"""
+
 publishMavenStyle := true
 
 publishTo := {
