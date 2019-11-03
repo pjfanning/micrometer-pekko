@@ -27,9 +27,14 @@ import io.micrometer.core.instrument.Tag
 object DispatcherMetricsSpec {
   val SystemName = "DispatcherMetricsSpec"
 
-  def findDispatcherRecorder(tagName: String, dispatcherName: String): Map[String, Double] = {
-    val tagName = if (MetricsConfig.useMicrometerExecutorServiceMetrics) "name" else DispatcherName
-    val tags = Seq(Tag.of(tagName, dispatcherName))
+  def findDispatcherRecorder(dispatcherName: String,
+                             dispatcherType: String = "ForkJoinPool",
+                             useMicrometerExecutorServiceMetrics: Boolean = MetricsConfig.useMicrometerExecutorServiceMetrics): Map[String, Double] = {
+    val tags = if (useMicrometerExecutorServiceMetrics) {
+      Seq(Tag.of("name", dispatcherName), Tag.of("type", dispatcherType))
+    } else {
+      Seq(Tag.of(DispatcherName, dispatcherName))
+    }
     AkkaMetricRegistry.metricsForTags(tags)
   }
 }
@@ -49,10 +54,9 @@ class DispatcherMetricsSpec extends TestKitBaseSpec(DispatcherMetricsSpec.System
       val excludedDispatcher = forceInit(system.dispatchers.lookup("explicitly-excluded"))
 
       import DispatcherMetricsSpec.findDispatcherRecorder
-      val tagName = if (MetricsConfig.useMicrometerExecutorServiceMetrics) "name" else DispatcherName
-      findDispatcherRecorder(tagName, fjpDispatcher.id) shouldNot be(empty)
-      findDispatcherRecorder(tagName, tpeDispatcher.id) shouldNot be(empty)
-      findDispatcherRecorder(tagName, excludedDispatcher.id) should be(empty)
+      findDispatcherRecorder(fjpDispatcher.id) shouldNot be(empty)
+      findDispatcherRecorder(tpeDispatcher.id, "ThreadPoolExecutor") shouldNot be(empty)
+      findDispatcherRecorder(excludedDispatcher.id) should be(empty)
     }
   }
 
