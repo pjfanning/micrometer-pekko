@@ -29,7 +29,7 @@ object MetricsConfig {
   val Actor = "akka-actor"
   val ActorGroups = "akka-actor-groups"
 
-  private val defaultConfig = ConfigFactory.load(this.getClass.getClassLoader, ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+  private val defaultConfig = ConfigFactory.defaultApplication().withFallback(ConfigFactory.defaultReferenceUnresolved())
   private val metricFiltersConfig = defaultConfig.getConfig(s"$BaseConfig.metric.filters")
 
   lazy val matchEvents: Boolean = defaultConfig.getBoolean(s"$BaseConfig.match.events")
