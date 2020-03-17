@@ -9,13 +9,13 @@ scala:
 env:
   - AKKA_VERSION=
   - AKKA_VERSION=2.5.30
-  - AKKA_VERSION=2.6.3
+  - AKKA_VERSION=2.6.4
 matrix:
   exclude:
   - scala: 2.11.12
     env: AKKA_VERSION=2.5.30
   - scala: 2.11.12
-    env: AKKA_VERSION=2.6.3
+    env: AKKA_VERSION=2.6.4
   - scala: 2.13.1
     env: AKKA_VERSION=2.5.30
 script:
