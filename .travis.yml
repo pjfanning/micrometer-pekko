@@ -4,20 +4,20 @@ jdk:
   - openjdk11
 scala:
   - 2.11.12
-  - 2.12.10
+  - 2.12.11
   - 2.13.1
 env:
   - AKKA_VERSION=
-  - AKKA_VERSION=2.5.30
+  - AKKA_VERSION=2.5.31
   - AKKA_VERSION=2.6.4
 matrix:
   exclude:
   - scala: 2.11.12
-    env: AKKA_VERSION=2.5.30
+    env: AKKA_VERSION=2.5.31
   - scala: 2.11.12
     env: AKKA_VERSION=2.6.4
   - scala: 2.13.1
-    env: AKKA_VERSION=2.5.30
+    env: AKKA_VERSION=2.5.31
 script:
   - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport -Dakka.version=$AKKA_VERSION
 after_success:
