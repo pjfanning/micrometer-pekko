@@ -11,11 +11,12 @@ See also [Prometheus-Akka](https://github.com/Workday/prometheus-akka).
 Differences from Kamon-Akka:
 - we do not support Kamon TraceContexts, as we currently have no use case for them
 - we support Scala 2.11, Scala 2.12 and Scala 2.13
-- we only build with Akka 2.4 but we test the build with Akka 2.5 and Akka 2.6.0-M4 too
+- we only build with Akka 2.5 but we test the build with Akka 2.6 too
+- akka 2.4 is supported prior to v0.12.0
 - records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"io.kontainers" %% "micrometer-akka" % "0.10.2"
+"io.kontainers" %% "micrometer-akka" % "0.12.0"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
@@ -26,7 +27,7 @@ There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
 
 To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-akka):
 
--javaagent:/path/to/aspectjweaver-1.9.4.jar
+-javaagent:/path/to/aspectjweaver-1.9.5.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
