@@ -2,7 +2,7 @@ organization := "io.kontainers"
 
 name := "micrometer-akka"
 
-scalaVersion := "2.13.2"
+scalaVersion := "2.13.3"
 
 crossScalaVersions := Seq("2.11.12", "2.12.11", scalaVersion.value)
 

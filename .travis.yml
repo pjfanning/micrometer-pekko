@@ -6,7 +6,7 @@ jdk:
 scala:
   - 2.11.12
   - 2.12.11
-  - 2.13.2
+  - 2.13.3
 env:
   - AKKA_VERSION=2.5.31
   - AKKA_VERSION=2.6.6
