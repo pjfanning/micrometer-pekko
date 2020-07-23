@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/kontainers/micrometer-akka.svg?branch=master)](https://travis-ci.org/kontainers/micrometer-akka)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.13)
 [![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=master)](https://codecov.io/gh/kontainers/micrometer-akka/branch/master)
 
 # micrometer-akka
@@ -27,7 +27,7 @@ There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
 
 To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-akka):
 
--javaagent:/path/to/aspectjweaver-1.9.5.jar
+-javaagent:/path/to/aspectjweaver-1.9.6.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
