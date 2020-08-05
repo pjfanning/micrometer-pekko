@@ -38,6 +38,9 @@
     <!-- For some weird reason ByteString produces a java.lang.VerifyError after going through the weaver. -->
     <exclude within="akka.util.ByteString"/>
 
+    <!-- Exclude akka-cluster classes due to https://github.com/kontainers/micrometer-akka/issues/84 -->
+    <exclude within="akka.cluster..*"/>
+
     <!-- Exclude CallingThreadDispatcher, is only for test purposes -->
     <exclude within="akka.testkit.CallingThreadDispatcher"/>
   </weaver>
