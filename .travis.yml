@@ -6,9 +6,9 @@ jdk:
 scala:
   - 2.11.12
   - 2.12.12
-  - 2.13.3
+  - 2.13.4
 env:
-  - AKKA_VERSION=2.5.31
+  - AKKA_VERSION=2.5.32
   - AKKA_VERSION=2.6.10
 matrix:
   exclude:
