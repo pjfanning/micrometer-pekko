@@ -9,11 +9,11 @@ scala:
   - 2.13.4
 env:
   - AKKA_VERSION=2.5.32
-  - AKKA_VERSION=2.6.11
+  - AKKA_VERSION=2.6.12
 matrix:
   exclude:
   - scala: 2.11.12
-    env: AKKA_VERSION=2.6.11
+    env: AKKA_VERSION=2.6.12
 script:
   - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport -Dakka.version=$AKKA_VERSION
 after_success:
