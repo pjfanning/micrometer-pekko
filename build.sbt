@@ -2,7 +2,7 @@ organization := "io.kontainers"
 
 name := "micrometer-akka"
 
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.5"
 
 crossScalaVersions := Seq("2.11.12", "2.12.12", scalaVersion.value)
 
@@ -19,8 +19,6 @@ val aspectjweaverVersion = "1.9.6"
 val micrometerVersion = "1.6.4"
 
 checksums in update := Nil
-
-Global / useGpg := false
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.30",
