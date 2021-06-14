@@ -4,7 +4,7 @@ name := "micrometer-akka"
 
 scalaVersion := "2.13.6"
 
-crossScalaVersions := Seq("2.11.12", "2.12.13", scalaVersion.value)
+crossScalaVersions := Seq("2.11.12", "2.12.14", scalaVersion.value)
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -18,7 +18,7 @@ def akkaVersion(scalaVersion: String) = sysPropOrDefault("akka.version", akkaDef
 val aspectjweaverVersion = "1.9.6"
 val micrometerVersion = "1.7.0"
 
-checksums in update := Nil
+update / checksums := Nil
 
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.30",
@@ -38,10 +38,10 @@ javaAgents += "org.aspectj" % "aspectjweaver" % aspectjweaverVersion % Test
 
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 
-parallelExecution in Test := false
+Test / parallelExecution := false
 logBuffered := false
 
-javaOptions in Test += s"""-Dconfig.resource=${sysPropOrDefault("config.resource", "application.conf")}"""
+Test / javaOptions += s"""-Dconfig.resource=${sysPropOrDefault("config.resource", "application.conf")}"""
 
 publishMavenStyle := true
 
@@ -53,7 +53,7 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
