@@ -27,7 +27,7 @@ There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
 
 To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-akka):
 
--javaagent:/path/to/aspectjweaver-1.9.6.jar
+-javaagent:/path/to/aspectjweaver-1.9.7.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
