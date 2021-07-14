@@ -36,7 +36,7 @@ libraryDependencies ++= Seq(
 enablePlugins(JavaAgent)
 javaAgents += "org.aspectj" % "aspectjweaver" % aspectjweaverVersion % Test
 
-testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
+Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 
 Test / parallelExecution := false
 logBuffered := false
