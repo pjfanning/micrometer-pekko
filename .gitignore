@@ -1,2 +1,3 @@
 .idea
 prometheus-akka.iml
+.bsp/sbt.json
