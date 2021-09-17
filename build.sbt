@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "com.typesafe.akka" %% "akka-cluster" % akkaVersion(scalaVersion.value) % Test,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion(scalaVersion.value) % Test,
-  "org.scalatest" %% "scalatest" % "3.2.9" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.10" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.6" % Test
 )
 
