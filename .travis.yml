@@ -6,15 +6,13 @@ jdk:
 scala:
   - 2.11.12
   - 2.12.12
-  - 2.13.5
+  - 2.13.7
 env:
   - AKKA_VERSION=2.5.32
-  - AKKA_VERSION=2.6.15
+  - AKKA_VERSION=2.6.17
 matrix:
   exclude:
   - scala: 2.11.12
-    env: AKKA_VERSION=2.6.15
+    env: AKKA_VERSION=2.6.17
 script:
   - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport -Dakka.version=$AKKA_VERSION
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
