@@ -19,7 +19,7 @@ package io.kontainers.micrometer.akka
 import scala.collection.JavaConverters._
 import scala.language.postfixOps
 
-import com.typesafe.config.{Config, ConfigFactory, ConfigParseOptions, ConfigResolveOptions}
+import com.typesafe.config.{Config, ConfigFactory}
 import io.kontainers.micrometer.akka.impl.{EntityFilter, GlobPathFilter, RegexPathFilter}
 
 object MetricsConfig {
@@ -58,7 +58,7 @@ object MetricsConfig {
 
   private def createFilters(cfg: Config, categories: Set[String]): Map[String, EntityFilter] = {
     import scala.collection.JavaConverters._
-    categories map { category: String =>
+    categories map { category =>
       val asRegex = if (cfg.hasPath(s"$category.asRegex")) cfg.getBoolean(s"$category.asRegex") else false
       val includes = cfg.getStringList(s"$category.includes").asScala.map(inc =>
         if (asRegex) RegexPathFilter(inc) else new GlobPathFilter(inc)).toList

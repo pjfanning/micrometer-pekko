@@ -25,7 +25,7 @@ class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
 
   "EnvelopeInstrumentation" should {
     "mixin EnvelopeContext" in {
-      val actorRef = system.actorOf(Props[NoReply])
+      val actorRef = system.actorOf(Props[NoReply]())
       val env = Envelope("msg", actorRef, system).asInstanceOf[Object]
       env match {
         case e: Envelope with InstrumentedEnvelope => e.setEnvelopeContext(EnvelopeContext())

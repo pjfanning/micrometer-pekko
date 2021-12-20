@@ -100,7 +100,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
   }
 
   def createTestActor(name: String): ActorRef = {
-    val actor = system.actorOf(Props[ActorMetricsTestActor], name)
+    val actor = system.actorOf(Props[ActorMetricsTestActor](), name)
     val initialiseListener = TestProbe()
 
     // Ensure that the router has been created before returning.
@@ -112,7 +112,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
   }
 
   def createTestPoolRouter(routerName: String): ActorRef = {
-    val router = system.actorOf(RoundRobinPool(5).props(Props[RouterMetricsTestActor]), routerName)
+    val router = system.actorOf(RoundRobinPool(5).props(Props[RouterMetricsTestActor]()), routerName)
     val initialiseListener = TestProbe()
 
     // Ensure that the router has been created before returning.

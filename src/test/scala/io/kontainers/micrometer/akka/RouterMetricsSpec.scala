@@ -67,7 +67,7 @@ class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") {
   }
 
   def createTestPoolRouter(routerName: String): ActorRef = {
-    val router = system.actorOf(RoundRobinPool(5).props(Props[RouterMetricsTestActor]), routerName)
+    val router = system.actorOf(RoundRobinPool(5).props(Props[RouterMetricsTestActor]()), routerName)
     val initialiseListener = TestProbe()
 
     // Ensure that the router has been created before returning.

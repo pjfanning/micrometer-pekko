@@ -66,7 +66,7 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") {
   }
 
   def createTestActor(name: String): ActorRef = {
-    val actor = system.actorOf(Props[ActorMetricsTestActor], name)
+    val actor = system.actorOf(Props[ActorMetricsTestActor](), name)
     val initialiseListener = TestProbe()
 
     // Ensure that the router has been created before returning.

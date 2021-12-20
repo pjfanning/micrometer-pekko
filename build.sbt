@@ -4,7 +4,7 @@ name := "micrometer-akka"
 
 ThisBuild / scalaVersion := "2.13.7"
 
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.15", "2.13.7")
+ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.7", "3.1.1-RC1")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -13,8 +13,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
   case _ => default
 }
 
-val akkaDefaultVersion = "2.5.32"
-def akkaVersion(scalaVersion: String) = sysPropOrDefault("akka.version", akkaDefaultVersion)
+val akkaVersion = "2.6.18"
 val aspectjweaverVersion = "1.9.7"
 val micrometerVersion = "1.8.1"
 
@@ -23,15 +22,34 @@ update / checksums := Nil
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "1.7.32",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion(scalaVersion.value),
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion(scalaVersion.value),
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "com.typesafe" % "config" % "1.4.1",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
-  "com.typesafe.akka" %% "akka-cluster" % akkaVersion(scalaVersion.value) % Test,
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion(scalaVersion.value) % Test,
+  "com.typesafe.akka" %% "akka-cluster" % akkaVersion % Test,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.10" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.9" % Test
 )
+val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
+scalaReleaseVersion := {
+  val v = scalaVersion.value
+  CrossVersion.partialVersion(v).map(_._1.toInt).getOrElse {
+    throw new RuntimeException(s"could not get Scala release version from $v")
+  }
+}
+
+Compile / unmanagedSourceDirectories ++= {
+  if (scalaReleaseVersion.value > 2) {
+    Seq(
+      (LocalRootProject / baseDirectory).value / "src" / "main" / "scala-3"
+    )
+  } else {
+    Seq(
+      (LocalRootProject / baseDirectory).value / "src" / "main" / "scala-2"
+    )
+  }
+}
 
 enablePlugins(JavaAgent)
 javaAgents += "org.aspectj" % "aspectjweaver" % aspectjweaverVersion % Test

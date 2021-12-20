@@ -21,7 +21,7 @@ import org.aspectj.lang.annotation.{ DeclareMixin, Aspect }
 case class EnvelopeContext(nanoTime: Long)
 
 object EnvelopeContext {
-  val Empty = EnvelopeContext(0L)
+  val Empty: EnvelopeContext = EnvelopeContext(0L)
   def apply(): EnvelopeContext = EnvelopeContext(System.nanoTime())
 }
 
@@ -32,10 +32,12 @@ trait InstrumentedEnvelope extends Serializable {
 
 object InstrumentedEnvelope {
   def apply(): InstrumentedEnvelope = new InstrumentedEnvelope {
-    var envelopeContext: EnvelopeContext = EnvelopeContext.Empty
+    private var ctx = akka.monitor.instrumentation.EnvelopeContext.Empty
 
-    override def setEnvelopeContext(envelopeContext: EnvelopeContext): Unit =
-      this.envelopeContext = envelopeContext
+    override def envelopeContext(): EnvelopeContext = ctx
+
+    override def setEnvelopeContext(envelopeContext: akka.monitor.instrumentation.EnvelopeContext): Unit =
+      ctx = envelopeContext
   }
 }
 

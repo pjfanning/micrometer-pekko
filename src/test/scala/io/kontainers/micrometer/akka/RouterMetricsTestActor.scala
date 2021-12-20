@@ -25,13 +25,13 @@ class RouterMetricsTestActor extends Actor {
   override def receive = {
     case Discard =>
     case Fail    => throw new ArithmeticException("Division by zero.")
-    case Ping    => sender ! Pong
+    case Ping    => sender() ! Pong
     case RouterTrackTimings(sendTimestamp, sleep) => {
       val dequeueTimestamp = System.nanoTime()
       sleep.map(s => Thread.sleep(s.toMillis))
       val afterReceiveTimestamp = System.nanoTime()
 
-      sender ! RouterTrackedTimings(sendTimestamp, dequeueTimestamp, afterReceiveTimestamp)
+      sender() ! RouterTrackedTimings(sendTimestamp, dequeueTimestamp, afterReceiveTimestamp)
     }
   }
 }
