@@ -2,9 +2,9 @@ organization := "io.kontainers"
 
 name := "micrometer-akka"
 
-ThisBuild / scalaVersion := "2.13.7"
+ThisBuild / scalaVersion := "2.13.8"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.7", "3.1.1-RC2")
+ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.8", "3.1.1-RC2")
 
 scalacOptions += "-target:jvm-1.8"
 
