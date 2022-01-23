@@ -30,7 +30,7 @@ import scala.util.Properties
 @Aspect
 class ActorCellInstrumentation {
 
-  def actorInstrumentation(cell: Cell): ActorMonitor =
+  private def actorInstrumentation(cell: Cell): ActorMonitor =
     cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation
 
   @Pointcut("execution(akka.actor.ActorCell.new(..)) && this(cell) && args(system, ref, *, *, parent)")
@@ -59,15 +59,23 @@ class ActorCellInstrumentation {
     actorInstrumentation(cell).processMessage(pjp, envelope.asInstanceOf[InstrumentedEnvelope].envelopeContext())
   }
 
-  @Pointcut("execution(* akka.actor.ActorCell.sendMessage(*)) && this(cell) && args(envelope)")
-  def sendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {}
+  //@Pointcut("execution(* akka.actor.ActorCell.sendMessage(*)) && this(cell) && args(envelope)")
+  //def sendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {}
+
+  @Pointcut("execution(* akka.dispatch.MessageDispatcher.dispatch(..)) && args(receiver, invocation)")
+  def sendMessageInActorCell(receiver: ActorCell, invocation: Envelope): Unit = {}
 
   @Pointcut("execution(* akka.actor.UnstartedCell.sendMessage(*)) && this(cell) && args(envelope)")
   def sendMessageInUnstartedActorCell(cell: Cell, envelope: Envelope): Unit = {}
 
-  @Before("sendMessageInActorCell(cell, envelope)")
-  def beforeSendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {
-    setEnvelopeContext(cell, envelope)
+  //@Before("sendMessageInActorCell(cell, envelope)")
+  //def beforeSendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {
+  //  setEnvelopeContext(cell, envelope)
+  //}
+
+  @Before("sendMessageInActorCell(receiver, invocation)")
+  def beforeSendMessageInActorCell(receiver: ActorCell, invocation: Envelope): Unit = {
+    setEnvelopeContext(receiver, invocation)
   }
 
   @Before("sendMessageInUnstartedActorCell(cell, envelope)")

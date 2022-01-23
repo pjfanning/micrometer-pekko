@@ -30,7 +30,7 @@ import scala.util.Properties
 @Aspect
 class ActorCellInstrumentation {
 
-  def actorInstrumentation(cell: Cell): ActorMonitor =
+  private def actorInstrumentation(cell: Cell): ActorMonitor =
     cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation
 
   @Pointcut("execution(akka.actor.ActorCell.new(..)) && this(cell) && args(system, ref, *, *, parent)")
