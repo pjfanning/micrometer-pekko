@@ -16,51 +16,32 @@
  */
 package akka.monitor.instrumentation
 
-import akka.actor.{ActorSystem, DeadLetter, UnhandledMessage}
-import org.aspectj.lang.annotation.{After, Aspect, DeclareMixin, Pointcut}
-
+import akka.actor.{DeadLetter, UnhandledMessage}
 import io.kontainers.micrometer.akka.{ActorSystemMetrics, MetricsConfig}
-
-trait HasSystem {
-  def system: ActorSystem
-  def setSystem(system: ActorSystem): Unit
-}
-
-object HasSystem {
-  def apply(): HasSystem = new HasSystem {
-    private var _system: ActorSystem = _
-
-    override def system: ActorSystem = _system
-
-    override def setSystem(system: ActorSystem): Unit = _system = system
-  }
-}
+import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 
 @Aspect
 class DeadLettersInstrumentation {
 
-  @DeclareMixin("akka.event.EventStream+")
-  def mixinHasSystem: HasSystem = HasSystem()
+  @Pointcut("call(void akka.event.EventStream.publish(Object)) && args(event)")
+  def streamPublish(event: Object): Unit = {}
 
-  @Pointcut("execution(akka.event.EventStream.new(..)) && this(eventStream) && args(system, debug)")
-  def eventStreamCreation(eventStream: HasSystem, system: ActorSystem, debug: Boolean): Unit = {}
-
-  @After("eventStreamCreation(eventStream, system, debug)")
-  def aroundEventStreamCreation(eventStream: HasSystem, system: ActorSystem, debug: Boolean): Unit = {
-    eventStream.setSystem(system)
+  @After("streamPublish(event)")
+  def afterStreamSubchannel(event: Object): Unit = {
+    trackEvent(event)
   }
 
-  @Pointcut("execution(* akka.event.EventStream.publish(..)) && this(stream) && args(event)")
-  def streamPublish(stream: HasSystem, event: AnyRef): Unit = {}
-
-  @After("streamPublish(stream, event)")
-  def afterStreamSubchannel(stream: HasSystem, event: AnyRef): Unit = trackEvent(stream, event)
-
-  private def trackEvent(stream: HasSystem, event: AnyRef): Unit = {
+  private def trackEvent(event: Object): Unit = {
     if (MetricsConfig.matchEvents) {
       event match {
-        case _: DeadLetter => ActorSystemMetrics.deadLetterCount(stream.system.name).increment()
-        case _: UnhandledMessage => ActorSystemMetrics.unhandledMessageCount(stream.system.name).increment()
+        case dl: DeadLetter => {
+          val systemName = dl.sender.path.address.system
+          ActorSystemMetrics.deadLetterCount(systemName).increment()
+        }
+        case um: UnhandledMessage => {
+          val systemName = um.sender.path.address.system
+          ActorSystemMetrics.unhandledMessageCount(systemName).increment()
+        }
         case _ =>
       }
     }
