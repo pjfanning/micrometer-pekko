@@ -16,7 +16,7 @@
  */
 package io.kontainers.micrometer.akka
 
-import io.micrometer.core.instrument.{ImmutableTag, Tag}
+import io.micrometer.core.instrument.{Counter, ImmutableTag, Tag}
 
 object ActorSystemMetrics {
 
@@ -28,8 +28,8 @@ object ActorSystemMetrics {
 
   import AkkaMetricRegistry._
 
-  def actorCount(system: String) = gauge(ActorCountMetricName, tagSeq(system))
-  def deadLetterCount(system: String) = counter(DeadLetterCountMetricName, tagSeq(system))
-  def unhandledMessageCount(system: String) = counter(UnhandledMessageCountMetricName, tagSeq(system))
+  def actorCount(system: String): GaugeWrapper = gauge(ActorCountMetricName, tagSeq(system))
+  def deadLetterCount(system: String): Counter = counter(DeadLetterCountMetricName, tagSeq(system))
+  def unhandledMessageCount(system: String): Counter = counter(UnhandledMessageCountMetricName, tagSeq(system))
   private def tagSeq(system: String): Iterable[Tag] = Seq(new ImmutableTag(ActorSystem, system))
 }
