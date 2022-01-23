@@ -44,10 +44,8 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       findGroupRecorder("exclusive") shouldBe empty
       val map = findGroupRecorder("tracked")
       map.getOrElse(ActorCountMetricName, -1.0) shouldEqual 1.0
-      if (!VersionUtil.isScala3) {
-        map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
-        map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
-      }
+      map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
+      map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
       system.stop(trackedActor)
       eventually(timeout(5.seconds)) {
@@ -76,9 +74,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       findGroupRecorder("exclusive") shouldBe empty
       val map = findGroupRecorder("tracked")
       map.getOrElse(ActorCountMetricName, -1.0) shouldEqual 5.0
-      if (!VersionUtil.isScala3) {
-        map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
-      }
+      map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
       //map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
       system.stop(trackedRouter)

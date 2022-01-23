@@ -16,18 +16,16 @@
  */
 package akka.monitor.instrumentation
 
-import java.util.concurrent.locks.ReentrantLock
-
-import scala.collection.immutable
-import scala.util.Properties
-
-import org.aspectj.lang.ProceedingJoinPoint
-import org.aspectj.lang.annotation.{ After, Around, Aspect, Before, DeclareMixin, Pointcut }
-
-import akka.actor.{ ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell }
+import akka.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
 import akka.dispatch.Envelope
 import akka.dispatch.sysmsg.SystemMessage
 import akka.routing.RoutedActorCell
+import org.aspectj.lang.ProceedingJoinPoint
+import org.aspectj.lang.annotation._
+
+import java.util.concurrent.locks.ReentrantLock
+import scala.collection.immutable
+import scala.util.Properties
 
 @Aspect
 class ActorCellInstrumentation {
@@ -152,30 +150,5 @@ object ActorCellInstrumentation {
 
     (queueField, lockField)
   }
-
-}
-
-trait ActorInstrumentationAware {
-  def actorInstrumentation: ActorMonitor
-  def setActorInstrumentation(ai: ActorMonitor): Unit
-}
-
-object ActorInstrumentationAware {
-  def apply(): ActorInstrumentationAware = new ActorInstrumentationAware {
-    private var _ai: ActorMonitor = _
-
-    def setActorInstrumentation(ai: ActorMonitor): Unit = _ai = ai
-    def actorInstrumentation: ActorMonitor = _ai
-  }
-}
-
-@Aspect
-class MetricsIntoActorCellsMixin {
-
-  @DeclareMixin("akka.actor.ActorCell")
-  def mixinActorCellMetricsToActorCell: ActorInstrumentationAware = ActorInstrumentationAware()
-
-  @DeclareMixin("akka.actor.UnstartedCell")
-  def mixinActorCellMetricsToUnstartedActorCell: ActorInstrumentationAware = ActorInstrumentationAware()
 
 }
