@@ -31,6 +31,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.10" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.10" % Test
 )
+
 val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
 scalaReleaseVersion := {
   val v = scalaVersion.value
@@ -47,6 +48,18 @@ Compile / unmanagedSourceDirectories ++= {
   } else {
     Seq(
       (LocalRootProject / baseDirectory).value / "src" / "main" / "scala-2"
+    )
+  }
+}
+
+Test / unmanagedSourceDirectories ++= {
+  if (scalaReleaseVersion.value > 2) {
+    Seq(
+      (LocalRootProject / baseDirectory).value / "src" / "test" / "scala-3"
+    )
+  } else {
+    Seq(
+      (LocalRootProject / baseDirectory).value / "src" / "test" / "scala-2"
     )
   }
 }
