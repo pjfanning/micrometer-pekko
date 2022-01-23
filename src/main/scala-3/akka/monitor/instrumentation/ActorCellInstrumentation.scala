@@ -25,7 +25,6 @@ import org.aspectj.lang.annotation._
 
 import java.util.concurrent.locks.ReentrantLock
 import scala.collection.immutable
-import scala.util.Properties
 
 @Aspect
 class ActorCellInstrumentation {
@@ -59,19 +58,12 @@ class ActorCellInstrumentation {
     actorInstrumentation(cell).processMessage(pjp, envelope.asInstanceOf[InstrumentedEnvelope].envelopeContext())
   }
 
-  //@Pointcut("execution(* akka.actor.ActorCell.sendMessage(*)) && this(cell) && args(envelope)")
-  //def sendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {}
-
   @Pointcut("execution(* akka.dispatch.MessageDispatcher.dispatch(..)) && args(receiver, invocation)")
   def sendMessageInActorCell(receiver: ActorCell, invocation: Envelope): Unit = {}
 
   @Pointcut("execution(* akka.actor.UnstartedCell.sendMessage(*)) && this(cell) && args(envelope)")
   def sendMessageInUnstartedActorCell(cell: Cell, envelope: Envelope): Unit = {}
 
-  //@Before("sendMessageInActorCell(cell, envelope)")
-  //def beforeSendMessageInActorCell(cell: Cell, envelope: Envelope): Unit = {
-  //  setEnvelopeContext(cell, envelope)
-  //}
 
   @Before("sendMessageInActorCell(receiver, invocation)")
   def beforeSendMessageInActorCell(receiver: ActorCell, invocation: Envelope): Unit = {
@@ -143,12 +135,7 @@ class ActorCellInstrumentation {
 object ActorCellInstrumentation {
   private val (unstartedCellQueueField, unstartedCellLockField) = {
     val unstartedCellClass = classOf[UnstartedCell]
-    val queueFieldName = Properties.versionNumberString.split("\\.").take(2).mkString(".") match {
-      case _@ "2.11" => "akka$actor$UnstartedCell$$queue"
-      case _@ "2.12" => "queue"
-      case _@ "2.13" => "queue"
-      case v         => throw new IllegalStateException(s"Incompatible Scala version: $v")
-    }
+    val queueFieldName = "queue"
 
     val queueField = unstartedCellClass.getDeclaredField(queueFieldName)
     queueField.setAccessible(true)
