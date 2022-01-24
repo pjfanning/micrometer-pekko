@@ -1,4 +1,4 @@
-organization := "io.kontainers"
+organization := "com.github.pjfanning"
 
 name := "micrometer-akka"
 
@@ -88,7 +88,7 @@ Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
-homepage := Some(url("https://github.com/kontainers/micrometer-akka"))
+homepage := Some(url("https://github.com/pjfanning/micrometer-akka"))
 
 licenses := Seq("The Apache Software License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 
@@ -96,14 +96,24 @@ releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 pomExtra := (
   <scm>
-    <url>git@github.com:kontainers/micrometer-akka.git</url>
-    <connection>scm:git:git@github.com:kontainers/micrometer-akka.git</connection>
+    <url>git@github.com:pjfanning/micrometer-akka.git</url>
+    <connection>scm:git:git@github.com:pjfanning/micrometer-akka.git</connection>
   </scm>
   <developers>
     <developer>
       <id>pjfanning</id>
       <name>PJ Fanning</name>
       <url>https://github.com/pjfanning</url>
+    </developer>
+    <developer>
+      <id>ivantopo</id>
+      <name>Ivan Topolnjak</name>
+      <url>https://twitter.com/ivantopo</url>
+    </developer>
+    <developer>
+      <id>dpsoft</id>
+      <name>Diego Parra</name>
+      <url>https://twitter.com/diegolparra</url>
     </developer>
   </developers>
 )
