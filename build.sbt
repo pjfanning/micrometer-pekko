@@ -1,3 +1,5 @@
+import sbtghactions.JavaSpec.Distribution.Zulu
+
 organization := "com.github.pjfanning"
 
 name := "micrometer-akka"
@@ -116,4 +118,24 @@ pomExtra := (
       <url>https://twitter.com/diegolparra</url>
     </developer>
   </developers>
+)
+
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Zulu, "8"))
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(
+  RefPredicate.Equals(Ref.Branch("main")),
+  RefPredicate.StartsWith(Ref.Tag("v"))
+)
+
+ThisBuild / githubWorkflowPublish := Seq(
+  WorkflowStep.Sbt(
+    List("ci-release"),
+    env = Map(
+      "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
+      "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
+      "SONATYPE_PASSWORD" -> "${{ secrets.CI_DEPLOY_PASSWORD }}",
+      "SONATYPE_USERNAME" -> "${{ secrets.CI_DEPLOY_USERNAME }}",
+      "CI_SNAPSHOT_RELEASE" -> "+publishSigned"
+    )
+  )
 )
