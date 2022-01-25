@@ -22,7 +22,7 @@ val micrometerVersion = "1.8.2"
 update / checksums := Nil
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "1.7.34",
+  "org.slf4j" % "slf4j-api" % "1.7.35",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
