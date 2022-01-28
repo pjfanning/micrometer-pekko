@@ -110,7 +110,7 @@ class ActorCellInstrumentation {
     }
   }
 
-  @Pointcut("execution(* akka.actor.ActorCell.stop()) && this(cell)")
+  @Pointcut("execution(* akka.actor.dungeon.Children.stop(..)) && this(cell)")
   def actorStop(cell: ActorCell): Unit = {}
 
   @After("actorStop(cell)")
