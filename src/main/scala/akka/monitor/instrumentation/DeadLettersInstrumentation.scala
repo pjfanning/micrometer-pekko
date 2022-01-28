@@ -17,7 +17,7 @@
 package akka.monitor.instrumentation
 
 import akka.actor.{DeadLetter, UnhandledMessage}
-import io.kontainers.micrometer.akka.{ActorSystemMetrics, MetricsConfig}
+import com.github.pjfanning.micrometer.akka.{ActorSystemMetrics, MetricsConfig}
 import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 
 @Aspect

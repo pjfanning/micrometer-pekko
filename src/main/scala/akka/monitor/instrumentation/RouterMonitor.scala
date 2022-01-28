@@ -19,7 +19,7 @@ package akka.monitor.instrumentation
 import org.aspectj.lang.ProceedingJoinPoint
 
 import akka.actor.Cell
-import io.kontainers.micrometer.akka.{Entity, RouterMetrics}
+import com.github.pjfanning.micrometer.akka.{Entity, RouterMetrics}
 
 trait RouterMonitor {
   def processMessage(pjp: ProceedingJoinPoint): AnyRef

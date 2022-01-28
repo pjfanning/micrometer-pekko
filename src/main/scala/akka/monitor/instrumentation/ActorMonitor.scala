@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory
 
 import akka.actor.{ActorRef, ActorSystem, Cell}
 import akka.monitor.instrumentation.ActorMonitors.{TrackedActor, TrackedRoutee}
-import io.kontainers.micrometer.akka._
+import com.github.pjfanning.micrometer.akka._
 
 trait ActorMonitor {
   def captureEnvelopeContext(): EnvelopeContext

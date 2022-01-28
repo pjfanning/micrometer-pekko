@@ -16,7 +16,7 @@
  */
 package akka.monitor.instrumentation
 
-import io.kontainers.micrometer.akka.{Entity, MetricsConfig}
+import com.github.pjfanning.micrometer.akka.{Entity, MetricsConfig}
 
 import akka.actor.{ActorRef, ActorSystem, Cell}
 import akka.routing.{NoRouter, RoutedActorRef}

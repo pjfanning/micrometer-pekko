@@ -19,7 +19,7 @@ package akka.monitor.instrumentation
 
 import akka.actor.{Actor, ExtendedActorSystem, Props}
 import akka.dispatch.Envelope
-import io.kontainers.micrometer.akka.TestKitBaseSpec
+import com.github.pjfanning.micrometer.akka.TestKitBaseSpec
 
 class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
 

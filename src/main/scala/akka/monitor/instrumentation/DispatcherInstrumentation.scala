@@ -23,7 +23,7 @@ import java.util.concurrent.{ExecutorService, ForkJoinPool, ThreadPoolExecutor}
 import akka.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
 import akka.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
 import akka.monitor.instrumentation.LookupDataAware.LookupData
-import io.kontainers.micrometer.akka.{AkkaMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
+import com.github.pjfanning.micrometer.akka.{AkkaMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics
 import org.aspectj.lang.ProceedingJoinPoint
