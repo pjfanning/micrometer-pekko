@@ -4,24 +4,25 @@
 
 # micrometer-akka
 
-This project is a fork of [Kamon-Akka](http://kamon.io/documentation/kamon-akka/0.6.6/overview/). The Kamon team have done a great job and if you are just experimenting with metrics collection, then their tools and documentation are a great starting point. 
+This project is a fork of an early version of [Kamon-Akka](https://kamon.io/docs/latest/instrumentation/akka/). The Kamon team have done a great job and if you are just experimenting with metrics collection, then their tools and documentation are a great starting point. 
 This fork produces metrics in [Micrometer](http://micrometer.io/) format.
-See also [Prometheus-Akka](https://github.com/Workday/prometheus-akka).
+
+These are 2 previous iterations of this library:
+* [Prometheus-Akka](https://github.com/Workday/prometheus-akka)
+* [Kontainers/micrometer-akka](https://github.com/Kontainers/micrometer-akka) - this does not support Scala 3 but does have
+releases that support older versions of Akka and/or Scala 
 
 Differences from Kamon-Akka:
 - we do not support Kamon TraceContexts, as we currently have no use case for them
-- we support Scala 2.11, Scala 2.12 and Scala 2.13
-- we only build with Akka 2.5 but we test the build with Akka 2.6 too
-- akka 2.4 is supported prior to v0.12.0
+- we support Scala 2.12, Scala 2.13 and Scala 3.1
+- we only support Akka 2.6
 - records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"io.kontainers" %% "micrometer-akka" % "0.12.3"
+"com.github.pjfanning" %% "micrometer-akka" % "0.13.0-SNAPSHOT"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
-
-[Release Notes](https://github.com/kontainers/micrometer-akka/releases)
 
 ## Usage
 
@@ -31,11 +32,11 @@ To enable monitoring, include the appropriate jar as a dependency and include th
 
 You will also need to set up the Micrometer Meter Registry.
 
-io.kontainers.micrometer.akka.AkkaMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/master/src/main/scala/com/example/akka/Main.scala))
+com.github.pjfanning.micrometer.akka.AkkaMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/master/src/main/scala/com/example/akka/Main.scala))
 
 ## Configuration
 
-The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/kontainers/micrometer-akka/blob/master/src/main/resources/reference.conf) that enables only some metrics.
+The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/pjfanning/micrometer-akka/blob/master/src/main/resources/reference.conf) that enables only some metrics.
 
 ### Metrics
 
