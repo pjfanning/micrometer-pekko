@@ -1,7 +1,8 @@
-[![Build Status](https://travis-ci.org/kontainers/micrometer-akka.svg?branch=master)](https://travis-ci.org/kontainers/micrometer-akka)
+<!---
+[![Build Status](https://travis-ci.org/kontainers/micrometer-akka.svg?branch=main)](https://travis-ci.org/kontainers/micrometer-akka)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.13)
-[![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=master)](https://codecov.io/gh/kontainers/micrometer-akka/branch/master)
-
+[![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=main)](https://codecov.io/gh/kontainers/micrometer-akka/branch/main)
+--->
 # micrometer-akka
 
 This project is a fork of an early version of [Kamon-Akka](https://kamon.io/docs/latest/instrumentation/akka/). The Kamon team have done a great job and if you are just experimenting with metrics collection, then their tools and documentation are a great starting point. 
@@ -32,11 +33,11 @@ To enable monitoring, include the appropriate jar as a dependency and include th
 
 You will also need to set up the Micrometer Meter Registry.
 
-com.github.pjfanning.micrometer.akka.AkkaMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/master/src/main/scala/com/example/akka/Main.scala))
+com.github.pjfanning.micrometer.akka.AkkaMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/main/src/main/scala/com/example/akka/Main.scala))
 
 ## Configuration
 
-The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/pjfanning/micrometer-akka/blob/master/src/main/resources/reference.conf) that enables only some metrics.
+The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/pjfanning/micrometer-akka/blob/main/src/main/resources/reference.conf) that enables only some metrics.
 
 ### Metrics
 
