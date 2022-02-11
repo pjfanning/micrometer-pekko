@@ -1,6 +1,6 @@
+![Build Status](https://github.com/pjfanning/micrometer-akka/actions/workflows/ci.yml/badge.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-akka_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-akka_2.13)
 <!---
-[![Build Status](https://travis-ci.org/kontainers/micrometer-akka.svg?branch=main)](https://travis-ci.org/kontainers/micrometer-akka)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.kontainers/micrometer-akka_2.13)
 [![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=main)](https://codecov.io/gh/kontainers/micrometer-akka/branch/main)
 --->
 # micrometer-akka
@@ -20,7 +20,7 @@ Differences from Kamon-Akka:
 - records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"com.github.pjfanning" %% "micrometer-akka" % "0.13.0-SNAPSHOT"
+"com.github.pjfanning" %% "micrometer-akka" % "0.13.1"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
