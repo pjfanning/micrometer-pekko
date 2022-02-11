@@ -16,14 +16,14 @@
  */
 package akka.monitor.instrumentation
 
-import java.util.concurrent.TimeUnit
-
-import org.aspectj.lang.ProceedingJoinPoint
-import org.slf4j.LoggerFactory
-
 import akka.actor.{ActorRef, ActorSystem, Cell}
 import akka.monitor.instrumentation.ActorMonitors.{TrackedActor, TrackedRoutee}
 import com.github.pjfanning.micrometer.akka._
+import org.aspectj.lang.ProceedingJoinPoint
+import org.slf4j.LoggerFactory
+
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 trait ActorMonitor {
   def captureEnvelopeContext(): EnvelopeContext
@@ -164,6 +164,8 @@ object ActorMonitors {
 
   abstract class GroupMetricsTrackingActor(entity: Entity, actorSystemName: String,
       trackingGroups: List[String], actorCellCreation: Boolean) extends ActorMonitor {
+    private val closed = new AtomicBoolean(false)
+
     if (actorCellCreation) {
       ActorSystemMetrics.actorCount(actorSystemName).increment()
       trackingGroups.foreach { group =>
@@ -193,7 +195,7 @@ object ActorMonitors {
     }
 
     def cleanup(): Unit = {
-      if (actorCellCreation) {
+      if (actorCellCreation && closed.compareAndSet(false, true)) {
         ActorSystemMetrics.actorCount(actorSystemName).decrement()
         trackingGroups.foreach { group =>
           ActorGroupMetrics.actorCount(group).decrement()
