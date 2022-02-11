@@ -42,6 +42,22 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
         metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual originalCount
       }
     }
+    "count actors when stop called twice" in {
+      val originalMetrics = findSystemMetricsRecorder(system.name)
+      val originalCount = originalMetrics.getOrElse(ActorCountMetricName, 0.0)
+      val trackedActor = system.actorOf(Props[ActorMetricsTestActor]())
+      eventually(timeout(5.seconds)) {
+        val map = findSystemMetricsRecorder(system.name)
+        map should not be empty
+        map.getOrElse(ActorCountMetricName, -1.0) shouldEqual (originalCount + 1.0)
+      }
+      system.stop(trackedActor)
+      system.stop(trackedActor)
+      eventually(timeout(5.seconds)) {
+        val metrics = findSystemMetricsRecorder(system.name)
+        metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual originalCount
+      }
+    }
     "count unhandled messages" in {
       val count = findSystemMetricsRecorder(system.name).getOrElse(UnhandledMessageCountMetricName, 0.0)
       val trackedActor = system.actorOf(Props[ActorMetricsTestActor]())
