@@ -50,7 +50,9 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       system.stop(trackedActor)
       eventually(timeout(5.seconds)) {
         val metrics = findGroupRecorder("tracked")
-        metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
+        if (!VersionUtil.isScala3) {
+          metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
+        }
         metrics.getOrElse(ProcessingTimeMetricName, -1.0) should (be >= 0.0)
         metrics.getOrElse(ProcessingTimeMetricName, -1.0) should (be <= 1.0)
         metrics.getOrElse(TimeInMailboxMetricName, -1.0) should (be >= 0.0)
@@ -61,7 +63,9 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       val trackedActor3 = createTestActor("tracked-actor3")
 
       val map2 = findGroupRecorder("tracked")
-      map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 2.0
+      if (!VersionUtil.isScala3) {
+        map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 2.0
+      }
       map2.getOrElse(MessageCountMetricName, -1.0) shouldBe >=(3.0)
     }
 
@@ -75,18 +79,24 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       val map = findGroupRecorder("tracked")
       map.getOrElse(ActorCountMetricName, -1.0) shouldEqual 5.0
       map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
-      //map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
       system.stop(trackedRouter)
-      eventually(timeout(5.seconds)) {
-        findGroupRecorder("tracked").getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
+      if (!VersionUtil.isScala3) {
+        eventually(timeout(5.seconds)) {
+          findGroupRecorder("tracked").getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
+        }
       }
 
       val trackedRouter2 = createTestPoolRouter("tracked-router2")
       val trackedRouter3 = createTestPoolRouter("tracked-router3")
 
       val map2 = findGroupRecorder("tracked")
-      map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 10.0
+      map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
+      //map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
+
+      if (!VersionUtil.isScala3) {
+        map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 10.0
+      }
       map2.getOrElse(MessageCountMetricName, -1.0) shouldEqual 3.0
     }
   }
