@@ -56,7 +56,7 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
       if (!VersionUtil.isScala3) {
         eventually(timeout(5.seconds)) {
           val metrics = findSystemMetricsRecorder(system.name)
-          metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual originalCount
+          metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
         }
       }
     }
