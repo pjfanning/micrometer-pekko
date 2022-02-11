@@ -97,10 +97,6 @@ licenses := Seq("The Apache Software License, Version 2.0" -> url("http://www.ap
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 pomExtra := (
-  <scm>
-    <url>git@github.com:pjfanning/micrometer-akka.git</url>
-    <connection>scm:git:git@github.com:pjfanning/micrometer-akka.git</connection>
-  </scm>
   <developers>
     <developer>
       <id>pjfanning</id>
