@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-cluster" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.11" % Test,
-  "ch.qos.logback" % "logback-classic" % "1.2.10" % Test
+  "ch.qos.logback" % "logback-classic" % "1.2.11" % Test
 )
 
 val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
