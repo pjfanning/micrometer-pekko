@@ -26,9 +26,7 @@ object AkkaMetricRegistry {
   private var simpleRegistry = new SimpleMeterRegistry
   private var registry: Option[MeterRegistry] = None
   private case class MeterKey(name: String, tags: Iterable[Tag])
-  private val counterRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, Counter]]()
   private val gaugeRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, GaugeWrapper]]()
-  private val timerRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, Timer]]()
 
   def getRegistry: MeterRegistry = registry.getOrElse(simpleRegistry)
 
@@ -38,7 +36,7 @@ object AkkaMetricRegistry {
 
   def counter(name: String, tags: Iterable[Tag]): Counter = {
     def javaTags = tags.asJava
-    counterMap.getOrElseUpdate(MeterKey(name, tags), getRegistry.counter(name, javaTags))
+    getRegistry.counter(name, javaTags)
   }
 
   def gauge(name: String, tags: Iterable[Tag]): GaugeWrapper = {
@@ -53,13 +51,11 @@ object AkkaMetricRegistry {
       }
       builder.register(getRegistry)
     }
-    TimerWrapper(timerMap.getOrElseUpdate(MeterKey(name, tags), createTimer))
+    TimerWrapper(createTimer)
   }
 
   private[akka] def clear(): Unit = {
-    timerRegistryMap.clear()
     gaugeRegistryMap.clear()
-    counterRegistryMap.clear()
     simpleRegistry.close()
     simpleRegistry = new SimpleMeterRegistry()
   }
@@ -81,15 +77,7 @@ object AkkaMetricRegistry {
     }
   }
 
-  private def counterMap: TrieMap[MeterKey, Counter] = {
-    counterRegistryMap.getOrElseUpdate(getRegistry, { TrieMap[MeterKey, Counter]() })
-  }
-
   private def gaugeMap: TrieMap[MeterKey, GaugeWrapper] = {
     gaugeRegistryMap.getOrElseUpdate(getRegistry, { TrieMap[MeterKey, GaugeWrapper]() })
-  }
-
-  private def timerMap: TrieMap[MeterKey, Timer] = {
-    timerRegistryMap.getOrElseUpdate(getRegistry, { TrieMap[MeterKey, Timer]() })
   }
 }
