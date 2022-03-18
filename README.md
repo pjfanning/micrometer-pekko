@@ -20,7 +20,7 @@ Differences from Kamon-Akka:
 - records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"com.github.pjfanning" %% "micrometer-akka" % "0.13.1"
+"com.github.pjfanning" %% "micrometer-akka" % "0.13.3"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
