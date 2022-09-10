@@ -6,7 +6,7 @@ name := "micrometer-akka"
 
 ThisBuild / scalaVersion := "2.13.8"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15", "2.13.8", "3.1.3")
+ThisBuild / crossScalaVersions := Seq("2.12.16", "2.13.8", "3.2.0")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -17,7 +17,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
 
 val akkaVersion = "2.6.20"
 val aspectjweaverVersion = "1.9.9.1"
-val micrometerVersion = "1.9.1"
+val micrometerVersion = "1.9.3"
 
 update / checksums := Nil
 
@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "com.typesafe.akka" %% "akka-cluster" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
-  "org.scalatest" %% "scalatest" % "3.2.12" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.13" % Test,
   "ch.qos.logback" % "logback-classic" % "1.2.11" % Test
 )
 
