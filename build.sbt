@@ -4,9 +4,9 @@ organization := "com.github.pjfanning"
 
 name := "micrometer-akka"
 
-ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalaVersion := "2.13.10"
 
-ThisBuild / crossScalaVersions := Seq("2.12.16", "2.13.8", "3.2.0")
+ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.0")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -22,7 +22,7 @@ val micrometerVersion = "1.9.4"
 update / checksums := Nil
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "1.7.36",
+  "org.slf4j" % "slf4j-api" % "2.0.3",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
@@ -30,8 +30,8 @@ libraryDependencies ++= Seq(
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "com.typesafe.akka" %% "akka-cluster" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
-  "org.scalatest" %% "scalatest" % "3.2.13" % Test,
-  "ch.qos.logback" % "logback-classic" % "1.2.11" % Test
+  "org.scalatest" %% "scalatest" % "3.2.14" % Test,
+  "ch.qos.logback" % "logback-classic" % "1.4.4" % Test
 )
 
 val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
