@@ -16,7 +16,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
 }
 
 val akkaVersion = "2.6.20"
-val aspectjweaverVersion = "1.9.9.1"
+val aspectjweaverVersion = "1.9.19"
 val micrometerVersion = "1.10.2"
 
 update / checksums := Nil

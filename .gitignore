@@ -1,3 +1,9 @@
+.cache
+.classpath
+.project
 .idea
-prometheus-akka.iml
+.idea_modules
+project/target
+target
+tags
 .bsp/sbt.json
