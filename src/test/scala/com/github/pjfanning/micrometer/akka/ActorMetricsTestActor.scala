@@ -16,7 +16,7 @@
  */
 package com.github.pjfanning.micrometer.akka
 
-import akka.actor._
+import org.apache.pekko.actor._
 import scala.concurrent.duration._
 
 class ActorMetricsTestActor extends Actor {

@@ -18,8 +18,8 @@ package com.github.pjfanning.micrometer.akka
 
 import org.scalatest.BeforeAndAfterAll
 
-import akka.actor.ActorSystem
-import akka.testkit.TestKit
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.testkit.TestKit
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 

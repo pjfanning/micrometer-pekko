@@ -18,9 +18,9 @@ package com.github.pjfanning.micrometer.akka
 
 import scala.concurrent.Future
 
-import akka.actor._
-import akka.dispatch.MessageDispatcher
-import akka.testkit.TestProbe
+import org.apache.pekko.actor._
+import org.apache.pekko.dispatch.MessageDispatcher
+import org.apache.pekko.testkit.TestProbe
 import com.github.pjfanning.micrometer.akka.ForkJoinPoolMetrics.DispatcherName
 import io.micrometer.core.instrument.Tag
 

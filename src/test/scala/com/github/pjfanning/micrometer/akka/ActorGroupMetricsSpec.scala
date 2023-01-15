@@ -16,9 +16,9 @@
  */
 package com.github.pjfanning.micrometer.akka
 
-import akka.actor._
-import akka.routing.RoundRobinPool
-import akka.testkit.TestProbe
+import org.apache.pekko.actor._
+import org.apache.pekko.routing.RoundRobinPool
+import org.apache.pekko.testkit.TestProbe
 import io.micrometer.core.instrument.ImmutableTag
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.Eventually

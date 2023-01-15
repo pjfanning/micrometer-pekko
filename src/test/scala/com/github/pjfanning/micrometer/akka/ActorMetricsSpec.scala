@@ -19,8 +19,8 @@ package com.github.pjfanning.micrometer.akka
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Future}
 
-import akka.actor._
-import akka.testkit.TestProbe
+import org.apache.pekko.actor._
+import org.apache.pekko.testkit.TestProbe
 import org.apache.pekko.monitor.instrumentation.CellInfo
 
 class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") {

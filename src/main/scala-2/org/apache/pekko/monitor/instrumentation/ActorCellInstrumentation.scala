@@ -16,10 +16,10 @@
  */
 package org.apache.pekko.monitor.instrumentation
 
-import akka.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
-import akka.dispatch.Envelope
-import akka.dispatch.sysmsg.SystemMessage
-import akka.routing.RoutedActorCell
+import org.apache.pekko.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
+import org.apache.pekko.dispatch.Envelope
+import org.apache.pekko.dispatch.sysmsg.SystemMessage
+import org.apache.pekko.routing.RoutedActorCell
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation._
 

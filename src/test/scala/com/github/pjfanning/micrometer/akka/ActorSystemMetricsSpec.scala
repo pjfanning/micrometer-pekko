@@ -16,7 +16,7 @@
  */
 package com.github.pjfanning.micrometer.akka
 
-import akka.actor.Props
+import org.apache.pekko.actor.Props
 import com.github.pjfanning.micrometer.akka.ActorSystemMetrics._
 import io.micrometer.core.instrument.ImmutableTag
 import org.scalatest.BeforeAndAfterEach
