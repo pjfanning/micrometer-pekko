@@ -6,7 +6,7 @@ name := "micrometer-akka"
 
 ThisBuild / scalaVersion := "2.13.10"
 
-ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.1")
+ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.2")
 
 scalacOptions += "-target:jvm-1.8"
 
