@@ -45,6 +45,6 @@ object InstrumentedEnvelope {
 @Aspect
 class EnvelopeContextIntoEnvelopeMixin {
 
-  @DeclareMixin("akka.dispatch.Envelope")
+  @DeclareMixin("org.apache.pekko.dispatch.Envelope")
   def mixinInstrumentationToEnvelope: InstrumentedEnvelope = InstrumentedEnvelope()
 }

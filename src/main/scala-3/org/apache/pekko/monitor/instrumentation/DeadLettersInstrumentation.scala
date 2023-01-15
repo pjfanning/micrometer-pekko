@@ -23,7 +23,7 @@ import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 @Aspect
 class DeadLettersInstrumentation {
 
-  @Pointcut("call(void akka.event.EventStream.publish(Object)) && args(event)")
+  @Pointcut("call(void org.apache.pekko.event.EventStream.publish(Object)) && args(event)")
   def streamPublish(event: Object): Unit = {}
 
   @After("streamPublish(event)")

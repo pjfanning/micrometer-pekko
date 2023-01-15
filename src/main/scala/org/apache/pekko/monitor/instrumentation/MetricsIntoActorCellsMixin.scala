@@ -21,10 +21,10 @@ import org.aspectj.lang.annotation.{Aspect, DeclareMixin}
 @Aspect
 class MetricsIntoActorCellsMixin {
 
-  @DeclareMixin("akka.actor.ActorCell")
+  @DeclareMixin("org.apache.pekko.actor.ActorCell")
   def mixinActorCellMetricsToActorCell: ActorInstrumentationAware = ActorInstrumentationAware()
 
-  @DeclareMixin("akka.actor.UnstartedCell")
+  @DeclareMixin("org.apache.pekko.actor.UnstartedCell")
   def mixinActorCellMetricsToUnstartedActorCell: ActorInstrumentationAware = ActorInstrumentationAware()
 
 }
