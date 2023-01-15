@@ -15,21 +15,23 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
   case _ => default
 }
 
-val akkaVersion = "2.6.20"
+val pekkoVersion = "0.0.0+26527-281a0868+20230115-0029-SNAPSHOT"
 val aspectjweaverVersion = "1.9.19"
 val micrometerVersion = "1.10.2"
 
 update / checksums := Nil
 
+resolvers += "Pekko Nightlies Repository" at "https://nightlies.apache.org/pekko/snapshots/"
+
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "2.0.3",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
+  "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
   "com.typesafe" % "config" % "1.4.2",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
-  "com.typesafe.akka" %% "akka-cluster" % akkaVersion % Test,
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
+  "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
+  "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.14" % Test,
   "ch.qos.logback" % "logback-classic" % "1.3.5" % Test
 )
