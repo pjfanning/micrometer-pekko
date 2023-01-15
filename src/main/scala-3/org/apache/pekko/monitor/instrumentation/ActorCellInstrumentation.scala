@@ -14,12 +14,12 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
-import akka.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
-import akka.dispatch.Envelope
-import akka.dispatch.sysmsg.SystemMessage
-import akka.routing.RoutedActorCell
+import org.apache.pekko.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
+import org.apache.pekko.dispatch.Envelope
+import org.apache.pekko.dispatch.sysmsg.SystemMessage
+import org.apache.pekko.routing.RoutedActorCell
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation._
 
@@ -85,7 +85,7 @@ class ActorCellInstrumentation {
 
   @Around("replaceWithInRepointableActorRef(unStartedCell, cell)")
   def aroundReplaceWithInRepointableActorRef(pjp: ProceedingJoinPoint, unStartedCell: UnstartedCell, cell: Cell): Unit = {
-    import ActorCellInstrumentation._
+    import org.apache.pekko.monitor.instrumentation.ActorCellInstrumentation._
     // TODO: Find a way to do this without resorting to reflection and, even better, without copy/pasting the Akka Code!
     val queue = unstartedCellQueueField.get(unStartedCell).asInstanceOf[java.util.LinkedList[_]]
     val lock = unstartedCellLockField.get(unStartedCell).asInstanceOf[ReentrantLock]

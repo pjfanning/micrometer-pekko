@@ -14,14 +14,14 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.{ After, Around, Aspect, DeclareMixin, Pointcut }
 
-import akka.actor.{ ActorRef, ActorSystem, Cell, Props }
-import akka.dispatch.{ Envelope, MessageDispatcher }
-import akka.routing.RoutedActorCell
+import org.apache.pekko.actor.{ ActorRef, ActorSystem, Cell, Props }
+import org.apache.pekko.dispatch.{ Envelope, MessageDispatcher }
+import org.apache.pekko.routing.RoutedActorCell
 
 @Aspect
 class RoutedActorCellInstrumentation {

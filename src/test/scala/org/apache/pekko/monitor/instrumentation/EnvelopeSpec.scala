@@ -15,7 +15,7 @@
  * =========================================================================================
  */
 
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import akka.actor.{Actor, ExtendedActorSystem, Props}
 import akka.dispatch.Envelope

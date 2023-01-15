@@ -14,7 +14,7 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import akka.actor.{DeadLetter, UnhandledMessage}
 import com.github.pjfanning.micrometer.akka.{ActorSystemMetrics, MetricsConfig}
@@ -23,7 +23,7 @@ import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 @Aspect
 class DeadLettersInstrumentation {
 
-  @Pointcut("call(void akka.event.EventStream.publish(Object)) && args(event)")
+  @Pointcut("execution(void akka.event.EventStream.publish(Object)) && args(event)")
   def streamPublish(event: Object): Unit = {}
 
   @After("streamPublish(event)")

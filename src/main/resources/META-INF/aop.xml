@@ -21,28 +21,28 @@
 <aspectj>
   <aspects>
     <!-- Actors -->
-    <aspect name="akka.monitor.instrumentation.EnvelopeContextIntoEnvelopeMixin"/>
-    <aspect name="akka.monitor.instrumentation.MetricsIntoActorCellsMixin"/>
-    <aspect name="akka.monitor.instrumentation.MetricsIntoRouterCellsMixin"/>
-    <aspect name="akka.monitor.instrumentation.ActorCellInstrumentation"/>
-    <aspect name="akka.monitor.instrumentation.RoutedActorCellInstrumentation"/>
-    <aspect name="akka.monitor.instrumentation.DeadLettersInstrumentation"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.EnvelopeContextIntoEnvelopeMixin"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.MetricsIntoActorCellsMixin"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.MetricsIntoRouterCellsMixin"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.ActorCellInstrumentation"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.RoutedActorCellInstrumentation"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.DeadLettersInstrumentation"/>
     <!-- Dispatchers -->
-    <aspect name="akka.monitor.instrumentation.DispatcherInstrumentation"/>
-    <aspect name="akka.monitor.instrumentation.DispatcherMetricCollectionInfoIntoDispatcherMixin"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.DispatcherInstrumentation"/>
+    <aspect name="org.apache.pekko.monitor.instrumentation.DispatcherMetricCollectionInfoIntoDispatcherMixin"/>
   </aspects>
 
   <weaver>
-    <include within="akka..*"/>
+    <include within="org.apache.pekko..*"/>
 
     <!-- For some weird reason ByteString produces a java.lang.VerifyError after going through the weaver. -->
-    <exclude within="akka.util.ByteString"/>
+    <exclude within="org.apache.pekko.util.ByteString"/>
 
-    <!-- Exclude akka-cluster classes due to https://github.com/kontainers/micrometer-akka/issues/84 -->
-    <exclude within="akka.cluster..*"/>
+    <!-- Exclude pekko-cluster classes due to https://github.com/kontainers/micrometer-akka/issues/84 -->
+    <exclude within="org.apache.pekko.cluster..*"/>
 
     <!-- Exclude CallingThreadDispatcher, is only for test purposes -->
-    <exclude within="akka.testkit.CallingThreadDispatcher"/>
+    <exclude within="org.apache.pekko.testkit.CallingThreadDispatcher"/>
   </weaver>
 
 </aspectj>

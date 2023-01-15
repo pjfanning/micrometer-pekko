@@ -20,9 +20,9 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.DurationInt
 
 import akka.actor._
-import akka.monitor.instrumentation.CellInfo
 import akka.routing._
 import akka.testkit.TestProbe
+import org.apache.pekko.monitor.instrumentation.CellInfo
 
 class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") {
 
