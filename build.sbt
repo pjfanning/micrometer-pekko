@@ -31,10 +31,11 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
   case _ => default
 }
 
-val pekkoVersion = {
-  if (scalaReleaseVersion == 3) {
+val pekkoVersion = SettingKey[String]("pekkoVersion")
+pekkoVersion := {
+  if (scalaReleaseVersion.value == 3) {
     "0.0.0+26535-b6a8e220+20230121-0033-SNAPSHOT"
-  } else if (scalaMajorVersion == 12) {
+  } else if (scalaMajorVersion.value == 12) {
     "0.0.0+26535-b6a8e220-SNAPSHOT"
   } else {
     "0.0.0+26535-b6a8e220+20230121-0027-SNAPSHOT"
@@ -50,12 +51,12 @@ resolvers += "Pekko Nightlies Repository" at "https://nightlies.apache.org/pekko
 libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-api" % "2.0.6",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
-  "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
-  "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
+  "org.apache.pekko" %% "pekko-actor" % pekkoVersion.value,
+  "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion.value,
   "com.typesafe" % "config" % "1.4.2",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
-  "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
-  "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
+  "org.apache.pekko" %% "pekko-cluster" % pekkoVersion.value % Test,
+  "org.apache.pekko" %% "pekko-testkit" % pekkoVersion.value % Test,
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,
   "ch.qos.logback" % "logback-classic" % "1.3.5" % Test
 )
