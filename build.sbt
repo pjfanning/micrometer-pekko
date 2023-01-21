@@ -10,12 +10,36 @@ ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.2")
 
 scalacOptions += "-target:jvm-1.8"
 
+val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
+scalaReleaseVersion := {
+  val v = scalaVersion.value
+  CrossVersion.partialVersion(v).map(_._1.toInt).getOrElse {
+    throw new RuntimeException(s"could not get Scala release version from $v")
+  }
+}
+
+val scalaMajorVersion = SettingKey[Int]("scalaMajorVersion")
+scalaMajorVersion := {
+  val v = scalaVersion.value
+  CrossVersion.partialVersion(v).map(_._2.toInt).getOrElse {
+    throw new RuntimeException(s"could not get Scala major version from $v")
+  }
+}
+
 def sysPropOrDefault(propName: String, default: String): String = Option(System.getProperty(propName)) match {
   case Some(propVal) if !propVal.trim.isEmpty => propVal.trim
   case _ => default
 }
 
-val pekkoVersion = "0.0.0+26527-281a0868+20230115-0029-SNAPSHOT"
+val pekkoVersion = {
+  if (scalaReleaseVersion == 3) {
+    "0.0.0+26535-b6a8e220+20230121-0033-SNAPSHOT"
+  } else if (scalaMajorVersion == 12) {
+    "0.0.0+26535-b6a8e220-SNAPSHOT"
+  } else {
+    "0.0.0+26535-b6a8e220+20230121-0027-SNAPSHOT"
+  }
+}
 val aspectjweaverVersion = "1.9.19"
 val micrometerVersion = "1.10.3"
 
@@ -35,14 +59,6 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,
   "ch.qos.logback" % "logback-classic" % "1.3.5" % Test
 )
-
-val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
-scalaReleaseVersion := {
-  val v = scalaVersion.value
-  CrossVersion.partialVersion(v).map(_._1.toInt).getOrElse {
-    throw new RuntimeException(s"could not get Scala release version from $v")
-  }
-}
 
 Compile / unmanagedSourceDirectories ++= {
   if (scalaReleaseVersion.value > 2) {
