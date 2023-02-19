@@ -1,6 +1,6 @@
-![Build Status](https://github.com/pjfanning/micrometer-akka/actions/workflows/ci.yml/badge.svg?branch=main)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-akka_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-akka_2.13)
+![Build Status](https://github.com/pjfanning/micrometer-pekko/actions/workflows/ci.yml/badge.svg?branch=main)
 <!---
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-pekko_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-pekko_2.13)
 [![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=main)](https://codecov.io/gh/kontainers/micrometer-akka/branch/main)
 --->
 # micrometer-pekko
@@ -8,36 +8,30 @@
 This project is a fork of an early version of [Kamon-Akka](https://kamon.io/docs/latest/instrumentation/akka/). The Kamon team have done a great job and if you are just experimenting with metrics collection, then their tools and documentation are a great starting point. 
 This fork produces metrics in [Micrometer](http://micrometer.io/) format.
 
-These are 2 previous iterations of this library:
+These are 3 previous iterations of this library:
+* [pjfanning/micrometer-akka](https://github.com/pjfanning/micrometer-akka)
+* [Kontainers/micrometer-akka](https://github.com/Kontainers/micrometer-akka)
 * [Prometheus-Akka](https://github.com/Workday/prometheus-akka)
-* [Kontainers/micrometer-akka](https://github.com/Kontainers/micrometer-akka) - this does not support Scala 3 but does have
-releases that support older versions of Akka and/or Scala 
-
-Differences from Kamon-Akka:
-- we do not support Kamon TraceContexts, as we currently have no use case for them
-- we support Scala 2.12, Scala 2.13 and Scala 3.1
-- we only support Akka 2.6
-- records time in seconds as opposed to nanoseconds (the data is still a double)
 
 ```sbt
-"com.github.pjfanning" %% "micrometer-akka" % "0.13.3"
+"com.github.pjfanning" %% "micrometer-pekko" % "<version>"
 ```
 
-There is a sample project at https://github.com/pjfanning/micrometer-akka-sample
+There is a sample project at https://github.com/pjfanning/micrometer-akka-sample (a Pekko version will be done soon).
 
 ## Usage
 
-To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-akka):
+To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-pekko):
 
 -javaagent:/path/to/aspectjweaver-1.9.9.1.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
-com.github.pjfanning.micrometer.akka.AkkaMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/main/src/main/scala/com/example/akka/Main.scala))
+com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/main/src/main/scala/com/example/akka/Main.scala))
 
 ## Configuration
 
-The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/pjfanning/micrometer-akka/blob/main/src/main/resources/reference.conf) that enables only some metrics.
+The metrics are configured using [application.conf](https://github.com/typesafehub/config) files. There is a default [reference.conf](https://github.com/pjfanning/micrometer-pekko/blob/main/src/main/resources/reference.conf) that enables only some metrics.
 
 ### Metrics
 

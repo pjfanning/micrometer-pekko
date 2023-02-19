@@ -16,7 +16,7 @@
  */
 package org.apache.pekko.monitor.instrumentation
 
-import com.github.pjfanning.micrometer.akka.{Entity, MetricsConfig}
+import com.github.pjfanning.micrometer.pekko.{Entity, MetricsConfig}
 
 import org.apache.pekko.actor.{ActorRef, ActorSystem, Cell}
 import org.apache.pekko.routing.{NoRouter, RoutedActorRef}

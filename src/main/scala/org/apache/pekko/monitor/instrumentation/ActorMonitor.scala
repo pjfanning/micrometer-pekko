@@ -18,7 +18,7 @@ package org.apache.pekko.monitor.instrumentation
 
 import org.apache.pekko.actor.{ActorRef, ActorSystem, Cell}
 import ActorMonitors.{TrackedActor, TrackedRoutee}
-import com.github.pjfanning.micrometer.akka._
+import com.github.pjfanning.micrometer.pekko._
 import org.aspectj.lang.ProceedingJoinPoint
 import org.slf4j.LoggerFactory
 

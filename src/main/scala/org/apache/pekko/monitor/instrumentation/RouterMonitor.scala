@@ -19,7 +19,7 @@ package org.apache.pekko.monitor.instrumentation
 import org.aspectj.lang.ProceedingJoinPoint
 
 import org.apache.pekko.actor.Cell
-import com.github.pjfanning.micrometer.akka.{Entity, RouterMetrics}
+import com.github.pjfanning.micrometer.pekko.{Entity, RouterMetrics}
 
 trait RouterMonitor {
   def processMessage(pjp: ProceedingJoinPoint): AnyRef

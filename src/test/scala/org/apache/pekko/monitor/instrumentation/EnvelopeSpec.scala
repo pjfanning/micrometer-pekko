@@ -19,7 +19,7 @@ package org.apache.pekko.monitor.instrumentation
 
 import org.apache.pekko.actor.{Actor, ExtendedActorSystem, Props}
 import org.apache.pekko.dispatch.Envelope
-import com.github.pjfanning.micrometer.akka.TestKitBaseSpec
+import com.github.pjfanning.micrometer.pekko.TestKitBaseSpec
 
 class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
 

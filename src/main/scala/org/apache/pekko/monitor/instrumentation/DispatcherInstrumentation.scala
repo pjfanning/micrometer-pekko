@@ -23,7 +23,7 @@ import java.util.concurrent.{ExecutorService, ForkJoinPool, ThreadPoolExecutor}
 import org.apache.pekko.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
 import org.apache.pekko.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
 import LookupDataAware.LookupData
-import com.github.pjfanning.micrometer.akka.{AkkaMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
+import com.github.pjfanning.micrometer.pekko.{AkkaMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics
 import org.aspectj.lang.ProceedingJoinPoint

@@ -2,7 +2,7 @@ import org.typelevel.sbt.gha.JavaSpec.Distribution.Zulu
 
 organization := "com.github.pjfanning"
 
-name := "micrometer-akka"
+name := "micrometer-pekko"
 
 ThisBuild / scalaVersion := "2.13.10"
 
@@ -92,9 +92,9 @@ Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
-homepage := Some(url("https://github.com/pjfanning/micrometer-akka"))
+homepage := Some(url("https://github.com/pjfanning/micrometer-pekko"))
 
-licenses := Seq("The Apache Software License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
+licenses := Seq("The Apache Software License, Version 2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
 releasePublishArtifactsAction := PgpKeys.publishSigned.value
 

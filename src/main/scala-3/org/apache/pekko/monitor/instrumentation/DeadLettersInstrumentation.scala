@@ -17,7 +17,7 @@
 package org.apache.pekko.monitor.instrumentation
 
 import org.apache.pekko.actor.{DeadLetter, UnhandledMessage}
-import com.github.pjfanning.micrometer.akka.{ActorSystemMetrics, MetricsConfig}
+import com.github.pjfanning.micrometer.pekko.{ActorSystemMetrics, MetricsConfig}
 import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 
 @Aspect
