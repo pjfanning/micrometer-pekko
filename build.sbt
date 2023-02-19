@@ -10,30 +10,6 @@ ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.2")
 
 scalacOptions += "-target:jvm-1.8"
 
-def sysPropOrDefault(propName: String, default: String): String = Option(System.getProperty(propName)) match {
-  case Some(propVal) if !propVal.trim.isEmpty => propVal.trim
-  case _ => default
-}
-
-val akkaVersion = "2.6.20"
-val aspectjweaverVersion = "1.9.19"
-val micrometerVersion = "1.10.3"
-
-update / checksums := Nil
-
-libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "2.0.6",
-  "io.micrometer" % "micrometer-core" % micrometerVersion,
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-  "com.typesafe" % "config" % "1.4.2",
-  "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
-  "com.typesafe.akka" %% "akka-cluster" % akkaVersion % Test,
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
-  "org.scalatest" %% "scalatest" % "3.2.15" % Test,
-  "ch.qos.logback" % "logback-classic" % "1.3.5" % Test
-)
-
 val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
 scalaReleaseVersion := {
   val v = scalaVersion.value
@@ -41,6 +17,32 @@ scalaReleaseVersion := {
     throw new RuntimeException(s"could not get Scala release version from $v")
   }
 }
+
+def sysPropOrDefault(propName: String, default: String): String = Option(System.getProperty(propName)) match {
+  case Some(propVal) if !propVal.trim.isEmpty => propVal.trim
+  case _ => default
+}
+
+val pekkoVersion = "0.0.0+26544-4c021960-SNAPSHOT"
+val aspectjweaverVersion = "1.9.19"
+val micrometerVersion = "1.10.3"
+
+update / checksums := Nil
+
+resolvers += "Apache Snapshots" at "https://repository.apache.org/content/groups/snapshots"
+
+libraryDependencies ++= Seq(
+  "org.slf4j" % "slf4j-api" % "2.0.6",
+  "io.micrometer" % "micrometer-core" % micrometerVersion,
+  "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
+  "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
+  "com.typesafe" % "config" % "1.4.2",
+  "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
+  "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
+  "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
+  "org.scalatest" %% "scalatest" % "3.2.15" % Test,
+  "ch.qos.logback" % "logback-classic" % "1.3.5" % Test
+)
 
 Compile / unmanagedSourceDirectories ++= {
   if (scalaReleaseVersion.value > 2) {

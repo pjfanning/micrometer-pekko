@@ -14,12 +14,12 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
-import akka.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
-import akka.dispatch.Envelope
-import akka.dispatch.sysmsg.SystemMessage
-import akka.routing.RoutedActorCell
+import org.apache.pekko.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
+import org.apache.pekko.dispatch.Envelope
+import org.apache.pekko.dispatch.sysmsg.SystemMessage
+import org.apache.pekko.routing.RoutedActorCell
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation._
 
@@ -32,10 +32,10 @@ class ActorCellInstrumentation {
   private def actorInstrumentation(cell: Cell): ActorMonitor =
     cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation
 
-  @Pointcut("execution(akka.actor.ActorCell.new(..)) && this(cell) && args(system, ref, *, *, parent)")
+  @Pointcut("execution(org.apache.pekko.actor.ActorCell.new(..)) && this(cell) && args(system, ref, *, *, parent)")
   def actorCellCreation(cell: Cell, system: ActorSystem, ref: ActorRef, parent: InternalActorRef): Unit = {}
 
-  @Pointcut("execution(akka.actor.UnstartedCell.new(..)) && this(cell) && args(system, ref, *, parent)")
+  @Pointcut("execution(org.apache.pekko.actor.UnstartedCell.new(..)) && this(cell) && args(system, ref, *, parent)")
   def repointableActorRefCreation(cell: Cell, system: ActorSystem, ref: ActorRef, parent: InternalActorRef): Unit = {}
 
   @After("actorCellCreation(cell, system, ref, parent)")
@@ -50,7 +50,7 @@ class ActorCellInstrumentation {
       ActorMonitor.createActorMonitor(cell, system, ref, parent, false))
   }
 
-  @Pointcut("execution(* akka.actor.ActorCell.invoke(*)) && this(cell) && args(envelope)")
+  @Pointcut("execution(* org.apache.pekko.actor.ActorCell.invoke(*)) && this(cell) && args(envelope)")
   def invokingActorBehaviourAtActorCell(cell: ActorCell, envelope: Envelope) = {}
 
   @Around("invokingActorBehaviourAtActorCell(cell, envelope)")
@@ -58,10 +58,10 @@ class ActorCellInstrumentation {
     actorInstrumentation(cell).processMessage(pjp, envelope.asInstanceOf[InstrumentedEnvelope].envelopeContext())
   }
 
-  @Pointcut("execution(* akka.dispatch.MessageDispatcher.dispatch(..)) && args(receiver, invocation)")
+  @Pointcut("execution(* org.apache.pekko.dispatch.MessageDispatcher.dispatch(..)) && args(receiver, invocation)")
   def sendMessageInActorCell(receiver: ActorCell, invocation: Envelope): Unit = {}
 
-  @Pointcut("execution(* akka.actor.UnstartedCell.sendMessage(*)) && this(cell) && args(envelope)")
+  @Pointcut("execution(* org.apache.pekko.actor.UnstartedCell.sendMessage(*)) && this(cell) && args(envelope)")
   def sendMessageInUnstartedActorCell(cell: Cell, envelope: Envelope): Unit = {}
 
 
@@ -80,12 +80,12 @@ class ActorCellInstrumentation {
       actorInstrumentation(cell).captureEnvelopeContext())
   }
 
-  @Pointcut("execution(* akka.actor.UnstartedCell.replaceWith(*)) && this(unStartedCell) && args(cell)")
+  @Pointcut("execution(* org.apache.pekko.actor.UnstartedCell.replaceWith(*)) && this(unStartedCell) && args(cell)")
   def replaceWithInRepointableActorRef(unStartedCell: UnstartedCell, cell: Cell): Unit = {}
 
   @Around("replaceWithInRepointableActorRef(unStartedCell, cell)")
   def aroundReplaceWithInRepointableActorRef(pjp: ProceedingJoinPoint, unStartedCell: UnstartedCell, cell: Cell): Unit = {
-    import ActorCellInstrumentation._
+    import org.apache.pekko.monitor.instrumentation.ActorCellInstrumentation._
     // TODO: Find a way to do this without resorting to reflection and, even better, without copy/pasting the Akka Code!
     val queue = unstartedCellQueueField.get(unStartedCell).asInstanceOf[java.util.LinkedList[_]]
     val lock = unstartedCellLockField.get(unStartedCell).asInstanceOf[ReentrantLock]
@@ -110,7 +110,7 @@ class ActorCellInstrumentation {
     }
   }
 
-  @Pointcut("execution(* akka.actor.dungeon.Children.stop(..)) && this(cell)")
+  @Pointcut("execution(* org.apache.pekko.actor.dungeon.Children.stop(..)) && this(cell)")
   def actorStop(cell: ActorCell): Unit = {}
 
   @After("actorStop(cell)")
@@ -123,7 +123,7 @@ class ActorCellInstrumentation {
     }
   }
 
-  @Pointcut("execution(* akka.actor.ActorCell.handleInvokeFailure(..)) && this(cell) && args(childrenNotToSuspend, failure)")
+  @Pointcut("execution(* org.apache.pekko.actor.ActorCell.handleInvokeFailure(..)) && this(cell) && args(childrenNotToSuspend, failure)")
   def actorInvokeFailure(cell: ActorCell, childrenNotToSuspend: immutable.Iterable[ActorRef], failure: Throwable): Unit = {}
 
   @Before("actorInvokeFailure(cell, childrenNotToSuspend, failure)")

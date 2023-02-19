@@ -18,7 +18,7 @@ package com.github.pjfanning.micrometer.akka
 
 import scala.concurrent.duration.Duration
 
-import akka.actor.Actor
+import org.apache.pekko.actor.Actor
 
 class RouterMetricsTestActor extends Actor {
   import RouterMetricsTestActor._

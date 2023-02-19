@@ -15,14 +15,14 @@
  * =========================================================================================
  */
 
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import java.lang.reflect.Method
 import java.util.concurrent.{ExecutorService, ForkJoinPool, ThreadPoolExecutor}
 
-import akka.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
-import akka.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
-import akka.monitor.instrumentation.LookupDataAware.LookupData
+import org.apache.pekko.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
+import org.apache.pekko.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
+import LookupDataAware.LookupData
 import com.github.pjfanning.micrometer.akka.{AkkaMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics
@@ -37,7 +37,7 @@ class DispatcherInstrumentation {
 
   val logger = LoggerFactory.getLogger(classOf[DispatcherInstrumentation])
 
-  @Pointcut("execution(* akka.actor.ActorSystemImpl.start(..)) && this(system)")
+  @Pointcut("execution(* org.apache.pekko.actor.ActorSystemImpl.start(..)) && this(system)")
   def actorSystemInitialization(system: ActorSystemImpl): Unit = {}
 
   @Before("actorSystemInitialization(system)")
@@ -107,7 +107,7 @@ class DispatcherInstrumentation {
     }
   }
 
-  @Pointcut("execution(* akka.dispatch.Dispatchers.lookup(..)) && this(dispatchers) && args(dispatcherName)")
+  @Pointcut("execution(* org.apache.pekko.dispatch.Dispatchers.lookup(..)) && this(dispatchers) && args(dispatcherName)")
   def dispatchersLookup(dispatchers: ActorSystemAware, dispatcherName: String) = {}
 
   @Around("dispatchersLookup(dispatchers, dispatcherName)")
@@ -116,14 +116,14 @@ class DispatcherInstrumentation {
       pjp.proceed()
     }
 
-  @Pointcut("initialization(akka.dispatch.ExecutorServiceFactory.new(..)) && target(factory)")
+  @Pointcut("initialization(org.apache.pekko.dispatch.ExecutorServiceFactory.new(..)) && target(factory)")
   def executorServiceFactoryInitialization(factory: LookupDataAware): Unit = {}
 
   @After("executorServiceFactoryInitialization(factory)")
   def afterExecutorServiceFactoryInitialization(factory: LookupDataAware): Unit =
     factory.lookupData = LookupDataAware.currentLookupData
 
-  @Pointcut("execution(* akka.dispatch.ExecutorServiceFactory+.createExecutorService()) && this(factory) && !cflow(execution(* akka.dispatch.Dispatcher.shutdown()))")
+  @Pointcut("execution(* org.apache.pekko.dispatch.ExecutorServiceFactory+.createExecutorService()) && this(factory) && !cflow(execution(* org.apache.pekko.dispatch.Dispatcher.shutdown()))")
   def createExecutorService(factory: LookupDataAware): Unit = {}
 
   @AfterReturning(pointcut = "createExecutorService(factory)", returning = "executorService")
@@ -136,14 +136,14 @@ class DispatcherInstrumentation {
       registerDispatcher(lookupData.dispatcherName, executorService, None)
   }
 
-  @Pointcut("initialization(akka.dispatch.Dispatcher.LazyExecutorServiceDelegate.new(..)) && this(lazyExecutor)")
+  @Pointcut("initialization(org.apache.pekko.dispatch.Dispatcher.LazyExecutorServiceDelegate.new(..)) && this(lazyExecutor)")
   def lazyExecutorInitialization(lazyExecutor: LookupDataAware): Unit = {}
 
   @After("lazyExecutorInitialization(lazyExecutor)")
   def afterLazyExecutorInitialization(lazyExecutor: LookupDataAware): Unit =
     lazyExecutor.lookupData = LookupDataAware.currentLookupData
 
-  @Pointcut("execution(* akka.dispatch.Dispatcher.LazyExecutorServiceDelegate.copy()) && this(lazyExecutor)")
+  @Pointcut("execution(* org.apache.pekko.dispatch.Dispatcher.LazyExecutorServiceDelegate.copy()) && this(lazyExecutor)")
   def lazyExecutorCopy(lazyExecutor: LookupDataAware): Unit = {}
 
   @Around("lazyExecutorCopy(lazyExecutor)")
@@ -152,13 +152,13 @@ class DispatcherInstrumentation {
       pjp.proceed()
     }
 
-  @Pointcut("execution(* akka.dispatch.Dispatcher.LazyExecutorServiceDelegate.shutdown()) && this(lazyExecutor)")
+  @Pointcut("execution(* org.apache.pekko.dispatch.Dispatcher.LazyExecutorServiceDelegate.shutdown()) && this(lazyExecutor)")
   def lazyExecutorShutdown(lazyExecutor: LookupDataAware): Unit = {}
 
   @After("lazyExecutorShutdown(lazyExecutor)")
   def afterLazyExecutorShutdown(lazyExecutor: LookupDataAware): Unit = {}
 
-  @Pointcut("execution(* akka.routing.BalancingPool.newRoutee(..)) && args(props, context)")
+  @Pointcut("execution(* org.apache.pekko.routing.BalancingPool.newRoutee(..)) && args(props, context)")
   def createNewRouteeOnBalancingPool(props: Props, context: ActorContext): Unit = {}
 
   @Around("createNewRouteeOnBalancingPool(props, context)")
@@ -175,13 +175,13 @@ class DispatcherInstrumentation {
 @Aspect
 class DispatcherMetricCollectionInfoIntoDispatcherMixin {
 
-  @DeclareMixin("akka.dispatch.Dispatchers")
+  @DeclareMixin("org.apache.pekko.dispatch.Dispatchers")
   def mixinActorSystemAwareToDispatchers: ActorSystemAware = ActorSystemAware()
 
-  @DeclareMixin("akka.dispatch.Dispatcher.LazyExecutorServiceDelegate")
+  @DeclareMixin("org.apache.pekko.dispatch.Dispatcher.LazyExecutorServiceDelegate")
   def mixinLookupDataAwareToExecutors: LookupDataAware = LookupDataAware()
 
-  @DeclareMixin("akka.dispatch.ExecutorServiceFactory+")
+  @DeclareMixin("org.apache.pekko.dispatch.ExecutorServiceFactory+")
   def mixinActorSystemAwareToDispatcher: LookupDataAware = LookupDataAware()
 }
 

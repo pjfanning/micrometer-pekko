@@ -14,18 +14,17 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
-trait ActorInstrumentationAware {
-  def actorInstrumentation: ActorMonitor
-  def setActorInstrumentation(ai: ActorMonitor): Unit
-}
+import org.aspectj.lang.annotation.{Aspect, DeclareMixin}
 
-object ActorInstrumentationAware {
-  def apply(): ActorInstrumentationAware = new ActorInstrumentationAware {
-    private var _ai: ActorMonitor = _
+@Aspect
+class MetricsIntoActorCellsMixin {
 
-    def setActorInstrumentation(ai: ActorMonitor): Unit = _ai = ai
-    def actorInstrumentation: ActorMonitor = _ai
-  }
+  @DeclareMixin("org.apache.pekko.actor.ActorCell")
+  def mixinActorCellMetricsToActorCell: ActorInstrumentationAware = ActorInstrumentationAware()
+
+  @DeclareMixin("org.apache.pekko.actor.UnstartedCell")
+  def mixinActorCellMetricsToUnstartedActorCell: ActorInstrumentationAware = ActorInstrumentationAware()
+
 }

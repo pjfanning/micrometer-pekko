@@ -15,10 +15,10 @@
  * =========================================================================================
  */
 
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
-import akka.actor.{Actor, ExtendedActorSystem, Props}
-import akka.dispatch.Envelope
+import org.apache.pekko.actor.{Actor, ExtendedActorSystem, Props}
+import org.apache.pekko.dispatch.Envelope
 import com.github.pjfanning.micrometer.akka.TestKitBaseSpec
 
 class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
@@ -38,7 +38,7 @@ class EnvelopeSpec extends TestKitBaseSpec("envelope-spec") {
           val oos = new ObjectOutputStream(bos)
           oos.writeObject(env)
           oos.close()
-          akka.serialization.JavaSerializer.currentSystem.withValue(system.asInstanceOf[ExtendedActorSystem])  {
+          org.apache.pekko.serialization.JavaSerializer.currentSystem.withValue(system.asInstanceOf[ExtendedActorSystem])  {
             val ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()))
             val obj = ois.readObject()
             ois.close()

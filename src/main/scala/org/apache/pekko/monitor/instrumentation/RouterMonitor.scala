@@ -14,11 +14,11 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import org.aspectj.lang.ProceedingJoinPoint
 
-import akka.actor.Cell
+import org.apache.pekko.actor.Cell
 import com.github.pjfanning.micrometer.akka.{Entity, RouterMetrics}
 
 trait RouterMonitor {

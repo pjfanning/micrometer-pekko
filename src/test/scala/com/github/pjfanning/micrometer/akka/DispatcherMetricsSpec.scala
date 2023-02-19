@@ -18,9 +18,9 @@ package com.github.pjfanning.micrometer.akka
 
 import scala.concurrent.Future
 
-import akka.actor._
-import akka.dispatch.MessageDispatcher
-import akka.testkit.TestProbe
+import org.apache.pekko.actor._
+import org.apache.pekko.dispatch.MessageDispatcher
+import org.apache.pekko.testkit.TestProbe
 import com.github.pjfanning.micrometer.akka.ForkJoinPoolMetrics.DispatcherName
 import io.micrometer.core.instrument.Tag
 
@@ -48,7 +48,7 @@ class DispatcherMetricsSpec extends TestKitBaseSpec(DispatcherMetricsSpec.System
 
   "the akka dispatcher metrics" should {
     "respect the configured include and exclude filters" in {
-      forceInit(system.dispatchers.lookup("akka.actor.default-dispatcher"))
+      forceInit(system.dispatchers.lookup("pekko.actor.default-dispatcher"))
       val fjpDispatcher = forceInit(system.dispatchers.lookup("tracked-fjp"))
       val tpeDispatcher = forceInit(system.dispatchers.lookup("tracked-tpe"))
       val excludedDispatcher = forceInit(system.dispatchers.lookup("explicitly-excluded"))

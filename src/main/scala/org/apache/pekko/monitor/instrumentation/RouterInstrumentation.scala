@@ -14,14 +14,14 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.{ After, Around, Aspect, DeclareMixin, Pointcut }
 
-import akka.actor.{ ActorRef, ActorSystem, Cell, Props }
-import akka.dispatch.{ Envelope, MessageDispatcher }
-import akka.routing.RoutedActorCell
+import org.apache.pekko.actor.{ ActorRef, ActorSystem, Cell, Props }
+import org.apache.pekko.dispatch.{ Envelope, MessageDispatcher }
+import org.apache.pekko.routing.RoutedActorCell
 
 @Aspect
 class RoutedActorCellInstrumentation {
@@ -29,7 +29,7 @@ class RoutedActorCellInstrumentation {
   def routerInstrumentation(cell: Cell): RouterMonitor =
     cell.asInstanceOf[RouterInstrumentationAware].routerInstrumentation
 
-  @Pointcut("execution(akka.routing.RoutedActorCell.new(..)) && this(cell) && args(system, ref, props, dispatcher, routeeProps, supervisor)")
+  @Pointcut("execution(org.apache.pekko.routing.RoutedActorCell.new(..)) && this(cell) && args(system, ref, props, dispatcher, routeeProps, supervisor)")
   def routedActorCellCreation(cell: RoutedActorCell, system: ActorSystem, ref: ActorRef, props: Props, dispatcher: MessageDispatcher, routeeProps: Props, supervisor: ActorRef): Unit = {}
 
   @After("routedActorCellCreation(cell, system, ref, props, dispatcher, routeeProps, supervisor)")
@@ -38,7 +38,7 @@ class RoutedActorCellInstrumentation {
       RouterMonitor.createRouterInstrumentation(cell))
   }
 
-  @Pointcut("execution(* akka.routing.RoutedActorCell.sendMessage(*)) && this(cell) && args(envelope)")
+  @Pointcut("execution(* org.apache.pekko.routing.RoutedActorCell.sendMessage(*)) && this(cell) && args(envelope)")
   def sendMessageInRouterActorCell(cell: RoutedActorCell, envelope: Envelope) = {}
 
   @Around("sendMessageInRouterActorCell(cell, envelope)")
@@ -64,7 +64,7 @@ object RouterInstrumentationAware {
 @Aspect
 class MetricsIntoRouterCellsMixin {
 
-  @DeclareMixin("akka.routing.RoutedActorCell")
+  @DeclareMixin("org.apache.pekko.routing.RoutedActorCell")
   def mixinActorCellMetricsToRoutedActorCell: RouterInstrumentationAware = RouterInstrumentationAware()
 
 }

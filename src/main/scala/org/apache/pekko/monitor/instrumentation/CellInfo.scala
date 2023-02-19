@@ -14,12 +14,12 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
 import com.github.pjfanning.micrometer.akka.{Entity, MetricsConfig}
 
-import akka.actor.{ActorRef, ActorSystem, Cell}
-import akka.routing.{NoRouter, RoutedActorRef}
+import org.apache.pekko.actor.{ActorRef, ActorSystem, Cell}
+import org.apache.pekko.routing.{NoRouter, RoutedActorRef}
 
 case class CellInfo(entity: Entity, actorSystemName: String, isRouter: Boolean, isRoutee: Boolean, isTracked: Boolean,
     trackingGroups: List[String], actorCellCreation: Boolean)

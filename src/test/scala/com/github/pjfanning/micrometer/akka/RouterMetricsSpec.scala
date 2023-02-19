@@ -19,10 +19,10 @@ package com.github.pjfanning.micrometer.akka
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.DurationInt
 
-import akka.actor._
-import akka.monitor.instrumentation.CellInfo
-import akka.routing._
-import akka.testkit.TestProbe
+import org.apache.pekko.actor._
+import org.apache.pekko.routing._
+import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko.monitor.instrumentation.CellInfo
 
 class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") {
 

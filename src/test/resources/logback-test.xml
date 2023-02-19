@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <logger name="akka.monitor.instrumentation" level="DEBUG"/>
+    <logger name="org.apache.pekko.monitor.instrumentation" level="DEBUG"/>
 
     <logger name="io.kontainers.micrometer" level="DEBUG"/>
 

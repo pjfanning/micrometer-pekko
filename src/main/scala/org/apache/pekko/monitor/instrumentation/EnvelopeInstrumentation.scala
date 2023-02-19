@@ -14,9 +14,10 @@
  * and limitations under the License.
  * =========================================================================================
  */
-package akka.monitor.instrumentation
+package org.apache.pekko.monitor.instrumentation
 
-import org.aspectj.lang.annotation.{ DeclareMixin, Aspect }
+import org.apache.pekko.monitor.instrumentation
+import org.aspectj.lang.annotation.{Aspect, DeclareMixin}
 
 case class EnvelopeContext(nanoTime: Long)
 
@@ -32,11 +33,11 @@ trait InstrumentedEnvelope extends Serializable {
 
 object InstrumentedEnvelope {
   def apply(): InstrumentedEnvelope = new InstrumentedEnvelope {
-    private var ctx = akka.monitor.instrumentation.EnvelopeContext.Empty
+    private var ctx = instrumentation.EnvelopeContext.Empty
 
     override def envelopeContext(): EnvelopeContext = ctx
 
-    override def setEnvelopeContext(envelopeContext: akka.monitor.instrumentation.EnvelopeContext): Unit =
+    override def setEnvelopeContext(envelopeContext: EnvelopeContext): Unit =
       ctx = envelopeContext
   }
 }
@@ -44,6 +45,6 @@ object InstrumentedEnvelope {
 @Aspect
 class EnvelopeContextIntoEnvelopeMixin {
 
-  @DeclareMixin("akka.dispatch.Envelope")
+  @DeclareMixin("org.apache.pekko.dispatch.Envelope")
   def mixinInstrumentationToEnvelope: InstrumentedEnvelope = InstrumentedEnvelope()
 }
