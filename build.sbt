@@ -32,7 +32,7 @@ update / checksums := Nil
 resolvers += "Apache Snapshots" at "https://repository.apache.org/content/groups/snapshots"
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "2.0.6",
+  "org.slf4j" % "slf4j-api" % "2.0.7",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
