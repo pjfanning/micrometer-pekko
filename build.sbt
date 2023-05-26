@@ -6,7 +6,7 @@ name := "micrometer-pekko"
 
 ThisBuild / scalaVersion := "2.13.10"
 
-ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.2.2")
+ThisBuild / crossScalaVersions := Seq("2.12.17", "2.13.10", "3.3.0")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -23,7 +23,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
   case _ => default
 }
 
-val pekkoVersion = "0.0.0+26656-898c6970-SNAPSHOT"
+val pekkoVersion = "0.0.0+26669-ec5b6764-SNAPSHOT"
 val aspectjweaverVersion = "1.9.19"
 val micrometerVersion = "1.11.0"
 
