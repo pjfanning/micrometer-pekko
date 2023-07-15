@@ -17,7 +17,7 @@ These are 3 previous iterations of this library:
 "com.github.pjfanning" %% "micrometer-pekko" % "<version>"
 ```
 
-There is a sample project at https://github.com/pjfanning/micrometer-pekko-sample (a Pekko version will be done soon).
+There is a sample project at https://github.com/pjfanning/micrometer-pekko-sample.
 
 ## Usage
 
