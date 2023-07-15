@@ -22,9 +22,9 @@ object ActorSystemMetrics {
 
   val ActorSystem = "actorSystem"
 
-  private[pekko] val ActorCountMetricName = "akka_system_actor_count"
-  private[pekko] val DeadLetterCountMetricName = "akka_system_dead_letter_count"
-  private[pekko] val UnhandledMessageCountMetricName = "akka_system_unhandled_message_count"
+  private[pekko] val ActorCountMetricName = "pekko_system_actor_count"
+  private[pekko] val DeadLetterCountMetricName = "pekko_system_dead_letter_count"
+  private[pekko] val UnhandledMessageCountMetricName = "pekko_system_unhandled_message_count"
 
   import PekkoMetricRegistry._
 

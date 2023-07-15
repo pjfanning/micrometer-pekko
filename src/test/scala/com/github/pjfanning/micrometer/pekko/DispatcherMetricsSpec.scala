@@ -46,7 +46,7 @@ class DispatcherMetricsSpec extends TestKitBaseSpec(DispatcherMetricsSpec.System
     PekkoMetricRegistry.clear()
   }
 
-  "the akka dispatcher metrics" should {
+  "the pekko dispatcher metrics" should {
     "respect the configured include and exclude filters" in {
       forceInit(system.dispatchers.lookup("pekko.actor.default-dispatcher"))
       val fjpDispatcher = forceInit(system.dispatchers.lookup("tracked-fjp"))

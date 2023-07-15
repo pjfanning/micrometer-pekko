@@ -22,12 +22,12 @@ object ActorGroupMetrics {
 
   val GroupName = "groupName"
 
-  private[pekko] val MailboxMetricName = "akka_actor_group_mailboxes_size"
-  private[pekko] val ProcessingTimeMetricName = "akka_actor_group_processing_time"
-  private[pekko] val TimeInMailboxMetricName = "akka_actor_group_time_in_mailboxes"
-  private[pekko] val MessageCountMetricName = "akka_actor_group_message_count"
-  private[pekko] val ActorCountMetricName = "akka_actor_group_actor_count"
-  private[pekko] val ErrorCountMetricName = "akka_actor_group_error_count"
+  private[pekko] val MailboxMetricName = "pekko_actor_group_mailboxes_size"
+  private[pekko] val ProcessingTimeMetricName = "pekko_actor_group_processing_time"
+  private[pekko] val TimeInMailboxMetricName = "pekko_actor_group_time_in_mailboxes"
+  private[pekko] val MessageCountMetricName = "pekko_actor_group_message_count"
+  private[pekko] val ActorCountMetricName = "pekko_actor_group_actor_count"
+  private[pekko] val ErrorCountMetricName = "pekko_actor_group_error_count"
 
   import PekkoMetricRegistry._
 
