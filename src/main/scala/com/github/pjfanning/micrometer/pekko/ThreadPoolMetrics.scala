@@ -28,7 +28,7 @@ object ThreadPoolMetrics {
   val DispatcherName = "dispatcherName"
 
   def add(dispatcherName: String, tpe: ThreadPoolExecutor): Unit = {
-    import com.github.pjfanning.micrometer.pekko.AkkaMetricRegistry._
+    import com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry._
     val tags: Iterable[Tag] = Seq(new ImmutableTag(DispatcherName, dispatcherName))
     val jtags = tags.asJava
     val activeCountFn = new DoubleFunction[ThreadPoolExecutor](_.getActiveCount)

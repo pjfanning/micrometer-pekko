@@ -25,7 +25,7 @@ object ForkJoinPoolMetrics {
   val DispatcherName = "dispatcherName"
 
   def add(dispatcherName: String, fjp: ForkJoinPoolLike): Unit = {
-    import AkkaMetricRegistry._
+    import PekkoMetricRegistry._
     val tags: Iterable[Tag] = Seq(new ImmutableTag(DispatcherName, dispatcherName))
     val jtags = tags.asJava
     val parellelismFn = new DoubleFunction[ForkJoinPoolLike](_.getParallelism)

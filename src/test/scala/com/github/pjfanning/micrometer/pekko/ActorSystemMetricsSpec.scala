@@ -71,6 +71,6 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
   }
 
   def findSystemMetricsRecorder(name: String): Map[String, Double] = {
-    AkkaMetricRegistry.metricsForTags(Seq(new ImmutableTag(ActorSystemMetrics.ActorSystem, name)))
+    PekkoMetricRegistry.metricsForTags(Seq(new ImmutableTag(ActorSystemMetrics.ActorSystem, name)))
   }
 }

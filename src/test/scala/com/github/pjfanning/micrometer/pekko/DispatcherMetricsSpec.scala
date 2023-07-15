@@ -35,7 +35,7 @@ object DispatcherMetricsSpec {
     } else {
       Seq(Tag.of(DispatcherName, dispatcherName))
     }
-    AkkaMetricRegistry.metricsForTags(tags)
+    PekkoMetricRegistry.metricsForTags(tags)
   }
 }
 
@@ -43,7 +43,7 @@ class DispatcherMetricsSpec extends TestKitBaseSpec(DispatcherMetricsSpec.System
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    AkkaMetricRegistry.clear()
+    PekkoMetricRegistry.clear()
   }
 
   "the akka dispatcher metrics" should {

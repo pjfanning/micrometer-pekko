@@ -38,7 +38,7 @@ object RouterMetrics {
 }
 
 class RouterMetrics(entity: Entity) {
-  import com.github.pjfanning.micrometer.pekko.AkkaMetricRegistry._
+  import com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry._
   val actorName = metricFriendlyActorName(entity.name)
   val routingTime = timer(s"akka_router_routing_time_$actorName", Seq.empty)
   val processingTime = timer(s"akka_router_processing_time_$actorName", Seq.empty)

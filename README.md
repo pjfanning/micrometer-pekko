@@ -17,17 +17,17 @@ These are 3 previous iterations of this library:
 "com.github.pjfanning" %% "micrometer-pekko" % "<version>"
 ```
 
-There is a sample project at https://github.com/pjfanning/micrometer-akka-sample (a Pekko version will be done soon).
+There is a sample project at https://github.com/pjfanning/micrometer-pekko-sample (a Pekko version will be done soon).
 
 ## Usage
 
 To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-pekko):
 
--javaagent:/path/to/aspectjweaver-1.9.9.1.jar
+-javaagent:/path/to/aspectjweaver-1.9.19.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
-com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-akka-sample/blob/main/src/main/scala/com/example/akka/Main.scala))
+com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry#setRegistry ([example](https://github.com/pjfanning/micrometer-pekko-sample/blob/main/src/main/scala/com/example/pekko/Main.scala))
 
 ## Configuration
 

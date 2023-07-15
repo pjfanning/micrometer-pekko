@@ -29,7 +29,7 @@ object ActorGroupMetrics {
   private[pekko] val ActorCountMetricName = "akka_actor_group_actor_count"
   private[pekko] val ErrorCountMetricName = "akka_actor_group_error_count"
 
-  import AkkaMetricRegistry._
+  import PekkoMetricRegistry._
 
   def mailboxSize(group: String) = gauge(MailboxMetricName, tagSeq(group))
   def processingTime(group: String) = timer(ProcessingTimeMetricName, tagSeq(group))

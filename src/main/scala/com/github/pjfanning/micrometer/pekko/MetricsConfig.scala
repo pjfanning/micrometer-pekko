@@ -24,11 +24,11 @@ import com.typesafe.config.{Config, ConfigFactory}
 import com.github.pjfanning.micrometer.pekko.impl.{EntityFilter, GlobPathFilter, RegexPathFilter}
 
 object MetricsConfig {
-  private val BaseConfig = "micrometer.akka"
-  val Dispatcher = "akka-dispatcher"
-  val Router = "akka-router"
-  val Actor = "akka-actor"
-  val ActorGroups = "akka-actor-groups"
+  private val BaseConfig = "micrometer.pekko"
+  val Dispatcher = "pekko-dispatcher"
+  val Router = "pekko-router"
+  val Actor = "pekko-actor"
+  val ActorGroups = "pekko-actor-groups"
 
   private val defaultConfig = ConfigFactory.defaultApplication().withFallback(ConfigFactory.defaultReferenceUnresolved())
   private val metricFiltersConfig = defaultConfig.getConfig(s"$BaseConfig.metric.filters")

@@ -22,7 +22,7 @@ import scala.collection.concurrent.TrieMap
 import io.micrometer.core.instrument._
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 
-object AkkaMetricRegistry {
+object PekkoMetricRegistry {
   private var simpleRegistry = new SimpleMeterRegistry
   private var registry: Option[MeterRegistry] = None
   private case class MeterKey(name: String, tags: Iterable[Tag])

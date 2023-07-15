@@ -24,7 +24,7 @@ class ForkJoinPoolMetricsSpec extends BaseSpec {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    AkkaMetricRegistry.clear()
+    PekkoMetricRegistry.clear()
   }
 
   "ForkJoinPoolMetrics" should {

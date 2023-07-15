@@ -25,7 +25,7 @@ object ForkJoinPoolMetrics {
   val DispatcherName = "dispatcherName"
 
   def add(dispatcherName: String, fjp: ForkJoinPoolLike): Unit = {
-    import com.github.pjfanning.micrometer.pekko.AkkaMetricRegistry._
+    import com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry._
     import reflect.Selectable.reflectiveSelectable
     val tags: Iterable[Tag] = Seq(new ImmutableTag(DispatcherName, dispatcherName))
     val jtags = tags.asJava

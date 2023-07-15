@@ -102,11 +102,11 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
   }
 
   def findGroupRecorder(groupName: String): Map[String, Double] = {
-    AkkaMetricRegistry.metricsForTags(Seq(new ImmutableTag(ActorGroupMetrics.GroupName, groupName)))
+    PekkoMetricRegistry.metricsForTags(Seq(new ImmutableTag(ActorGroupMetrics.GroupName, groupName)))
   }
 
   def clearGroupMetrics: Unit = {
-    AkkaMetricRegistry.clear()
+    PekkoMetricRegistry.clear()
   }
 
   def createTestActor(name: String): ActorRef = {

@@ -26,7 +26,7 @@ object ActorSystemMetrics {
   private[pekko] val DeadLetterCountMetricName = "akka_system_dead_letter_count"
   private[pekko] val UnhandledMessageCountMetricName = "akka_system_unhandled_message_count"
 
-  import AkkaMetricRegistry._
+  import PekkoMetricRegistry._
 
   def actorCount(system: String): GaugeWrapper = gauge(ActorCountMetricName, tagSeq(system))
   def deadLetterCount(system: String): Counter = counter(DeadLetterCountMetricName, tagSeq(system))

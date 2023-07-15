@@ -23,7 +23,7 @@ import java.util.concurrent.{ExecutorService, ForkJoinPool, ThreadPoolExecutor}
 import org.apache.pekko.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
 import org.apache.pekko.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
 import LookupDataAware.LookupData
-import com.github.pjfanning.micrometer.pekko.{AkkaMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
+import com.github.pjfanning.micrometer.pekko.{PekkoMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics
 import org.aspectj.lang.ProceedingJoinPoint
@@ -86,10 +86,10 @@ class DispatcherInstrumentation {
     if (MetricsConfig.shouldTrack(MetricsConfig.Dispatcher, prefixedName)) {
       if (MetricsConfig.useMicrometerExecutorServiceMetrics) {
         executorService match {
-          case tpe: ThreadPoolExecutor => ExecutorServiceMetrics.monitor(AkkaMetricRegistry.getRegistry, tpe, prefixedName, Tag.of("type", "ThreadPoolExecutor"))
-          case fjp: ForkJoinPool => ExecutorServiceMetrics.monitor(AkkaMetricRegistry.getRegistry, fjp, prefixedName, Tag.of("type", "ForkJoinPool"))
+          case tpe: ThreadPoolExecutor => ExecutorServiceMetrics.monitor(PekkoMetricRegistry.getRegistry, tpe, prefixedName, Tag.of("type", "ThreadPoolExecutor"))
+          case fjp: ForkJoinPool => ExecutorServiceMetrics.monitor(PekkoMetricRegistry.getRegistry, fjp, prefixedName, Tag.of("type", "ForkJoinPool"))
           case _ =>
-            ExecutorServiceMetrics.monitor(AkkaMetricRegistry.getRegistry, executorService, prefixedName, Tag.of("type", "unknown"))
+            ExecutorServiceMetrics.monitor(PekkoMetricRegistry.getRegistry, executorService, prefixedName, Tag.of("type", "unknown"))
         }
       } else {
         executorService match {

@@ -38,7 +38,7 @@ object ActorMetrics {
 }
 
 class ActorMetrics(entity: Entity) {
-  import AkkaMetricRegistry._
+  import PekkoMetricRegistry._
   val actorName = metricFriendlyActorName(entity.name)
   val mailboxSize = gauge(s"akka_actor_mailbox_size_$actorName", Seq.empty)
   val processingTime = timer(s"akka_actor_processing_time_$actorName", Seq.empty)
