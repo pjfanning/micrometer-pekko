@@ -6,7 +6,7 @@ name := "micrometer-pekko"
 
 ThisBuild / scalaVersion := "2.13.11"
 
-ThisBuild / crossScalaVersions := Seq("2.12.18", "2.13.11", "3.3.0")
+ThisBuild / crossScalaVersions := Seq("2.12.18", "2.13.11", "3.3.1")
 
 scalacOptions += "-target:jvm-1.8"
 
@@ -24,7 +24,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
 }
 
 val pekkoVersion = "1.0.1"
-val aspectjweaverVersion = "1.9.19"
+val aspectjweaverVersion = "1.9.20.1"
 val micrometerVersion = "1.11.5"
 
 update / checksums := Nil
@@ -34,12 +34,12 @@ libraryDependencies ++= Seq(
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
-  "com.typesafe" % "config" % "1.4.2",
+  "com.typesafe" % "config" % "1.4.3",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
   "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.16" % Test,
-  "ch.qos.logback" % "logback-classic" % "1.3.5" % Test
+  "ch.qos.logback" % "logback-classic" % "1.3.11" % Test
 )
 
 Compile / unmanagedSourceDirectories ++= {
