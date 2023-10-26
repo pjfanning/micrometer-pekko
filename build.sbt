@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
-  "com.typesafe" % "config" % "1.4.2",
+  "com.typesafe" % "config" % "1.4.3",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
   "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
