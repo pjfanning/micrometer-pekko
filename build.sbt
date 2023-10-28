@@ -1,4 +1,4 @@
-import org.typelevel.sbt.gha.JavaSpec.Distribution.Zulu
+import sbtghactions.JavaSpec.Distribution.Zulu
 
 organization := "com.github.pjfanning"
 
@@ -94,7 +94,7 @@ homepage := Some(url("https://github.com/pjfanning/micrometer-pekko"))
 
 licenses := Seq("The Apache Software License, Version 2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
-releasePublishArtifactsAction := PgpKeys.publishSigned.value
+// releasePublishArtifactsAction := PgpKeys.publishSigned.value
 
 pomExtra := (
   <developers>
@@ -116,8 +116,8 @@ pomExtra := (
   </developers>
 )
 
-ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Zulu, "8"))
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(
   RefPredicate.Equals(Ref.Branch("main")),
   RefPredicate.StartsWith(Ref.Tag("v"))
