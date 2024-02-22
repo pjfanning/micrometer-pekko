@@ -24,13 +24,13 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
 }
 
 val pekkoVersion = "1.0.2"
-val aspectjweaverVersion = "1.9.21"
+val aspectjweaverVersion = "1.9.21.1"
 val micrometerVersion = "1.12.3"
 
 update / checksums := Nil
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "2.0.11",
+  "org.slf4j" % "slf4j-api" % "2.0.12",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
   "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
-  "org.scalatest" %% "scalatest" % "3.2.17" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.18" % Test,
   "ch.qos.logback" % "logback-classic" % "1.3.14" % Test
 )
 
