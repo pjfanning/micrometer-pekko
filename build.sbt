@@ -6,7 +6,7 @@ name := "micrometer-pekko"
 
 ThisBuild / scalaVersion := "2.13.13"
 
-ThisBuild / crossScalaVersions := Seq("2.12.19", "2.13.13", "3.3.3")
+ThisBuild / crossScalaVersions := Seq("2.12.19", "2.13.13", "3.4.1")
 
 scalacOptions += "-target:jvm-1.8"
 
