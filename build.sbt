@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Test,
   "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "ch.qos.logback" % "logback-classic" % "1.3.14" % Test
 )
 
