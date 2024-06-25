@@ -14,7 +14,7 @@ These are 3 previous iterations of this library:
 * [Prometheus-Akka](https://github.com/Workday/prometheus-akka)
 
 ```sbt
-"com.github.pjfanning" %% "micrometer-pekko" % "0.15.0"
+"com.github.pjfanning" %% "micrometer-pekko" % "0.16.0"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-pekko-sample.
@@ -23,7 +23,7 @@ There is a sample project at https://github.com/pjfanning/micrometer-pekko-sampl
 
 To enable monitoring, include the appropriate jar as a dependency and include the following Java runtime flag in your Java startup command (aspectjweaver is a transitive dependency of micrometer-pekko):
 
--javaagent:/path/to/aspectjweaver-1.9.19.jar
+-javaagent:/path/to/aspectjweaver-1.9.22.1.jar
 
 You will also need to set up the Micrometer Meter Registry.
 
