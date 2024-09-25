@@ -28,14 +28,14 @@ object ForkJoinPoolMetrics {
     import PekkoMetricRegistry._
     val tags: Iterable[Tag] = Seq(new ImmutableTag(DispatcherName, dispatcherName))
     val jtags = tags.asJava
-    val parellelismFn = new DoubleFunction[ForkJoinPoolLike](_.getParallelism)
+    val parallelismFn = new DoubleFunction[ForkJoinPoolLike](_.getParallelism)
     val poolSizeFn = new DoubleFunction[ForkJoinPoolLike](_.getParallelism)
     val activeThreadCountFn = new DoubleFunction[ForkJoinPoolLike](_.getActiveThreadCount)
     val runningThreadCountFn = new DoubleFunction[ForkJoinPoolLike](_.getRunningThreadCount)
     val queuedSubmissionCountFn = new DoubleFunction[ForkJoinPoolLike](_.getQueuedSubmissionCount)
     val queuedTaskCountFn = new DoubleFunction[ForkJoinPoolLike](_.getQueuedTaskCount)
     val stealCountFn = new DoubleFunction[ForkJoinPoolLike](_.getStealCount)
-    getRegistry.gauge("pekko_dispatcher_forkjoinpool_parellelism", jtags, fjp, parellelismFn)
+    getRegistry.gauge("pekko_dispatcher_forkjoinpool_parallelism", jtags, fjp, parallelismFn)
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_pool_size", jtags, fjp, poolSizeFn)
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_active_thread_count", jtags, fjp, activeThreadCountFn)
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_running_thread_count", jtags, fjp, runningThreadCountFn)
