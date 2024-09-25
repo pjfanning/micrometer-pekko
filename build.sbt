@@ -8,6 +8,9 @@ ThisBuild / scalaVersion := "2.13.14"
 
 ThisBuild / crossScalaVersions := Seq("2.12.20", "2.13.14", "3.3.3")
 
+ThisBuild / resolvers += Resolver.mavenLocal
+ThisBuild / resolvers += Resolver.ApacheMavenSnapshotsRepo
+
 scalacOptions += "-target:jvm-1.8"
 
 val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
@@ -23,7 +26,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
   case _ => default
 }
 
-val pekkoVersion = "1.1.1"
+val pekkoVersion = "1.1.1+19-f24e4368-SNAPSHOT"
 val aspectjweaverVersion = "1.9.22.1"
 val micrometerVersion = "1.13.4"
 
