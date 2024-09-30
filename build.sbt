@@ -4,9 +4,9 @@ organization := "com.github.pjfanning"
 
 name := "micrometer-pekko"
 
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.15"
 
-ThisBuild / crossScalaVersions := Seq("2.12.20", "2.13.14", "3.3.4")
+ThisBuild / crossScalaVersions := Seq("2.12.20", "2.13.14", "3.3.5")
 
 scalacOptions += "-target:jvm-1.8"
 
