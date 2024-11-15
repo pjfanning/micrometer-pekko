@@ -25,7 +25,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
 
 val pekkoVersion = "1.1.2"
 val aspectjweaverVersion = "1.9.22.1"
-val micrometerVersion = "1.13.7"
+val micrometerVersion = "1.13.8"
 
 update / checksums := Nil
 
