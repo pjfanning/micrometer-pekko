@@ -30,7 +30,7 @@ val micrometerVersion = "1.14.4"
 update / checksums := Nil
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-api" % "2.0.16",
+  "org.slf4j" % "slf4j-api" % "2.0.17",
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
