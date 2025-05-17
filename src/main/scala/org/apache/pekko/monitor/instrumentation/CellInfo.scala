@@ -17,7 +17,6 @@
 package org.apache.pekko.monitor.instrumentation
 
 import com.github.pjfanning.micrometer.pekko.{Entity, MetricsConfig}
-
 import org.apache.pekko.actor.{ActorRef, ActorSystem, Cell}
 import org.apache.pekko.routing.{NoRouter, RoutedActorRef}
 
@@ -26,6 +25,9 @@ case class CellInfo(entity: Entity, actorSystemName: String, isRouter: Boolean, 
 
 object CellInfo {
 
+  // use String instead of Class[_] to avoid requiring a runtime dependency on the pekko-actor-typed jar
+  val TypedActorAdapterClassName = "org.apache.pekko.actor.typed.internal.adapter.ActorAdapter"
+
   def cellName(system: ActorSystem, ref: ActorRef): String =
     s"""${system.name}/${ref.path.elements.mkString("/")}"""
 
@@ -33,7 +35,11 @@ object CellInfo {
     def hasRouterProps(cell: Cell): Boolean = cell.props.deploy.routerConfig != NoRouter
 
     val pathString = ref.path.elements.mkString("/")
-    val isRootSupervisor = pathString.isEmpty || pathString == "user" || pathString == "system"
+    val isTyped = cell.props.actorClass().getName == TypedActorAdapterClassName
+    val isRootSupervisor = if (isTyped)
+      pathString != "user"
+    else
+      pathString.isEmpty || pathString == "user" || pathString == "system"
     val isRouter = hasRouterProps(cell)
     val isRoutee = parent.isInstanceOf[RoutedActorRef]
 
