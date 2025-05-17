@@ -33,7 +33,7 @@ object CellInfo {
     def hasRouterProps(cell: Cell): Boolean = cell.props.deploy.routerConfig != NoRouter
 
     val pathString = ref.path.elements.mkString("/")
-    val isRootSupervisor = pathString.length == 0 || pathString == "user" || pathString == "system"
+    val isRootSupervisor = pathString.isEmpty || pathString == "user" || pathString == "system"
     val isRouter = hasRouterProps(cell)
     val isRoutee = parent.isInstanceOf[RoutedActorRef]
 
