@@ -35,6 +35,9 @@ object ActorMetrics {
     }
   }
   def hasMetricsFor(e: Entity): Boolean = map.contains(e)
+
+  private[pekko] def getMap(): Map[Entity, ActorMetrics] = map.toMap
+  private[pekko] def clear(): Unit = map.clear()
 }
 
 class ActorMetrics(entity: Entity) {
