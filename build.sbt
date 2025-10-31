@@ -39,7 +39,7 @@ libraryDependencies ++= Seq(
   "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion % Test,
   "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
-  "ch.qos.logback" % "logback-classic" % "1.3.16" % Test
+  "ch.qos.logback" % "logback-classic" % "1.5.20" % Test
 )
 
 Compile / unmanagedSourceDirectories ++= {
