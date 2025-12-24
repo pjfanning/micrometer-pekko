@@ -14,7 +14,7 @@ These are 3 previous iterations of this library:
 * [Prometheus-Akka](https://github.com/Workday/prometheus-akka)
 
 ```sbt
-"com.github.pjfanning" %% "micrometer-pekko" % "0.17.0"
+"com.github.pjfanning" %% "micrometer-pekko" % "0.18.0"
 ```
 
 There is a sample project at https://github.com/pjfanning/micrometer-pekko-sample.
