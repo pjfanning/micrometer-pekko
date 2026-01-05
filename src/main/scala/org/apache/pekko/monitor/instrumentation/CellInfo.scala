@@ -37,7 +37,7 @@ object CellInfo {
     val pathString = ref.path.elements.mkString("/")
     val isTyped = cell.props.actorClass().getName == TypedActorAdapterClassName
     val isRootSupervisor = if (isTyped)
-      pathString != "user"
+      pathString.isEmpty || pathString == "system"
     else
       pathString.isEmpty || pathString == "user" || pathString == "system"
     val isRouter = hasRouterProps(cell)
