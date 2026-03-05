@@ -1,5 +1,5 @@
 ![Build Status](https://github.com/pjfanning/micrometer-pekko/actions/workflows/ci.yml/badge.svg?branch=main)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-pekko_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.pjfanning/micrometer-pekko_2.13)
+[![Maven Central](https://maven-badges.sml.io/sonatype-central/com.github.pjfanning/micrometer-pekko_2.13/badge.svg)](https://maven-badges.sml.io/sonatype-central/com.github.pjfanning/micrometer-pekko_2.13)
 <!---
 [![codecov.io](https://codecov.io/gh/kontainers/micrometer-akka/coverage.svg?branch=main)](https://codecov.io/gh/kontainers/micrometer-akka/branch/main)
 --->
