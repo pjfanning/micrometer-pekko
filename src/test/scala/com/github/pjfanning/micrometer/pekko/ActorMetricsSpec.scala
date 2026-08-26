@@ -22,8 +22,9 @@ import scala.concurrent.{Await, Future}
 import org.apache.pekko.actor._
 import org.apache.pekko.testkit.TestProbe
 import org.apache.pekko.monitor.instrumentation.CellInfo
+import org.scalatest.concurrent.Eventually
 
-class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") {
+class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventually {
 
   import ActorMetricsTestActor._
 
@@ -40,6 +41,18 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") {
       val metrics = actorMetricsRecorderOf(trackedActor).get
       metrics.actorName shouldEqual "actormetricsspec_user_tracked_actor"
       metrics.messages.count() shouldEqual 1.0
+    }
+
+    "count the errors thrown by a tracked actor" in {
+      val trackedActor = createTestActor("tracked-failing-actor")
+      val metrics = actorMetricsRecorderOf(trackedActor).get
+      val originalErrors = metrics.errors.count()
+
+      trackedActor ! Fail
+
+      eventually(timeout(5.seconds)) {
+        metrics.errors.count() shouldEqual (originalErrors + 1.0)
+      }
     }
 
     "handle concurrent metric getOrElseUpdate calls" in {

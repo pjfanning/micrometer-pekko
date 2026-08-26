@@ -91,6 +91,16 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 10.0
       map2.getOrElse(MessageCountMetricName, -1.0) shouldEqual 3.0
     }
+
+    "count the errors thrown by the actors of a tracked group" in {
+      val trackedActor = createTestActor("tracked-failing-actor")
+
+      trackedActor ! ActorMetricsTestActor.Fail
+
+      eventually(timeout(5.seconds)) {
+        findGroupRecorder("tracked").getOrElse(ErrorCountMetricName, -1.0) shouldEqual 1.0
+      }
+    }
   }
 
   def findGroupRecorder(groupName: String): Map[String, Double] = {
