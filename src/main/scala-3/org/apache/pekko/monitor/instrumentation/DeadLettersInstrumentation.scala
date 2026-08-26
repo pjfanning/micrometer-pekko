@@ -23,7 +23,17 @@ import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 @Aspect
 class DeadLettersInstrumentation {
 
-  @Pointcut("call(void org.apache.pekko.event.EventStream.publish(Object)) && args(event)")
+  // Matched on the trait that declares publish, restricted to EventStream instances. Scala 3 emits
+  // EventStream's mixin forwarder as ACC_BRIDGE/ACC_SYNTHETIC and AspectJ never weaves those, so an
+  // `execution` pointcut naming EventStream matches nothing here - the trait's default method is what
+  // actually runs. (The Scala 2 variant keeps naming EventStream: there the forwarder overrides the
+  // default method, so matching the trait instead would advise twice.)
+  //
+  // This replaces a `call` pointcut, which only ever saw call sites inside the woven pekko packages whose
+  // static receiver type was exactly EventStream. The weaver reported 38 sites it therefore skipped:
+  //   "does not match because declaring type is org.apache.pekko.event.LoggingBus"
+  // and publishes from outside pekko were never seen at all, unlike under Scala 2.
+  @Pointcut("execution(void org.apache.pekko.event.SubchannelClassification.publish(Object)) && this(org.apache.pekko.event.EventStream) && args(event)")
   def streamPublish(event: Object): Unit = {}
 
   @After("streamPublish(event)")

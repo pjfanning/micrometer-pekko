@@ -16,7 +16,8 @@
  */
 package com.github.pjfanning.micrometer.pekko
 
-import org.apache.pekko.actor.Props
+import org.apache.pekko.actor.{DeadLetter, Props, UnhandledMessage}
+import org.apache.pekko.testkit.TestProbe
 import com.github.pjfanning.micrometer.pekko.ActorSystemMetrics._
 import io.micrometer.core.instrument.ImmutableTag
 import org.scalatest.BeforeAndAfterEach
@@ -62,6 +63,31 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
       eventually(timeout(5.seconds)) {
         trackedActor ! "dead"
         findSystemMetricsRecorder(system.name).getOrElse(DeadLetterCountMetricName, -1.0) shouldBe > (count)
+      }
+    }
+
+    // Published straight onto the event stream by application code rather than by pekko itself. A `call`
+    // pointcut can only ever be woven into the caller, and callers outside org.apache.pekko are never
+    // woven, so this is what the Scala 3 dead-letter aspect used to miss while Scala 2 counted it.
+    "count dead letters published by application code" in {
+      val count = findSystemMetricsRecorder(system.name).getOrElse(DeadLetterCountMetricName, 0.0)
+      val probe = TestProbe()
+
+      system.eventStream.publish(DeadLetter("dead", probe.ref, probe.ref))
+
+      eventually(timeout(5.seconds)) {
+        findSystemMetricsRecorder(system.name).getOrElse(DeadLetterCountMetricName, -1.0) shouldBe > (count)
+      }
+    }
+
+    "count unhandled messages published by application code" in {
+      val count = findSystemMetricsRecorder(system.name).getOrElse(UnhandledMessageCountMetricName, 0.0)
+      val probe = TestProbe()
+
+      system.eventStream.publish(UnhandledMessage("unhandled", probe.ref, probe.ref))
+
+      eventually(timeout(5.seconds)) {
+        findSystemMetricsRecorder(system.name).getOrElse(UnhandledMessageCountMetricName, -1.0) shouldBe > (count)
       }
     }
   }
