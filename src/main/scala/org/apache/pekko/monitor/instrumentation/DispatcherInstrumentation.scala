@@ -152,12 +152,6 @@ class DispatcherInstrumentation {
       pjp.proceed()
     }
 
-  @Pointcut("execution(* org.apache.pekko.dispatch.Dispatcher.LazyExecutorServiceDelegate.shutdown()) && this(lazyExecutor)")
-  def lazyExecutorShutdown(lazyExecutor: LookupDataAware): Unit = {}
-
-  @After("lazyExecutorShutdown(lazyExecutor)")
-  def afterLazyExecutorShutdown(lazyExecutor: LookupDataAware): Unit = {}
-
   @Pointcut("execution(* org.apache.pekko.routing.BalancingPool.newRoutee(..)) && args(props, context)")
   def createNewRouteeOnBalancingPool(props: Props, context: ActorContext): Unit = {}
 
