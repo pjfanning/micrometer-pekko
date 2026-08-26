@@ -23,8 +23,9 @@ import org.apache.pekko.actor._
 import org.apache.pekko.routing._
 import org.apache.pekko.testkit.TestProbe
 import org.apache.pekko.monitor.instrumentation.CellInfo
+import org.scalatest.concurrent.Eventually
 
-class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") {
+class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") with Eventually {
 
   import RouterMetricsTestActor._
 
@@ -41,6 +42,18 @@ class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") {
       val metrics = routerMetricsRecorderOf(trackedRouter).get
       metrics.actorName shouldEqual "routermetricsspec_user_tracked_pool_router"
       metrics.messages.count() shouldEqual 1.0
+    }
+
+    "count the errors thrown by the routees of a tracked router" in {
+      val trackedRouter = createTestPoolRouter("tracked-failing-pool-router")
+      val metrics = routerMetricsRecorderOf(trackedRouter).get
+      val originalErrors = metrics.errors.count()
+
+      trackedRouter ! Fail
+
+      eventually(timeout(5.seconds)) {
+        metrics.errors.count() shouldEqual (originalErrors + 1.0)
+      }
     }
 
     "handle concurrent metric getOrElseUpdate calls" in {
