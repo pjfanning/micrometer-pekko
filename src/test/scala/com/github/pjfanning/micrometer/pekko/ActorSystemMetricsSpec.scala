@@ -37,15 +37,19 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
         map should not be empty
         map.getOrElse(ActorCountMetricName, -1.0) shouldEqual (originalCount + 1.0)
       }
+      // Asserted as an exact value rather than `should not be <(originalCount)`. The old form also held
+      // when the cleanup advice never ran at all, so it stayed green under the Scala 3 weaving bug in #79.
       system.stop(trackedActor)
       eventually(timeout(5.seconds)) {
         val metrics = findSystemMetricsRecorder(system.name)
-        metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
+        metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual originalCount
       }
+      // Stopping an already-stopped actor must not decrement a second time; GroupMetricsTrackingActor
+      // .cleanup guards on an AtomicBoolean. A double decrement settles at originalCount - 1.
       system.stop(trackedActor)
       eventually(timeout(5.seconds)) {
         val metrics = findSystemMetricsRecorder(system.name)
-        metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
+        metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual originalCount
       }
     }
     "count unhandled messages" in {
