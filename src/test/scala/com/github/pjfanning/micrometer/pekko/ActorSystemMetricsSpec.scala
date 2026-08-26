@@ -37,18 +37,14 @@ class ActorSystemMetricsSpec extends TestKitBaseSpec("ActorSystemMetricsSpec") w
         map.getOrElse(ActorCountMetricName, -1.0) shouldEqual (originalCount + 1.0)
       }
       system.stop(trackedActor)
-      if (!VersionUtil.isScala3) {
-        eventually(timeout(5.seconds)) {
-          val metrics = findSystemMetricsRecorder(system.name)
-          metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
-        }
+      eventually(timeout(5.seconds)) {
+        val metrics = findSystemMetricsRecorder(system.name)
+        metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
       }
       system.stop(trackedActor)
-      if (!VersionUtil.isScala3) {
-        eventually(timeout(5.seconds)) {
-          val metrics = findSystemMetricsRecorder(system.name)
-          metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
-        }
+      eventually(timeout(5.seconds)) {
+        val metrics = findSystemMetricsRecorder(system.name)
+        metrics.getOrElse(ActorCountMetricName, -1.0) should not be <(originalCount)
       }
     }
     "count unhandled messages" in {

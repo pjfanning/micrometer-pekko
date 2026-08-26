@@ -54,18 +54,6 @@ Compile / unmanagedSourceDirectories ++= {
   }
 }
 
-Test / unmanagedSourceDirectories ++= {
-  if (scalaReleaseVersion.value > 2) {
-    Seq(
-      (LocalRootProject / baseDirectory).value / "src" / "test" / "scala-3"
-    )
-  } else {
-    Seq(
-      (LocalRootProject / baseDirectory).value / "src" / "test" / "scala-2"
-    )
-  }
-}
-
 enablePlugins(JavaAgent)
 javaAgents += "org.aspectj" % "aspectjweaver" % aspectjweaverVersion % Test
 

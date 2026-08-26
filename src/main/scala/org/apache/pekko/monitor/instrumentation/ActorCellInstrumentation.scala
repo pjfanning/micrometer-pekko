@@ -19,12 +19,10 @@ package org.apache.pekko.monitor.instrumentation
 import org.apache.pekko.actor.{ActorCell, ActorRef, ActorSystem, Cell, InternalActorRef, UnstartedCell}
 import org.apache.pekko.dispatch.Envelope
 import org.apache.pekko.dispatch.sysmsg.SystemMessage
-import org.apache.pekko.routing.RoutedActorCell
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation._
 
 import java.util.concurrent.locks.ReentrantLock
-import scala.collection.immutable
 
 @Aspect
 class ActorCellInstrumentation {
@@ -110,26 +108,8 @@ class ActorCellInstrumentation {
     }
   }
 
-  @Pointcut("execution(* org.apache.pekko.actor.ActorCell.stop(..)) && this(cell)")
-  def actorStop(cell: ActorCell): Unit = {}
-
-  @After("actorStop(cell)")
-  def afterStop(cell: ActorCell): Unit = {
-    actorInstrumentation(cell).cleanup()
-
-    // The Stop can't be captured from the RoutedActorCell so we need to put this piece of cleanup here.
-    if (cell.isInstanceOf[RoutedActorCell]) {
-      cell.asInstanceOf[RouterInstrumentationAware].routerInstrumentation.cleanup()
-    }
-  }
-
-  @Pointcut("execution(* org.apache.pekko.actor.ActorCell.handleInvokeFailure(..)) && this(cell) && args(childrenNotToSuspend, failure)")
-  def actorInvokeFailure(cell: ActorCell, childrenNotToSuspend: immutable.Iterable[ActorRef], failure: Throwable): Unit = {}
-
-  @Before("actorInvokeFailure(cell, childrenNotToSuspend, failure)")
-  def beforeInvokeFailure(cell: ActorCell, childrenNotToSuspend: immutable.Iterable[ActorRef], failure: Throwable): Unit = {
-    actorInstrumentation(cell).processFailure(failure)
-  }
+  // ActorCell.stop and ActorCell.handleInvokeFailure are advised by ActorCellLifecycleInstrumentation, which
+  // has to be written differently for Scala 2 and Scala 3.
 }
 
 object ActorCellInstrumentation {

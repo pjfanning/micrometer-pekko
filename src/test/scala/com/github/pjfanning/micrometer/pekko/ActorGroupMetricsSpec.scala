@@ -24,7 +24,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.Eventually
 
 import scala.concurrent.duration.DurationInt
-import scala.util.Properties
 
 class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") with BeforeAndAfterEach with Eventually {
 
@@ -51,9 +50,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       system.stop(trackedActor)
       eventually(timeout(5.seconds)) {
         val metrics = findGroupRecorder("tracked")
-        if (!VersionUtil.isScala3) {
-          metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
-        }
+        metrics.getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
         metrics.getOrElse(ProcessingTimeMetricName, -1.0) should (be >= 0.0)
         metrics.getOrElse(ProcessingTimeMetricName, -1.0) should (be <= 1.0)
         metrics.getOrElse(TimeInMailboxMetricName, -1.0) should (be >= 0.0)
@@ -64,14 +61,11 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       val trackedActor3 = createTestActor("tracked-actor3")
 
       val map2 = findGroupRecorder("tracked")
-      if (!VersionUtil.isScala3) {
-        map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 2.0
-      }
+      map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 2.0
       map2.getOrElse(MessageCountMetricName, -1.0) shouldBe >=(3.0)
     }
 
     "respect the configured include and exclude filters for routee actors" in {
-      val disableSomeChecks = VersionUtil.isScala3 || Properties.versionNumberString.startsWith("2.13")
       val trackedRouter = createTestPoolRouter("tracked-router")
       val nonTrackedRouter = createTestPoolRouter("non-tracked-router")
       val excludedTrackedRouter = createTestPoolRouter("tracked-explicitly-excluded-router")
@@ -83,10 +77,8 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
 
       system.stop(trackedRouter)
-      if (!disableSomeChecks) {
-        eventually(timeout(5.seconds)) {
-          findGroupRecorder("tracked").getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
-        }
+      eventually(timeout(5.seconds)) {
+        findGroupRecorder("tracked").getOrElse(ActorCountMetricName, -1.0) shouldEqual 0.0
       }
 
       val trackedRouter2 = createTestPoolRouter("tracked-router2")
@@ -96,9 +88,7 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       map.getOrElse(MessageCountMetricName, -1.0) shouldEqual 1.0
       //map.getOrElse(MailboxMetricName, -1.0) shouldEqual 0.0
 
-      if (!disableSomeChecks) {
-        map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 10.0
-      }
+      map2.getOrElse(ActorCountMetricName, -1.0) shouldEqual 10.0
       map2.getOrElse(MessageCountMetricName, -1.0) shouldEqual 3.0
     }
   }
