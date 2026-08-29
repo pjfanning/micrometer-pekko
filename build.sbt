@@ -6,9 +6,14 @@ name := "micrometer-pekko"
 
 ThisBuild / scalaVersion := "2.13.18"
 
-ThisBuild / crossScalaVersions := Seq("2.12.21", "2.13.18", "3.3.8")
+// pekko 2.0.0-M4 is not published for Scala 2.12
+ThisBuild / crossScalaVersions := Seq("2.13.18", "3.3.8")
 
-scalacOptions += "-target:jvm-1.8"
+// pekko 2.0.0-M4 ships Java 17 bytecode, so the old -target:jvm-1.8 cannot be honoured. -release also
+// checks the code against the Java 17 platform API rather than only setting the bytecode version, and
+// unlike -target it is understood by both Scala 2 and Scala 3 (Scala 3 ignored -target:jvm-1.8 with a
+// warning).
+scalacOptions ++= Seq("-release", "17")
 
 val scalaReleaseVersion = SettingKey[Int]("scalaReleaseVersion")
 scalaReleaseVersion := {
@@ -23,7 +28,7 @@ def sysPropOrDefault(propName: String, default: String): String = Option(System.
   case _ => default
 }
 
-val pekkoVersion = "1.7.0"
+val pekkoVersion = "2.0.0-M4"
 val aspectjweaverVersion = "1.9.25.1"
 val micrometerVersion = "1.17.1"
 
@@ -99,8 +104,8 @@ pomExtra := (
   </developers>
 )
 
-ThisBuild / githubWorkflowJavaVersions := Seq(
-  JavaSpec(Temurin, "8"), JavaSpec(Temurin, "17"))
+// pekko 2.0.0-M4 requires Java 17, so the Java 8 job cannot run against it
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Temurin, "17"))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(
   RefPredicate.Equals(Ref.Branch("main")),
