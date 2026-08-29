@@ -38,6 +38,8 @@ libraryDependencies ++= Seq(
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   // Only needed by ClusterMetrics, which nothing else references, so users without a cluster never load it
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Provided,
+  // Only needed by the persistence instrumentation, which is inert unless a PersistentActor exists
+  "org.apache.pekko" %% "pekko-persistence" % pekkoVersion % Provided,
   "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion % Test,
   // pekko-actor-typed is on the test classpath, and a cluster provider swaps its local receptionist for
   // the cluster one, which lives here

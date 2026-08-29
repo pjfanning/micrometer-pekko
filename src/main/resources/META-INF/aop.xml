@@ -29,6 +29,8 @@
     <aspect name="org.apache.pekko.monitor.instrumentation.StashInstrumentation"/>
     <aspect name="org.apache.pekko.monitor.instrumentation.RoutedActorCellInstrumentation"/>
     <aspect name="org.apache.pekko.monitor.instrumentation.DeadLettersInstrumentation"/>
+    <!-- Persistence -->
+    <aspect name="org.apache.pekko.monitor.instrumentation.PersistenceInstrumentation"/>
     <!-- Serialization -->
     <aspect name="org.apache.pekko.monitor.instrumentation.SerializationInstrumentation"/>
     <aspect name="org.apache.pekko.monitor.instrumentation.ActorSystemIntoEventStreamMixin"/>

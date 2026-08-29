@@ -57,11 +57,14 @@ class ClusterMetricsSpec extends BaseSpec with Eventually {
       ClusterMetrics.monitor(system)
       cluster.join(cluster.selfAddress)
 
+      // Becoming Up and becoming leader are separate cluster events, so both are waited on. Asserting
+      // leadership after only the member count had settled failed on CI, where LeaderChanged had not
+      // arrived yet.
       eventually(timeout(30.seconds), interval(200.millis)) {
         ClusterMetrics.memberCount(SystemName, "up").get should be (1L)
+        ClusterMetrics.isLeader(SystemName).get should be (1L)
       }
 
-      ClusterMetrics.isLeader(SystemName).get should be (1L)
       ClusterMetrics.unreachableMemberCount(SystemName).get should be (0L)
 
       // the statuses nobody is in are reported at zero rather than left unregistered
