@@ -27,6 +27,7 @@ object PekkoMetricRegistry {
   private var registry: Option[MeterRegistry] = None
   private case class MeterKey(name: String, tags: Iterable[Tag])
   private val gaugeRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, GaugeWrapper]]()
+  private val settableGaugeRegistryMap = TrieMap[MeterRegistry, TrieMap[MeterKey, SettableGauge]]()
 
   def getRegistry: MeterRegistry = registry.getOrElse(simpleRegistry)
 
@@ -51,6 +52,11 @@ object PekkoMetricRegistry {
     builder.register(getRegistry)
   }
 
+  /** A gauge whose value is assigned outright, rather than accumulated from increments. */
+  def settableGauge(name: String, tags: Iterable[Tag]): SettableGauge = {
+    settableGaugeMap.getOrElseUpdate(MeterKey(name, tags), SettableGauge(getRegistry, name, tags))
+  }
+
   def timer(name: String, tags: Iterable[Tag]): TimerWrapper = {
     def createTimer = {
       val builder = Timer.builder(name).tags(tags.asJava)
@@ -64,6 +70,7 @@ object PekkoMetricRegistry {
 
   private[pekko] def clear(): Unit = {
     gaugeRegistryMap.clear()
+    settableGaugeRegistryMap.clear()
     simpleRegistry.close()
     simpleRegistry = new SimpleMeterRegistry()
   }
@@ -87,5 +94,9 @@ object PekkoMetricRegistry {
 
   private def gaugeMap: TrieMap[MeterKey, GaugeWrapper] = {
     gaugeRegistryMap.getOrElseUpdate(getRegistry, { TrieMap[MeterKey, GaugeWrapper]() })
+  }
+
+  private def settableGaugeMap: TrieMap[MeterKey, SettableGauge] = {
+    settableGaugeRegistryMap.getOrElseUpdate(getRegistry, { TrieMap[MeterKey, SettableGauge]() })
   }
 }
