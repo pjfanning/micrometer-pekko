@@ -46,6 +46,17 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 The `rejectedTaskCount` counter wraps the pool's own `RejectedExecutionHandler` and delegates to it, so the
 rejection policy is unchanged. It is only registered for the default `executor-service.style = "internal"`.
 
+#### Serialization
+
+- One metric per serializer, tagged by `serializer` (the serializer's class name) and `direction` (`serialize` or `deserialize`)
+- time, payloadSizeBytes
+
+Serialization happens between one actor sending a message and another receiving it, so its cost lands in
+neither processingTime nor timeInMailbox. `Serializer.toBinary` and `fromBinary` are measured rather than
+the `Serialization` API, because pekko-remote looks the serializer up and calls `toBinary` directly. Only
+serializers whose classes are inside `org.apache.pekko` are woven, so serializers pekko ships are covered
+but custom ones are not. Disable with `micrometer.pekko.serialization.enabled = false`.
+
 #### Actor System
 
 - Actor Count

@@ -43,6 +43,14 @@ object PekkoMetricRegistry {
     gaugeMap.getOrElseUpdate(MeterKey(name, tags), GaugeWrapper(getRegistry, name, tags))
   }
 
+  def summary(name: String, tags: Iterable[Tag], baseUnit: String): DistributionSummary = {
+    val builder = DistributionSummary.builder(name).tags(tags.asJava).baseUnit(baseUnit)
+    if (MetricsConfig.histogramBucketsEnabled) {
+      builder.publishPercentileHistogram()
+    }
+    builder.register(getRegistry)
+  }
+
   def timer(name: String, tags: Iterable[Tag]): TimerWrapper = {
     def createTimer = {
       val builder = Timer.builder(name).tags(tags.asJava)
