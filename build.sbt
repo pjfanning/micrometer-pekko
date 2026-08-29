@@ -74,6 +74,11 @@ logBuffered := false
 
 Test / javaOptions += s"""-Dconfig.resource=${sysPropOrDefault("config.resource", "application.conf")}"""
 
+// pekko 2.0.0-M4's artery pulls agrona 2.x, whose UnsafeApi reads jdk.internal.misc.Unsafe rather than
+// sun.misc.Unsafe. JDK 17 does not export that package to the unnamed module, so remoting fails to
+// initialise with an IllegalAccessError before this flag. pekko 1.7.0 pulls agrona 1.x and needs nothing.
+Test / javaOptions += "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED"
+
 publishMavenStyle := true
 
 Test / publishArtifact := false
