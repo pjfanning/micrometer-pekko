@@ -34,7 +34,8 @@ class ThreadPoolMetricsSpec extends BaseSpec with Eventually {
     "pekko_dispatcher_threadpoolexecutor_largest_pool_size",
     "pekko_dispatcher_threadpoolexecutor_max_pool_size",
     "pekko_dispatcher_threadpoolexecutor_completed_task_count",
-    "pekko_dispatcher_threadpoolexecutor_total_task_count"
+    "pekko_dispatcher_threadpoolexecutor_total_task_count",
+    "pekko_dispatcher_threadpoolexecutor_rejected_task_count"
   )
 
   "ThreadPoolMetrics" should {

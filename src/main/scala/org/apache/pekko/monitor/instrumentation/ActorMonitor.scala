@@ -58,15 +58,17 @@ object ActorMonitor {
       case _ => None
     }
     new TrackedActor(cellInfo.entity, cellInfo.actorSystemName, actorMetrics, cellInfo.trackingGroups,
-      cellInfo.actorCellCreation, mailboxGauge)
+      cellInfo.actorCellCreation, cellInfo.dispatcherName, mailboxGauge)
   }
 
   def createRouteeMonitor(cellInfo: CellInfo): ActorMonitor = {
     RouterMetrics.metricsFor(cellInfo.entity) match {
       case Some(rm) =>
-        new TrackedRoutee(cellInfo.entity, cellInfo.actorSystemName, rm, cellInfo.trackingGroups, cellInfo.actorCellCreation)
+        new TrackedRoutee(cellInfo.entity, cellInfo.actorSystemName, rm, cellInfo.trackingGroups,
+          cellInfo.actorCellCreation, cellInfo.dispatcherName)
       case _ =>
-        new TrackedActor(cellInfo.entity, cellInfo.actorSystemName, None, cellInfo.trackingGroups, cellInfo.actorCellCreation)
+        new TrackedActor(cellInfo.entity, cellInfo.actorSystemName, None, cellInfo.trackingGroups,
+          cellInfo.actorCellCreation, cellInfo.dispatcherName)
     }
   }
 }
@@ -89,8 +91,9 @@ object ActorMonitors {
   }
 
   class TrackedActor(val entity: Entity, actorSystemName: String, actorMetrics: Option[ActorMetrics],
-      trackingGroups: List[String], actorCellCreation: Boolean, mailboxGauge: Option[Meter.Id] = None)
-      extends GroupMetricsTrackingActor(entity, actorSystemName, trackingGroups, actorCellCreation) {
+      trackingGroups: List[String], actorCellCreation: Boolean, dispatcherName: String,
+      mailboxGauge: Option[Meter.Id] = None)
+      extends GroupMetricsTrackingActor(entity, actorSystemName, trackingGroups, actorCellCreation, dispatcherName) {
 
     if (logger.isDebugEnabled()) {
       logger.debug(s"tracking ${entity.name} actor: ${actorMetrics.isDefined} actor-group: ${trackingGroups}")
@@ -158,8 +161,8 @@ object ActorMonitors {
   }
 
   class TrackedRoutee(val entity: Entity, actorSystemName: String, routerMetrics: RouterMetrics,
-      trackingGroups: List[String], actorCellCreation: Boolean)
-      extends GroupMetricsTrackingActor(entity, actorSystemName, trackingGroups, actorCellCreation) {
+      trackingGroups: List[String], actorCellCreation: Boolean, dispatcherName: String)
+      extends GroupMetricsTrackingActor(entity, actorSystemName, trackingGroups, actorCellCreation, dispatcherName) {
 
     if (logger.isDebugEnabled()) {
       logger.debug(s"tracking ${entity.name} router: true actor-group: ${trackingGroups} actorCellCreation: ${actorCellCreation}")
@@ -205,7 +208,7 @@ object ActorMonitors {
   }
 
   abstract class GroupMetricsTrackingActor(entity: Entity, actorSystemName: String,
-      trackingGroups: List[String], actorCellCreation: Boolean) extends ActorMonitor {
+      trackingGroups: List[String], actorCellCreation: Boolean, dispatcherName: String) extends ActorMonitor {
     private val closed = new AtomicBoolean(false)
     private val createdAt = System.nanoTime()
 
@@ -228,6 +231,11 @@ object ActorMonitors {
       trackingGroups.foreach { group =>
         ActorGroupMetrics.timeInMailbox(group).timer.record(timeInMailbox, TimeUnit.NANOSECONDS)
         ActorGroupMetrics.mailboxSize(group).decrement()
+      }
+      // Recorded for every actor, not only the tracked ones, so that the per dispatcher view covers
+      // everything running on the dispatcher. That is a timer recording on every message, hence the flag.
+      if (MetricsConfig.dispatcherTimeInMailboxEnabled) {
+        DispatcherMetrics.timeInMailbox(dispatcherName).timer.record(timeInMailbox, TimeUnit.NANOSECONDS)
       }
     }
 

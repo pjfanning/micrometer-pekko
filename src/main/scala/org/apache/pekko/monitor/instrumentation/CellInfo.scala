@@ -17,11 +17,11 @@
 package org.apache.pekko.monitor.instrumentation
 
 import com.github.pjfanning.micrometer.pekko.{Entity, MetricsConfig}
-import org.apache.pekko.actor.{ActorRef, ActorSystem, Cell}
+import org.apache.pekko.actor.{ActorCell, ActorRef, ActorSystem, Cell}
 import org.apache.pekko.routing.{NoRouter, RoutedActorRef}
 
 case class CellInfo(entity: Entity, actorSystemName: String, isRouter: Boolean, isRoutee: Boolean, isTracked: Boolean,
-    trackingGroups: List[String], actorCellCreation: Boolean)
+    trackingGroups: List[String], actorCellCreation: Boolean, dispatcherName: String)
 
 object CellInfo {
 
@@ -30,6 +30,13 @@ object CellInfo {
 
   def cellName(system: ActorSystem, ref: ActorRef): String =
     s"""${system.name}/${ref.path.elements.mkString("/")}"""
+
+  // the running dispatcher where there is one, falling back to what the props asked for - an UnstartedCell
+  // has no dispatcher of its own yet
+  def dispatcherNameFor(cell: Cell): String = cell match {
+    case actorCell: ActorCell => actorCell.dispatcher.id
+    case _                    => cell.props.dispatcher
+  }
 
   def cellInfoFor(cell: Cell, system: ActorSystem, ref: ActorRef, parent: ActorRef, actorCellCreation: Boolean): CellInfo = {
     def hasRouterProps(cell: Cell): Boolean = cell.props.deploy.routerConfig != NoRouter
@@ -49,6 +56,7 @@ object CellInfo {
     val isTracked = !isRootSupervisor && MetricsConfig.shouldTrack(category, name)
     val trackingGroups = if(isRoutee && isRootSupervisor) List() else MetricsConfig.actorShouldBeTrackedUnderGroups(name)
 
-    CellInfo(entity, system.name, isRouter, isRoutee, isTracked, trackingGroups, actorCellCreation)
+    CellInfo(entity, system.name, isRouter, isRoutee, isTracked, trackingGroups, actorCellCreation,
+      dispatcherNameFor(cell))
   }
 }

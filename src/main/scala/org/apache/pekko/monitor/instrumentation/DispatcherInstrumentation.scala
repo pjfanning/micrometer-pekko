@@ -23,7 +23,7 @@ import java.util.concurrent.{ExecutorService, ForkJoinPool, ThreadPoolExecutor}
 import org.apache.pekko.actor.{ActorContext, ActorSystem, ActorSystemImpl, Props}
 import org.apache.pekko.dispatch.{Dispatcher, Dispatchers, ExecutorServiceDelegate, MessageDispatcher}
 import LookupDataAware.LookupData
-import com.github.pjfanning.micrometer.pekko.{PekkoMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
+import com.github.pjfanning.micrometer.pekko.{DispatcherMetrics, PekkoMetricRegistry, ForkJoinPoolLike, ForkJoinPoolMetrics, MetricsConfig, ThreadPoolMetrics}
 import io.micrometer.core.instrument.Tag
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics
 import org.aspectj.lang.ProceedingJoinPoint
@@ -53,6 +53,18 @@ class DispatcherInstrumentation {
     val defaultDispatcher = system.dispatcher
     val defaultDispatcherExecutor = extractExecutor(defaultDispatcher.asInstanceOf[MessageDispatcher])
     registerDispatcher(Dispatchers.DefaultDispatcherId, defaultDispatcherExecutor, Some(system))
+    registerInhabitants(s"${system.name}_${Dispatchers.DefaultDispatcherId}",
+      defaultDispatcher.asInstanceOf[MessageDispatcher])
+  }
+
+  /**
+   * How many actors are attached to the dispatcher. The executor gauges say how much machinery the
+   * dispatcher has; this says how much is riding on it.
+   */
+  private def registerInhabitants(name: String, dispatcher: MessageDispatcher): Unit = {
+    if (MetricsConfig.shouldTrack(MetricsConfig.Dispatcher, name)) {
+      DispatcherMetrics.registerInhabitants[MessageDispatcher](name, dispatcher, _.inhabitants)
+    }
   }
 
   private def extractExecutor(dispatcher: MessageDispatcher): ExecutorService = {
@@ -115,6 +127,14 @@ class DispatcherInstrumentation {
     LookupDataAware.withLookupData(LookupData(dispatcherName, dispatchers.actorSystem)) {
       pjp.proceed()
     }
+
+  // Named the same way as the executor metrics of a looked up dispatcher, which are registered from
+  // afterCreateExecutorService without the actor system prefix.
+  @AfterReturning(pointcut = "dispatchersLookup(dispatchers, dispatcherName)", returning = "dispatcher")
+  def afterDispatchersLookup(dispatchers: ActorSystemAware, dispatcherName: String,
+                             dispatcher: MessageDispatcher): Unit = {
+    registerInhabitants(dispatcher.id, dispatcher)
+  }
 
   @Pointcut("initialization(org.apache.pekko.dispatch.ExecutorServiceFactory.new(..)) && target(factory)")
   def executorServiceFactoryInitialization(factory: LookupDataAware): Unit = {}

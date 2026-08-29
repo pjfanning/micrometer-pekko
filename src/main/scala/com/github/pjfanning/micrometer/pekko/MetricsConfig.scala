@@ -37,6 +37,8 @@ object MetricsConfig {
   lazy val histogramBucketsEnabled: Boolean = defaultConfig.getBoolean(s"$BaseConfig.histogram.buckets.enabled")
   lazy val mailboxNumberOfMessagesEnabled: Boolean =
     defaultConfig.getBoolean(s"$BaseConfig.mailbox.number-of-messages.enabled")
+  lazy val dispatcherTimeInMailboxEnabled: Boolean =
+    defaultConfig.getBoolean(s"$BaseConfig.dispatcher.time-in-mailbox.enabled")
   lazy val useMicrometerExecutorServiceMetrics: Boolean = {
     defaultConfig.getString(s"$BaseConfig.executor-service.style") == "core"
   }

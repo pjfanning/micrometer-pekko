@@ -39,7 +39,12 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 
 - differs a little between ForkJoin dispatchers and ThreadPool dispatchers
 - ForkJoin: parallelism, activeThreadCount, runningThreadCount, queuedSubmissionCount, queuedTaskCountGauge stealCount
-- ThreadPool: activeThreadCount, corePoolSize, currentPoolSize, largestPoolSize, maxPoolSize, completedTaskCount, totalTaskCount
+- ThreadPool: activeThreadCount, corePoolSize, currentPoolSize, largestPoolSize, maxPoolSize, completedTaskCount, totalTaskCount, rejectedTaskCount
+- inhabitants (how many actors are attached to the dispatcher), for both executor types
+- timeInMailbox, aggregated over every actor on the dispatcher rather than only the tracked ones, which answers which dispatcher is starved. Off by default: it is a timer recording on every message. Enable with `micrometer.pekko.dispatcher.time-in-mailbox.enabled = true`
+
+The `rejectedTaskCount` counter wraps the pool's own `RejectedExecutionHandler` and delegates to it, so the
+rejection policy is unchanged. It is only registered for the default `executor-service.style = "internal"`.
 
 #### Actor System
 
