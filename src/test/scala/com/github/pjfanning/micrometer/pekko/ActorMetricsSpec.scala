@@ -72,6 +72,23 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventual
       metrics.timeInMailbox.timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
     }
 
+    // The default supervisor strategy restarts on a plain Exception, so the one failure is counted both
+    // as an error and as a restart. Asserted separately because a resumed or stopped actor would only
+    // move the error counter.
+    "count the restarts of a tracked actor" in {
+      val trackedActor = createTestActor("tracked-restarting-actor")
+      val metrics = actorMetricsRecorderOf(trackedActor).get
+      val originalErrors = metrics.errors.count()
+      val originalRestarts = metrics.restarts.count()
+
+      trackedActor ! Fail
+
+      eventually(timeout(5.seconds)) {
+        metrics.errors.count() shouldEqual (originalErrors + 1.0)
+        metrics.restarts.count() shouldEqual (originalRestarts + 1.0)
+      }
+    }
+
     "handle concurrent metric getOrElseUpdate calls" in {
       implicit val ec = system.dispatcher
       val e = Entity("fake-actor-name", MetricsConfig.Actor)

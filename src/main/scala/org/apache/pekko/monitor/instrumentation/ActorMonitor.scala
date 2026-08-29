@@ -29,6 +29,7 @@ trait ActorMonitor {
   def captureEnvelopeContext(): EnvelopeContext
   def processMessage(pjp: ProceedingJoinPoint, envelopeContext: EnvelopeContext): AnyRef
   def processFailure(failure: Throwable): Unit
+  def processRestart(): Unit
   def cleanup(): Unit
 }
 
@@ -74,6 +75,7 @@ object ActorMonitors {
     }
 
     def processFailure(failure: Throwable): Unit = {}
+    def processRestart(): Unit = {}
     def cleanup(): Unit = {}
   }
 
@@ -123,6 +125,13 @@ object ActorMonitors {
       }
       super.processFailure(failure)
     }
+
+    override def processRestart(): Unit = {
+      actorMetrics.foreach { am =>
+        am.restarts.increment()
+      }
+      super.processRestart()
+    }
   }
 
   class TrackedRoutee(val entity: Entity, actorSystemName: String, routerMetrics: RouterMetrics,
@@ -160,11 +169,17 @@ object ActorMonitors {
       routerMetrics.errors.increment()
       super.processFailure(failure)
     }
+
+    override def processRestart(): Unit = {
+      routerMetrics.restarts.increment()
+      super.processRestart()
+    }
   }
 
   abstract class GroupMetricsTrackingActor(entity: Entity, actorSystemName: String,
       trackingGroups: List[String], actorCellCreation: Boolean) extends ActorMonitor {
     private val closed = new AtomicBoolean(false)
+    private val createdAt = System.nanoTime()
 
     if (actorCellCreation) {
       ActorSystemMetrics.actorCount(actorSystemName).increment()
@@ -194,11 +209,19 @@ object ActorMonitors {
       }
     }
 
+    def processRestart(): Unit = {
+      trackingGroups.foreach { group =>
+        ActorGroupMetrics.restarts(group).increment()
+      }
+    }
+
     def cleanup(): Unit = {
       if (actorCellCreation && closed.compareAndSet(false, true)) {
+        val lifetime = System.nanoTime() - createdAt
         ActorSystemMetrics.actorCount(actorSystemName).decrement()
         trackingGroups.foreach { group =>
           ActorGroupMetrics.actorCount(group).decrement()
+          ActorGroupMetrics.lifetime(group).timer.record(lifetime, TimeUnit.NANOSECONDS)
         }
       }
     }
