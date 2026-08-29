@@ -1,4 +1,4 @@
-import sbtghactions.JavaSpec.Distribution.Zulu
+import sbtghactions.JavaSpec.Distribution.Temurin
 
 organization := "com.github.pjfanning"
 
@@ -94,7 +94,8 @@ pomExtra := (
   </developers>
 )
 
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Zulu, "8"))
+ThisBuild / githubWorkflowJavaVersions := Seq(
+  JavaSpec(Temurin, "8"), JavaSpec(Temurin, "17"))
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(
   RefPredicate.Equals(Ref.Branch("main")),
