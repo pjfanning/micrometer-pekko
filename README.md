@@ -46,6 +46,12 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 - Actor Count
 - Unhandled Message Count
 - Dead Letter Count
+- Dropped Message Count (`org.apache.pekko.actor.Dropped`, published when a message is discarded rather than delivered, eg. on mailbox overflow or typed/stream backpressure)
+- Suppressed Dead Letter Count (`org.apache.pekko.actor.SuppressedDeadLetter`)
+- Log Event Count, tagged by `level` (`error`, `warning`, `info`, `debug`)
+
+The event based metrics in this section are all derived from the actor system's event stream and are only
+collected when `micrometer.pekko.match.events` is enabled (it is on by default).
 
 #### Actor
 
@@ -55,7 +61,7 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 #### Actor Router
 
 - One metric per router instance, summed across all routee actors
-- routingTime, timeInMailbox, message count, error count
+- routeeCount (current active routees), routingTime, timeInMailbox, message count, error count
 
 #### Actor Group
 

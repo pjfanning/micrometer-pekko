@@ -66,7 +66,7 @@ class MetricsOnlyRouterMonitor(entity: Entity, routerMetrics: RouterMetrics) ext
   }
 
   def processFailure(failure: Throwable): Unit = {}
-  def routeeAdded(): Unit = {}
-  def routeeRemoved(): Unit = {}
+  def routeeAdded(): Unit = routerMetrics.routeeCount.increment()
+  def routeeRemoved(): Unit = routerMetrics.routeeCount.decrement()
   def cleanup(): Unit = {}
 }

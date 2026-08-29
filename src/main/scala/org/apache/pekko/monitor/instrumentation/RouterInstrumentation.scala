@@ -19,9 +19,11 @@ package org.apache.pekko.monitor.instrumentation
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.{ After, Around, Aspect, DeclareMixin, Pointcut }
 
+import scala.collection.immutable
+
 import org.apache.pekko.actor.{ ActorRef, ActorSystem, Cell, Props }
 import org.apache.pekko.dispatch.{ Envelope, MessageDispatcher }
-import org.apache.pekko.routing.RoutedActorCell
+import org.apache.pekko.routing.{ RoutedActorCell, Routee }
 
 @Aspect
 class RoutedActorCellInstrumentation {
@@ -44,6 +46,26 @@ class RoutedActorCellInstrumentation {
   @Around("sendMessageInRouterActorCell(cell, envelope)")
   def aroundSendMessageInRouterActorCell(pjp: ProceedingJoinPoint, cell: RoutedActorCell, envelope: Envelope): Any = {
     routerInstrumentation(cell).processMessage(pjp)
+  }
+
+  @Pointcut("execution(* org.apache.pekko.routing.RoutedActorCell.addRoutees(..)) && this(cell) && args(routees)")
+  def addRouteesToRouterActorCell(cell: RoutedActorCell, routees: immutable.Iterable[Routee]): Unit = {}
+
+  @After("addRouteesToRouterActorCell(cell, routees)")
+  def afterAddRouteesToRouterActorCell(cell: RoutedActorCell, routees: immutable.Iterable[Routee]): Unit = {
+    // RoutedActorCell.start adds the initial routees. Depending on when the cell is started that can run
+    // before the constructor advice above has attached a monitor, so the field can still be null here.
+    val monitor = cell.asInstanceOf[RouterInstrumentationAware].routerInstrumentation
+    if (monitor != null) routees.foreach(_ => monitor.routeeAdded())
+  }
+
+  @Pointcut("execution(* org.apache.pekko.routing.RoutedActorCell.removeRoutees(..)) && this(cell) && args(routees, stopChild)")
+  def removeRouteesFromRouterActorCell(cell: RoutedActorCell, routees: immutable.Iterable[Routee], stopChild: Boolean): Unit = {}
+
+  @After("removeRouteesFromRouterActorCell(cell, routees, stopChild)")
+  def afterRemoveRouteesFromRouterActorCell(cell: RoutedActorCell, routees: immutable.Iterable[Routee], stopChild: Boolean): Unit = {
+    val monitor = cell.asInstanceOf[RouterInstrumentationAware].routerInstrumentation
+    if (monitor != null) routees.foreach(_ => monitor.routeeRemoved())
   }
 }
 
