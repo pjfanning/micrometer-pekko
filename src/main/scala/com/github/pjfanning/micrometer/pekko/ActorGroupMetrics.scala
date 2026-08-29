@@ -23,6 +23,7 @@ object ActorGroupMetrics {
   val GroupName = "groupName"
 
   private[pekko] val MailboxMetricName = "pekko_actor_group_mailboxes_size"
+  private[pekko] val StashSizeMetricName = "pekko_actor_group_stash_size"
   private[pekko] val ProcessingTimeMetricName = "pekko_actor_group_processing_time"
   private[pekko] val TimeInMailboxMetricName = "pekko_actor_group_time_in_mailboxes"
   private[pekko] val MessageCountMetricName = "pekko_actor_group_message_count"
@@ -35,6 +36,7 @@ object ActorGroupMetrics {
   import PekkoMetricRegistry._
 
   def mailboxSize(group: String) = gauge(MailboxMetricName, tagSeq(group))
+  def stashSize(group: String) = gauge(StashSizeMetricName, tagSeq(group))
   def processingTime(group: String) = timer(ProcessingTimeMetricName, tagSeq(group))
   def timeInMailbox(group: String) = timer(TimeInMailboxMetricName, tagSeq(group))
   def messages(group: String) = counter(MessageCountMetricName, tagSeq(group))

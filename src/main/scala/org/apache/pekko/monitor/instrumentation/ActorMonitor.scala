@@ -24,7 +24,7 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.slf4j.LoggerFactory
 
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 
 trait ActorMonitor {
   def captureEnvelopeContext(): EnvelopeContext
@@ -32,6 +32,9 @@ trait ActorMonitor {
   def processFailure(failure: Throwable): Unit
   def processRestart(): Unit
   def processSystemMessage(): Unit
+  def processStashed(count: Int): Unit
+  def processUnstashed(): Unit
+  def processStashCleared(): Unit
   def cleanup(): Unit
 }
 
@@ -87,6 +90,9 @@ object ActorMonitors {
     def processFailure(failure: Throwable): Unit = {}
     def processRestart(): Unit = {}
     def processSystemMessage(): Unit = {}
+    def processStashed(count: Int): Unit = {}
+    def processUnstashed(): Unit = {}
+    def processStashCleared(): Unit = {}
     def cleanup(): Unit = {}
   }
 
@@ -152,6 +158,13 @@ object ActorMonitors {
       super.processSystemMessage()
     }
 
+    override protected def recordStashDelta(delta: Int): Unit = {
+      actorMetrics.foreach { am =>
+        am.stashSize.increment(delta.toDouble)
+      }
+      super.recordStashDelta(delta)
+    }
+
     // The gauge is bound to this cell, so it has to go when the cell does. Leaving it registered would
     // report NaN once the cell is collected, and would shadow the gauge of a new actor at the same path.
     override def cleanup(): Unit = {
@@ -205,11 +218,17 @@ object ActorMonitors {
       routerMetrics.systemMessages.increment()
       super.processSystemMessage()
     }
+
+    override protected def recordStashDelta(delta: Int): Unit = {
+      routerMetrics.stashSize.increment(delta.toDouble)
+      super.recordStashDelta(delta)
+    }
   }
 
   abstract class GroupMetricsTrackingActor(entity: Entity, actorSystemName: String,
       trackingGroups: List[String], actorCellCreation: Boolean, dispatcherName: String) extends ActorMonitor {
     private val closed = new AtomicBoolean(false)
+    private val lastStashSize = new AtomicInteger(0)
     private val createdAt = System.nanoTime()
 
     if (actorCellCreation) {
@@ -254,6 +273,33 @@ object ActorMonitors {
     def processSystemMessage(): Unit = {
       trackingGroups.foreach { group =>
         ActorGroupMetrics.systemMessages(group).increment()
+      }
+    }
+
+    // StashSupport keeps its stash in a plain private field, so the size is followed through the
+    // operations rather than read back. Clearing covers the restart path too, where preRestart unstashes
+    // everything before the actor instance is replaced.
+    def processStashed(count: Int): Unit = adjustStash(_ + count)
+    def processUnstashed(): Unit = adjustStash(size => if (size > 0) size - 1 else size)
+    def processStashCleared(): Unit = adjustStash(_ => 0)
+
+    private def adjustStash(next: Int => Int): Unit = {
+      var delta = 0
+      var applied = false
+      while (!applied) {
+        val previous = lastStashSize.get()
+        val updated = next(previous)
+        if (lastStashSize.compareAndSet(previous, updated)) {
+          delta = updated - previous
+          applied = true
+        }
+      }
+      if (delta != 0) recordStashDelta(delta)
+    }
+
+    protected def recordStashDelta(delta: Int): Unit = {
+      trackingGroups.foreach { group =>
+        ActorGroupMetrics.stashSize(group).increment(delta.toDouble)
       }
     }
 

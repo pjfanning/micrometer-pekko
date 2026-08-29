@@ -44,6 +44,7 @@ class ActorMetrics(entity: Entity) {
   import PekkoMetricRegistry._
   val actorName = metricFriendlyActorName(entity.name)
   val mailboxSize = gauge(s"pekko_actor_mailbox_size_$actorName", Seq.empty)
+  val stashSize = gauge(s"pekko_actor_stash_size_$actorName", Seq.empty)
   val processingTime = timer(s"pekko_actor_processing_time_$actorName", Seq.empty)
   val timeInMailbox = timer(s"pekko_actor_time_in_mailbox_$actorName", Seq.empty)
   val messages = counter(s"pekko_actor_message_count_$actorName", Seq.empty)
