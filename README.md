@@ -46,6 +46,17 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 The `rejectedTaskCount` counter wraps the pool's own `RejectedExecutionHandler` and delegates to it, so the
 rejection policy is unchanged. It is only registered for the default `executor-service.style = "internal"`.
 
+#### Persistence
+
+- One metric per actor system. Persistence ids are usually per entity, so tagging by them would put
+  unbounded cardinality into the registry
+- recoveryTime, recoveryFailureCount, persistCount, persistFailureCount, persistRejectedCount
+
+Recovery is the slow part of a persistent actor's life, and until it finishes the actor is not serving
+anything - none of the actor metrics show that. A rejected or failed persist is worse: the event the actor
+thought it had recorded is not there. Add `pekko-persistence` to your own build; the aspects are inert
+without it. Disable with `micrometer.pekko.persistence.enabled = false`.
+
 #### Cluster
 
 Opt in, and the only metrics here that are not driven by the java agent. Add `pekko-cluster` to your own
