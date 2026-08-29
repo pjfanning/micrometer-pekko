@@ -125,6 +125,13 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       }
       ActorGroupMetrics.lifetime("tracked").timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
     }
+      "count the system messages handled by the actors of a tracked group" in {
+      createTestActor("tracked-system-message-actor")
+
+      eventually(timeout(5.seconds)) {
+        findGroupRecorder("tracked").getOrElse(SystemMessageCountMetricName, -1.0) should be >= 1.0
+      }
+    }
   }
 
   def findGroupRecorder(groupName: String): Map[String, Double] = {

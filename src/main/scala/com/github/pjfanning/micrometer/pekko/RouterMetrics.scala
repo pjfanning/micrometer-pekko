@@ -47,4 +47,5 @@ class RouterMetrics(entity: Entity) {
   val messages = counter(s"pekko_router_message_count_$actorName", Seq.empty)
   val errors = counter(s"pekko_router_error_count_$actorName", Seq.empty)
   val restarts = counter(s"pekko_router_restart_count_$actorName", Seq.empty)
+  val systemMessages = counter(s"pekko_router_system_message_count_$actorName", Seq.empty)
 }

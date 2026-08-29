@@ -16,9 +16,10 @@
  */
 package org.apache.pekko.monitor.instrumentation
 
-import org.apache.pekko.actor.{ActorRef, ActorSystem, Cell}
+import org.apache.pekko.actor.{ActorCell, ActorRef, ActorSystem, Cell}
 import ActorMonitors.{TrackedActor, TrackedRoutee}
 import com.github.pjfanning.micrometer.pekko._
+import io.micrometer.core.instrument.Meter
 import org.aspectj.lang.ProceedingJoinPoint
 import org.slf4j.LoggerFactory
 
@@ -30,6 +31,7 @@ trait ActorMonitor {
   def processMessage(pjp: ProceedingJoinPoint, envelopeContext: EnvelopeContext): AnyRef
   def processFailure(failure: Throwable): Unit
   def processRestart(): Unit
+  def processSystemMessage(): Unit
   def cleanup(): Unit
 }
 
@@ -44,13 +46,19 @@ object ActorMonitor {
       if (cellInfo.isRoutee && cellInfo.isTracked)
         createRouteeMonitor(cellInfo)
       else
-        createRegularActorMonitor(cellInfo)
+        createRegularActorMonitor(cellInfo, cell)
     }
   }
 
-  def createRegularActorMonitor(cellInfo: CellInfo): ActorMonitor = {
+  def createRegularActorMonitor(cellInfo: CellInfo, cell: Cell): ActorMonitor = {
     val actorMetrics = if (cellInfo.isTracked) ActorMetrics.metricsFor(cellInfo.entity) else None
-    new TrackedActor(cellInfo.entity, cellInfo.actorSystemName, actorMetrics, cellInfo.trackingGroups, cellInfo.actorCellCreation)
+    val mailboxGauge = cell match {
+      case actorCell: ActorCell if cellInfo.actorCellCreation =>
+        actorMetrics.flatMap(MailboxNumberOfMessagesGauge.register(_, actorCell))
+      case _ => None
+    }
+    new TrackedActor(cellInfo.entity, cellInfo.actorSystemName, actorMetrics, cellInfo.trackingGroups,
+      cellInfo.actorCellCreation, mailboxGauge)
   }
 
   def createRouteeMonitor(cellInfo: CellInfo): ActorMonitor = {
@@ -76,11 +84,12 @@ object ActorMonitors {
 
     def processFailure(failure: Throwable): Unit = {}
     def processRestart(): Unit = {}
+    def processSystemMessage(): Unit = {}
     def cleanup(): Unit = {}
   }
 
   class TrackedActor(val entity: Entity, actorSystemName: String, actorMetrics: Option[ActorMetrics],
-      trackingGroups: List[String], actorCellCreation: Boolean)
+      trackingGroups: List[String], actorCellCreation: Boolean, mailboxGauge: Option[Meter.Id] = None)
       extends GroupMetricsTrackingActor(entity, actorSystemName, trackingGroups, actorCellCreation) {
 
     if (logger.isDebugEnabled()) {
@@ -132,6 +141,20 @@ object ActorMonitors {
       }
       super.processRestart()
     }
+
+    override def processSystemMessage(): Unit = {
+      actorMetrics.foreach { am =>
+        am.systemMessages.increment()
+      }
+      super.processSystemMessage()
+    }
+
+    // The gauge is bound to this cell, so it has to go when the cell does. Leaving it registered would
+    // report NaN once the cell is collected, and would shadow the gauge of a new actor at the same path.
+    override def cleanup(): Unit = {
+      mailboxGauge.foreach(MailboxNumberOfMessagesGauge.remove)
+      super.cleanup()
+    }
   }
 
   class TrackedRoutee(val entity: Entity, actorSystemName: String, routerMetrics: RouterMetrics,
@@ -174,6 +197,11 @@ object ActorMonitors {
       routerMetrics.restarts.increment()
       super.processRestart()
     }
+
+    override def processSystemMessage(): Unit = {
+      routerMetrics.systemMessages.increment()
+      super.processSystemMessage()
+    }
   }
 
   abstract class GroupMetricsTrackingActor(entity: Entity, actorSystemName: String,
@@ -212,6 +240,12 @@ object ActorMonitors {
     def processRestart(): Unit = {
       trackingGroups.foreach { group =>
         ActorGroupMetrics.restarts(group).increment()
+      }
+    }
+
+    def processSystemMessage(): Unit = {
+      trackingGroups.foreach { group =>
+        ActorGroupMetrics.systemMessages(group).increment()
       }
     }
 

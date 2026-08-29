@@ -89,6 +89,33 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventual
       }
     }
 
+    // Every actor is sent at least a Create system message, so the count is asserted broadly rather than
+    // pinned to the exact set of system messages pekko happens to send.
+    "count the system messages handled by a tracked actor" in {
+      val trackedActor = createTestActor("tracked-system-message-actor")
+      val metrics = actorMetricsRecorderOf(trackedActor).get
+
+      eventually(timeout(5.seconds)) {
+        metrics.systemMessages.count() should be >= 1.0
+      }
+    }
+
+    "read the mailbox depth off the mailbox of a tracked actor" in {
+      val trackedActor = createTestActor("tracked-mailbox-actor")
+      val metrics = actorMetricsRecorderOf(trackedActor).get
+
+      // an idle actor has drained its mailbox
+      eventually(timeout(5.seconds)) {
+        mailboxNumberOfMessages(metrics) should be (Some(0.0))
+      }
+
+      // and the gauge goes away with the cell, rather than being left to report NaN
+      system.stop(trackedActor)
+      eventually(timeout(5.seconds)) {
+        mailboxNumberOfMessages(metrics) should be (None)
+      }
+    }
+
     "handle concurrent metric getOrElseUpdate calls" in {
       implicit val ec = system.dispatcher
       val e = Entity("fake-actor-name", MetricsConfig.Actor)
@@ -100,6 +127,10 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventual
         compare
       }
     }
+  }
+
+  def mailboxNumberOfMessages(metrics: ActorMetrics): Option[Double] = {
+    Option(PekkoMetricRegistry.getRegistry.find(metrics.mailboxNumberOfMessagesName).gauge()).map(_.value())
   }
 
   def actorMetricsRecorderOf(ref: ActorRef): Option[ActorMetrics] = {

@@ -114,6 +114,17 @@ class ActorCellInstrumentation {
     }
   }
 
+  // systemInvoke is declared on ActorCell itself rather than reaching it from one of the
+  // org.apache.pekko.actor.dungeon traits, so unlike stop and handleInvokeFailure it needs no
+  // Scala 2 / Scala 3 split.
+  @Pointcut("execution(* org.apache.pekko.actor.ActorCell.systemInvoke(..)) && this(cell) && args(message)")
+  def invokingSystemMessageAtActorCell(cell: ActorCell, message: SystemMessage): Unit = {}
+
+  @Before("invokingSystemMessageAtActorCell(cell, message)")
+  def beforeSystemMessageInvoke(cell: ActorCell, message: SystemMessage): Unit = {
+    actorInstrumentation(cell).processSystemMessage()
+  }
+
   // ActorCell.stop and ActorCell.handleInvokeFailure are advised by ActorCellLifecycleInstrumentation, which
   // has to be written differently for Scala 2 and Scala 3.
 }
