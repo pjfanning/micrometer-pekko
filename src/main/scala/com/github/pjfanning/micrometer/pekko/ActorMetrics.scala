@@ -48,4 +48,5 @@ class ActorMetrics(entity: Entity) {
   val timeInMailbox = timer(s"pekko_actor_time_in_mailbox_$actorName", Seq.empty)
   val messages = counter(s"pekko_actor_message_count_$actorName", Seq.empty)
   val errors = counter(s"pekko_actor_error_count_$actorName", Seq.empty)
+  val restarts = counter(s"pekko_actor_restart_count_$actorName", Seq.empty)
 }

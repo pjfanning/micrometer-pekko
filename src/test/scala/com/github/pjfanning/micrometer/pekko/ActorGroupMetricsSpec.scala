@@ -23,6 +23,8 @@ import io.micrometer.core.instrument.ImmutableTag
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.Eventually
 
+import java.util.concurrent.TimeUnit
+
 import scala.concurrent.duration.DurationInt
 
 class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") with BeforeAndAfterEach with Eventually {
@@ -100,6 +102,28 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       eventually(timeout(5.seconds)) {
         findGroupRecorder("tracked").getOrElse(ErrorCountMetricName, -1.0) shouldEqual 1.0
       }
+    }
+
+    "count the restarts of the actors of a tracked group" in {
+      val trackedActor = createTestActor("tracked-restarting-actor")
+
+      trackedActor ! ActorMetricsTestActor.Fail
+
+      eventually(timeout(5.seconds)) {
+        findGroupRecorder("tracked").getOrElse(RestartCountMetricName, -1.0) shouldEqual 1.0
+      }
+    }
+
+    // The timer records how long each actor in the group lived. Only the number of recordings is
+    // deterministic, so the duration is asserted broadly.
+    "record the lifetime of the actors of a tracked group" in {
+      val trackedActor = createTestActor("tracked-lifetime-actor")
+
+      system.stop(trackedActor)
+      eventually(timeout(5.seconds)) {
+        findGroupRecorder("tracked").getOrElse(LifetimeMetricName, -1.0) shouldEqual 1.0
+      }
+      ActorGroupMetrics.lifetime("tracked").timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
     }
   }
 

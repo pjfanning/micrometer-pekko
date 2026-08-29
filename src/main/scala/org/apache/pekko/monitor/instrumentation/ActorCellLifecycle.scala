@@ -35,4 +35,7 @@ private[instrumentation] object ActorCellLifecycle {
 
   def processFailure(cell: ActorCell, failure: Throwable): Unit =
     cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation.processFailure(failure)
+
+  def processRestart(cell: ActorCell): Unit =
+    cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation.processRestart()
 }

@@ -46,4 +46,14 @@ class ActorCellLifecycleInstrumentation {
   @Before("actorInvokeFailure(cell, childrenNotToSuspend, failure)")
   def beforeInvokeFailure(cell: ActorCell, childrenNotToSuspend: immutable.Iterable[ActorRef], failure: Throwable): Unit =
     ActorCellLifecycle.processFailure(cell, failure)
+
+  @Pointcut("execution(* org.apache.pekko.actor.ActorCell.faultRecreate(..)) && this(cell) && args(cause)")
+  def actorRestart(cell: ActorCell, cause: Throwable): Unit = {}
+
+  // faultRecreate is the restart itself, run after the supervisor has decided. handleInvokeFailure above
+  // fires for every failure whatever the directive, so the two counters separate a restart storm from an
+  // actor that keeps failing and resuming.
+  @Before("actorRestart(cell, cause)")
+  def beforeRestart(cell: ActorCell, cause: Throwable): Unit =
+    ActorCellLifecycle.processRestart(cell)
 }
