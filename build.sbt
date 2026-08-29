@@ -36,7 +36,12 @@ libraryDependencies ++= Seq(
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
   "com.typesafe" % "config" % "1.4.9",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
+  // Only needed by ClusterMetrics, which nothing else references, so users without a cluster never load it
+  "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Provided,
   "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion % Test,
+  // pekko-actor-typed is on the test classpath, and a cluster provider swaps its local receptionist for
+  // the cluster one, which lives here
+  "org.apache.pekko" %% "pekko-cluster-typed" % pekkoVersion % Test,
   "org.apache.pekko" %% "pekko-testkit" % pekkoVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.20" % Test,
   "ch.qos.logback" % "logback-classic" % "1.3.16" % Test

@@ -46,6 +46,29 @@ The metrics are configured using [application.conf](https://github.com/typesafeh
 The `rejectedTaskCount` counter wraps the pool's own `RejectedExecutionHandler` and delegates to it, so the
 rejection policy is unchanged. It is only registered for the default `executor-service.style = "internal"`.
 
+#### Cluster
+
+Opt in, and the only metrics here that are not driven by the java agent. Add `pekko-cluster` to your own
+build and call this once, after the actor system is up:
+
+```scala
+com.github.pjfanning.micrometer.pekko.ClusterMetrics.monitor(system)
+```
+
+- memberCount, tagged by `status` (`joining`, `weaklyup`, `up`, `leaving`, `exiting`, `down`, `removed`).
+  Statuses nobody is in are reported as zero rather than left unregistered
+- unreachableMemberCount
+- isLeader (1 when this node is the cluster leader)
+
+These are gathered by subscribing to the cluster event stream rather than by weaving. `aop.xml` excludes
+`org.apache.pekko.cluster..*` because of
+[issue 84](https://github.com/kontainers/micrometer-akka/issues/84), so an aspect based approach is closed
+off; `Cluster.subscribe` is public API and needs none. It cannot start itself either, because there is no
+safe moment for the agent to call `Cluster(system)` on an actor system that may not be a cluster at all.
+
+The `pekko-cluster` dependency is `Provided`: nothing else in the library references `ClusterMetrics`, so
+if you do not call it the class is never loaded and the dependency is not needed at runtime.
+
 #### Serialization
 
 - One metric per serializer, tagged by `serializer` (the serializer's class name) and `direction` (`serialize` or `deserialize`)
