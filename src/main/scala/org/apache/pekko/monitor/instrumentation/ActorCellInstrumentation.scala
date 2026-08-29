@@ -74,8 +74,14 @@ class ActorCellInstrumentation {
   }
 
   private def setEnvelopeContext(cell: Cell, envelope: Envelope): Unit = {
-    envelope.asInstanceOf[InstrumentedEnvelope].setEnvelopeContext(
-      actorInstrumentation(cell).captureEnvelopeContext())
+    val instrumented = envelope.asInstanceOf[InstrumentedEnvelope]
+    // A message sent to an actor whose RepointableActorRef still holds an UnstartedCell is captured here
+    // via UnstartedCell.sendMessage, and then handed to MessageDispatcher.dispatch a second time when
+    // replaceWith drains the queue into the real cell. Capturing again would count the message twice and
+    // restart its time in mailbox, so the context taken at the original enqueue is kept.
+    if (instrumented.envelopeContext() == EnvelopeContext.Empty) {
+      instrumented.setEnvelopeContext(actorInstrumentation(cell).captureEnvelopeContext())
+    }
   }
 
   @Pointcut("execution(* org.apache.pekko.actor.UnstartedCell.replaceWith(*)) && this(unStartedCell) && args(cell)")
