@@ -17,6 +17,8 @@
 package com.github.pjfanning.micrometer.pekko
 
 import scala.concurrent.{Await, Future}
+import java.util.concurrent.TimeUnit
+
 import scala.concurrent.duration.DurationInt
 
 import org.apache.pekko.actor._
@@ -54,6 +56,20 @@ class RouterMetricsSpec extends TestKitBaseSpec("RouterMetricsSpec") with Eventu
       eventually(timeout(5.seconds)) {
         metrics.errors.count() shouldEqual (originalErrors + 1.0)
       }
+    }
+
+    // routingTime is recorded around RoutedActorCell.sendMessage, the other two around the routee's
+    // invoke. Asserted broadly - the counts are deterministic, the durations are not.
+    "record routing time, processing time and time in mailbox for a tracked router" in {
+      val trackedRouter = createTestPoolRouter("tracked-timing-pool-router")
+      val metrics = routerMetricsRecorderOf(trackedRouter).get
+
+      eventually(timeout(5.seconds)) {
+        metrics.routingTime.timer.count() should be >= 1L
+        metrics.processingTime.timer.count() should be >= 1L
+        metrics.timeInMailbox.timer.count() should be >= 1L
+      }
+      metrics.routingTime.timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
     }
 
     "handle concurrent metric getOrElseUpdate calls" in {
