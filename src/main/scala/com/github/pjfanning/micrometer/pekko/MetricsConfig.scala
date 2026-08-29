@@ -35,6 +35,7 @@ object MetricsConfig {
 
   lazy val matchEvents: Boolean = defaultConfig.getBoolean(s"$BaseConfig.match.events")
   lazy val histogramBucketsEnabled: Boolean = defaultConfig.getBoolean(s"$BaseConfig.histogram.buckets.enabled")
+  lazy val serializationEnabled: Boolean = defaultConfig.getBoolean(s"$BaseConfig.serialization.enabled")
   lazy val mailboxNumberOfMessagesEnabled: Boolean =
     defaultConfig.getBoolean(s"$BaseConfig.mailbox.number-of-messages.enabled")
   lazy val dispatcherTimeInMailboxEnabled: Boolean =
