@@ -16,7 +16,7 @@
  */
 package com.github.pjfanning.micrometer.pekko
 
-import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.{RejectedExecutionHandler, ThreadPoolExecutor}
 
 import scala.collection.JavaConverters._
 
@@ -45,5 +45,29 @@ object ThreadPoolMetrics {
     getRegistry.gauge("pekko_dispatcher_threadpoolexecutor_max_pool_size", jtags, tpe, maximumPoolSizeFn)
     getRegistry.gauge("pekko_dispatcher_threadpoolexecutor_completed_task_count", jtags, tpe, completedCountFn)
     getRegistry.gauge("pekko_dispatcher_threadpoolexecutor_total_task_count", jtags, tpe, taskCountFn)
+    countRejections(dispatcherName, tpe)
+  }
+
+  /**
+   * A rejected task shows up in none of the gauges above - saturation is otherwise only visible as a
+   * latency spike. The pool's own handler is kept and delegated to, so the rejection policy is unchanged.
+   */
+  private def countRejections(dispatcherName: String, tpe: ThreadPoolExecutor): Unit = {
+    tpe.getRejectedExecutionHandler match {
+      case _: CountingRejectedExecutionHandler => // already counted, do not wrap twice
+      case delegate =>
+        val counter = DispatcherMetrics.rejectedTaskCount(dispatcherName)
+        // create the counter eagerly so the series exists at zero rather than appearing on first rejection
+        counter.increment(0.0)
+        tpe.setRejectedExecutionHandler(new CountingRejectedExecutionHandler(delegate, counter))
+    }
+  }
+}
+
+private[pekko] class CountingRejectedExecutionHandler(delegate: RejectedExecutionHandler,
+    counter: io.micrometer.core.instrument.Counter) extends RejectedExecutionHandler {
+  override def rejectedExecution(runnable: Runnable, executor: ThreadPoolExecutor): Unit = {
+    counter.increment()
+    delegate.rejectedExecution(runnable, executor)
   }
 }
