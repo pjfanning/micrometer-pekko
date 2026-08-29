@@ -104,13 +104,18 @@ class ActorGroupMetricsSpec extends TestKitBaseSpec("ActorGroupMetricsSpec") wit
       }
     }
 
+    // Asserted as "at least one" rather than exactly one. The preceding test fails an actor and waits only
+    // for the error count, but the restart itself happens later, once the supervisor has chosen a
+    // directive, so on a slow machine that faultRecreate lands after beforeEach has cleared the registry
+    // and counts into this group. The exact count is pinned per actor in ActorMetricsSpec instead, where
+    // the counter belongs to one entity and cannot pick up another actor's restart.
     "count the restarts of the actors of a tracked group" in {
       val trackedActor = createTestActor("tracked-restarting-actor")
 
       trackedActor ! ActorMetricsTestActor.Fail
 
       eventually(timeout(5.seconds)) {
-        findGroupRecorder("tracked").getOrElse(RestartCountMetricName, -1.0) shouldEqual 1.0
+        findGroupRecorder("tracked").getOrElse(RestartCountMetricName, -1.0) should be >= 1.0
       }
     }
 
