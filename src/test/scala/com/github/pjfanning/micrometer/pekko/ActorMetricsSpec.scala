@@ -16,6 +16,8 @@
  */
 package com.github.pjfanning.micrometer.pekko
 
+import java.util.concurrent.TimeUnit
+
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Future}
 
@@ -53,6 +55,21 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventual
       eventually(timeout(5.seconds)) {
         metrics.errors.count() shouldEqual (originalErrors + 1.0)
       }
+    }
+
+    // Both timers are closed in the `finally` of ActorMonitor.processMessage, which runs after the actor
+    // has already replied, so the counts are read under `eventually`. The values themselves are left
+    // broad on purpose - only that something was recorded is deterministic.
+    "record processing time and time in mailbox for a tracked actor" in {
+      val trackedActor = createTestActor("tracked-timing-actor")
+      val metrics = actorMetricsRecorderOf(trackedActor).get
+
+      eventually(timeout(5.seconds)) {
+        metrics.processingTime.timer.count() should be >= 1L
+        metrics.timeInMailbox.timer.count() should be >= 1L
+      }
+      metrics.processingTime.timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
+      metrics.timeInMailbox.timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
     }
 
     "handle concurrent metric getOrElseUpdate calls" in {
