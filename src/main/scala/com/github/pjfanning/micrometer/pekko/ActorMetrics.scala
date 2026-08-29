@@ -49,4 +49,8 @@ class ActorMetrics(entity: Entity) {
   val messages = counter(s"pekko_actor_message_count_$actorName", Seq.empty)
   val errors = counter(s"pekko_actor_error_count_$actorName", Seq.empty)
   val restarts = counter(s"pekko_actor_restart_count_$actorName", Seq.empty)
+  val systemMessages = counter(s"pekko_actor_system_message_count_$actorName", Seq.empty)
+  // read straight off the mailbox rather than derived from send/handle events, so it is registered
+  // against a live cell by the instrumentation rather than created here
+  val mailboxNumberOfMessagesName = s"pekko_actor_mailbox_number_of_messages_$actorName"
 }

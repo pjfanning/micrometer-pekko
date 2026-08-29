@@ -56,17 +56,18 @@ collected when `micrometer.pekko.match.events` is enabled (it is on by default).
 #### Actor
 
 - One metric per actor instance
-- mailboxSize (current size), processingTime, timeInMailbox, message count, error count, restart count
+- mailboxSize (current size, derived from messages handed to the actor and handled by it), processingTime, timeInMailbox, message count, system message count, error count, restart count
+- mailboxNumberOfMessages, read directly from the actor's mailbox rather than derived. Off by default: it is evaluated on every scrape and the default unbounded mailbox is backed by a `ConcurrentLinkedQueue`, whose `size()` walks the queue. Enable with `micrometer.pekko.mailbox.number-of-messages.enabled = true`
 
 #### Actor Router
 
 - One metric per router instance, summed across all routee actors
-- routeeCount (current active routees), routingTime, timeInMailbox, message count, error count, restart count
+- routeeCount (current active routees), routingTime, timeInMailbox, message count, system message count, error count, restart count
 
 #### Actor Group
 
 - Each actor group has its own include/exclude rules and you can define many groups with individual actors being allowed to be included in many groups - the metrics are summed across all actors in the group
-- actorCount (current active actors), mailboxSize (current size), processingTime, timeInMailbox, message count, error count, restart count, lifetime (recorded when each actor stops)
+- actorCount (current active actors), mailboxSize (current size), processingTime, timeInMailbox, message count, system message count, error count, restart count, lifetime (recorded when each actor stops)
 
 ## License
 

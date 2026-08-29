@@ -30,6 +30,7 @@ object ActorGroupMetrics {
   private[pekko] val ErrorCountMetricName = "pekko_actor_group_error_count"
   private[pekko] val RestartCountMetricName = "pekko_actor_group_restart_count"
   private[pekko] val LifetimeMetricName = "pekko_actor_group_lifetime"
+  private[pekko] val SystemMessageCountMetricName = "pekko_actor_group_system_message_count"
 
   import PekkoMetricRegistry._
 
@@ -41,5 +42,6 @@ object ActorGroupMetrics {
   def errors(group: String) = counter(ErrorCountMetricName, tagSeq(group))
   def restarts(group: String) = counter(RestartCountMetricName, tagSeq(group))
   def lifetime(group: String) = timer(LifetimeMetricName, tagSeq(group))
+  def systemMessages(group: String) = counter(SystemMessageCountMetricName, tagSeq(group))
   private def tagSeq(group: String): Iterable[Tag] = Seq(new ImmutableTag(GroupName, group))
 }
