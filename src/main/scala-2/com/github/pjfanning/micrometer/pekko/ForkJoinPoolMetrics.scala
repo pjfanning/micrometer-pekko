@@ -29,7 +29,7 @@ object ForkJoinPoolMetrics {
     val tags: Iterable[Tag] = Seq(new ImmutableTag(DispatcherName, dispatcherName))
     val jtags = tags.asJava
     val parallelismFn = new DoubleFunction[ForkJoinPoolLike](_.getParallelism)
-    val poolSizeFn = new DoubleFunction[ForkJoinPoolLike](_.getParallelism)
+    val poolSizeFn = new DoubleFunction[ForkJoinPoolLike](_.getPoolSize)
     val activeThreadCountFn = new DoubleFunction[ForkJoinPoolLike](_.getActiveThreadCount)
     val runningThreadCountFn = new DoubleFunction[ForkJoinPoolLike](_.getRunningThreadCount)
     val queuedSubmissionCountFn = new DoubleFunction[ForkJoinPoolLike](_.getQueuedSubmissionCount)
@@ -39,8 +39,8 @@ object ForkJoinPoolMetrics {
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_pool_size", jtags, fjp, poolSizeFn)
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_active_thread_count", jtags, fjp, activeThreadCountFn)
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_running_thread_count", jtags, fjp, runningThreadCountFn)
-    getRegistry.gauge("pekko_dispatcher_forkjoinpool_queued_task_count", jtags, fjp, queuedSubmissionCountFn)
-    getRegistry.gauge("pekko_dispatcher_forkjoinpool_queued_submission_count", jtags, fjp, queuedTaskCountFn)
+    getRegistry.gauge("pekko_dispatcher_forkjoinpool_queued_task_count", jtags, fjp, queuedTaskCountFn)
+    getRegistry.gauge("pekko_dispatcher_forkjoinpool_queued_submission_count", jtags, fjp, queuedSubmissionCountFn)
     getRegistry.gauge("pekko_dispatcher_forkjoinpool_steal_count", jtags, fjp, stealCountFn)
   }
 }
