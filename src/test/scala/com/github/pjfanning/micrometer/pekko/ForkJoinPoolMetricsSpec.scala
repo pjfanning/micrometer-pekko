@@ -57,5 +57,34 @@ class ForkJoinPoolMetricsSpec extends BaseSpec {
         }
       }
     }
+
+    "report each gauge from the matching pool method" in {
+      val name = "ForkJoinPoolMetricsSpec-stub-pool"
+      // every value is distinct, so a gauge wired to the wrong pool method fails here
+      val pool = new StubForkJoinPool
+      ForkJoinPoolMetrics.add(name, pool)
+      DispatcherMetricsSpec.findDispatcherRecorder(name, "ForkJoinPool", false) should be (Map(
+        "pekko_dispatcher_forkjoinpool_parallelism" -> 3.0,
+        "pekko_dispatcher_forkjoinpool_pool_size" -> 7.0,
+        "pekko_dispatcher_forkjoinpool_active_thread_count" -> 2.0,
+        "pekko_dispatcher_forkjoinpool_running_thread_count" -> 1.0,
+        "pekko_dispatcher_forkjoinpool_queued_submission_count" -> 5.0,
+        "pekko_dispatcher_forkjoinpool_queued_task_count" -> 11.0,
+        "pekko_dispatcher_forkjoinpool_steal_count" -> 23.0
+      ))
+      // micrometer gauges hold the pool weakly, so keep it alive until the assertions are done
+      pool.getParallelism should be (3)
+    }
   }
+}
+
+/** Stand-in for a ForkJoinPool that reports a distinct constant per method. */
+class StubForkJoinPool {
+  def getParallelism: Int = 3
+  def getPoolSize: Int = 7
+  def getActiveThreadCount: Int = 2
+  def getRunningThreadCount: Int = 1
+  def getQueuedSubmissionCount: Int = 5
+  def getQueuedTaskCount: Long = 11L
+  def getStealCount: Long = 23L
 }
