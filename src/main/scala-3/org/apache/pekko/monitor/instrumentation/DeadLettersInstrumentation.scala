@@ -16,8 +16,7 @@
  */
 package org.apache.pekko.monitor.instrumentation
 
-import org.apache.pekko.actor.{DeadLetter, UnhandledMessage}
-import com.github.pjfanning.micrometer.pekko.{ActorSystemMetrics, MetricsConfig}
+import org.apache.pekko.event.EventStream
 import org.aspectj.lang.annotation.{After, Aspect, Pointcut}
 
 @Aspect
@@ -33,28 +32,12 @@ class DeadLettersInstrumentation {
   // static receiver type was exactly EventStream. The weaver reported 38 sites it therefore skipped:
   //   "does not match because declaring type is org.apache.pekko.event.LoggingBus"
   // and publishes from outside pekko were never seen at all, unlike under Scala 2.
-  @Pointcut("execution(void org.apache.pekko.event.SubchannelClassification.publish(Object)) && this(org.apache.pekko.event.EventStream) && args(event)")
-  def streamPublish(event: Object): Unit = {}
+  @Pointcut("execution(void org.apache.pekko.event.SubchannelClassification.publish(Object)) && this(stream) && args(event)")
+  def streamPublish(stream: EventStream, event: Object): Unit = {}
 
-  @After("streamPublish(event)")
-  def afterStreamSubchannel(event: Object): Unit = {
-    trackEvent(event)
-  }
-
-  private def trackEvent(event: Object): Unit = {
-    if (MetricsConfig.matchEvents) {
-      event match {
-        case dl: DeadLetter => {
-          val systemName = dl.sender.path.address.system
-          ActorSystemMetrics.deadLetterCount(systemName).increment()
-        }
-        case um: UnhandledMessage => {
-          val systemName = um.sender.path.address.system
-          ActorSystemMetrics.unhandledMessageCount(systemName).increment()
-        }
-        case _ =>
-      }
-    }
+  @After("streamPublish(stream, event)")
+  def afterStreamSubchannel(stream: EventStream, event: Object): Unit = {
+    EventStreamTracking.trackEvent(stream, event)
   }
 
 }

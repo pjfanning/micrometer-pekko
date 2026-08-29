@@ -40,6 +40,7 @@ object RouterMetrics {
 class RouterMetrics(entity: Entity) {
   import com.github.pjfanning.micrometer.pekko.PekkoMetricRegistry._
   val actorName = metricFriendlyActorName(entity.name)
+  val routeeCount = gauge(s"pekko_router_routee_count_$actorName", Seq.empty)
   val routingTime = timer(s"pekko_router_routing_time_$actorName", Seq.empty)
   val processingTime = timer(s"pekko_router_processing_time_$actorName", Seq.empty)
   val timeInMailbox = timer(s"pekko_router_time_in_mailbox_$actorName", Seq.empty)

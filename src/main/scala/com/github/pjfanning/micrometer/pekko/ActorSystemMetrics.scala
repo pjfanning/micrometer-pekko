@@ -21,15 +21,24 @@ import io.micrometer.core.instrument.{Counter, ImmutableTag, Tag}
 object ActorSystemMetrics {
 
   val ActorSystem = "actorSystem"
+  val LogLevel = "level"
 
   private[pekko] val ActorCountMetricName = "pekko_system_actor_count"
   private[pekko] val DeadLetterCountMetricName = "pekko_system_dead_letter_count"
   private[pekko] val UnhandledMessageCountMetricName = "pekko_system_unhandled_message_count"
+  private[pekko] val DroppedMessageCountMetricName = "pekko_system_dropped_message_count"
+  private[pekko] val SuppressedDeadLetterCountMetricName = "pekko_system_suppressed_dead_letter_count"
+  private[pekko] val LogEventCountMetricName = "pekko_system_log_event_count"
 
   import PekkoMetricRegistry._
 
   def actorCount(system: String): GaugeWrapper = gauge(ActorCountMetricName, tagSeq(system))
   def deadLetterCount(system: String): Counter = counter(DeadLetterCountMetricName, tagSeq(system))
   def unhandledMessageCount(system: String): Counter = counter(UnhandledMessageCountMetricName, tagSeq(system))
+  def droppedMessageCount(system: String): Counter = counter(DroppedMessageCountMetricName, tagSeq(system))
+  def suppressedDeadLetterCount(system: String): Counter =
+    counter(SuppressedDeadLetterCountMetricName, tagSeq(system))
+  def logEventCount(system: String, level: String): Counter =
+    counter(LogEventCountMetricName, Seq(new ImmutableTag(ActorSystem, system), new ImmutableTag(LogLevel, level)))
   private def tagSeq(system: String): Iterable[Tag] = Seq(new ImmutableTag(ActorSystem, system))
 }
