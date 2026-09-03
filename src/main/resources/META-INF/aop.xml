@@ -29,8 +29,11 @@
     <aspect name="org.apache.pekko.monitor.instrumentation.StashInstrumentation"/>
     <aspect name="org.apache.pekko.monitor.instrumentation.RoutedActorCellInstrumentation"/>
     <aspect name="org.apache.pekko.monitor.instrumentation.DeadLettersInstrumentation"/>
-    <!-- Persistence -->
-    <aspect name="org.apache.pekko.monitor.instrumentation.PersistenceInstrumentation"/>
+    <!-- Persistence: the requires attribute deactivates the aspect when pekko-persistence is not on
+         the classpath, which also silences the invalidAbsoluteTypeName lint warnings its pointcuts
+         would otherwise produce for every woven class -->
+    <aspect name="org.apache.pekko.monitor.instrumentation.PersistenceInstrumentation"
+            requires="org.apache.pekko.persistence.Eventsourced"/>
     <!-- Serialization -->
     <aspect name="org.apache.pekko.monitor.instrumentation.SerializationInstrumentation"/>
     <aspect name="org.apache.pekko.monitor.instrumentation.ActorSystemIntoEventStreamMixin"/>
