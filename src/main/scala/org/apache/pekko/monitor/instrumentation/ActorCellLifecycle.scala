@@ -16,7 +16,7 @@
  */
 package org.apache.pekko.monitor.instrumentation
 
-import org.apache.pekko.actor.ActorCell
+import org.apache.pekko.actor.{ActorCell, ActorInitializationException}
 import org.apache.pekko.routing.RoutedActorCell
 
 /**
@@ -33,8 +33,21 @@ private[instrumentation] object ActorCellLifecycle {
     }
   }
 
+  // TypedActorInstrumentation counts a typed actor's failure when its typed supervisor handles it. A
+  // supervisor that stops the actor may then rethrow it to the cell, wrapped as a TypedActorFailedException,
+  // which would count the one failure twice.
   def processFailure(cell: ActorCell, failure: Throwable): Unit =
-    cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation.processFailure(failure)
+    if (!isRethrownTypedFailure(failure))
+      cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation.processFailure(failure)
+
+  // by name, so that pekko-actor-typed is not needed at runtime
+  private val TypedActorFailedExceptionClassName =
+    "org.apache.pekko.actor.typed.internal.adapter.ActorAdapter$TypedActorFailedException"
+
+  private def isRethrownTypedFailure(failure: Throwable): Boolean = failure match {
+    case e: ActorInitializationException if e.getCause != null => isRethrownTypedFailure(e.getCause)
+    case e => e.getClass.getName == TypedActorFailedExceptionClassName
+  }
 
   def processRestart(cell: ActorCell): Unit =
     cell.asInstanceOf[ActorInstrumentationAware].actorInstrumentation.processRestart()

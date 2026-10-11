@@ -40,7 +40,8 @@ libraryDependencies ++= Seq(
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Provided,
   // Only needed by the persistence instrumentation, which is inert unless a PersistentActor exists
   "org.apache.pekko" %% "pekko-persistence" % pekkoVersion % Provided,
-  "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion % Test,
+  // Only needed by the typed supervision and stash instrumentation, which is inactive without it
+  "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion % Provided,
   // pekko-actor-typed is on the test classpath, and a cluster provider swaps its local receptionist for
   // the cluster one, which lives here
   "org.apache.pekko" %% "pekko-cluster-typed" % pekkoVersion % Test,
