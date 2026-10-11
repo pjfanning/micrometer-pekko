@@ -34,6 +34,7 @@ trait ActorMonitor {
   def processSystemMessage(): Unit
   def processStashed(count: Int): Unit
   def processUnstashed(): Unit
+  def processUnstashed(count: Int): Unit
   def processStashCleared(): Unit
   def cleanup(): Unit
 }
@@ -92,6 +93,7 @@ object ActorMonitors {
     def processSystemMessage(): Unit = {}
     def processStashed(count: Int): Unit = {}
     def processUnstashed(): Unit = {}
+    def processUnstashed(count: Int): Unit = {}
     def processStashCleared(): Unit = {}
     def cleanup(): Unit = {}
   }
@@ -279,9 +281,13 @@ object ActorMonitors {
     // StashSupport keeps its stash in a plain private field, so the size is followed through the
     // operations rather than read back. Clearing covers the restart path too, where preRestart unstashes
     // everything before the actor instance is replaced.
-    def processStashed(count: Int): Unit = adjustStash(_ + count)
-    def processUnstashed(): Unit = adjustStash(size => if (size > 0) size - 1 else size)
-    def processStashCleared(): Unit = adjustStash(_ => 0)
+    //
+    // Once the actor has stopped, whatever was left in its stash is gone with it, see cleanup, and
+    // anything the actor still does to its stash while stopping is ignored.
+    def processStashed(count: Int): Unit = if (!closed.get()) adjustStash(_ + count)
+    def processUnstashed(): Unit = processUnstashed(1)
+    def processUnstashed(count: Int): Unit = if (!closed.get()) adjustStash(size => math.max(0, size - count))
+    def processStashCleared(): Unit = if (!closed.get()) adjustStash(_ => 0)
 
     private def adjustStash(next: Int => Int): Unit = {
       var delta = 0
@@ -311,6 +317,9 @@ object ActorMonitors {
           ActorGroupMetrics.actorCount(group).decrement()
           ActorGroupMetrics.lifetime(group).timer.record(lifetime, TimeUnit.NANOSECONDS)
         }
+        // A classic actor's stash is emptied in postStop, but a typed actor's StashBuffer is simply
+        // dropped with it and the messages in it are never unstashed.
+        adjustStash(_ => 0)
       }
     }
 

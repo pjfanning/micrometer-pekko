@@ -109,6 +109,16 @@ collected when `micrometer.pekko.match.events` is enabled (it is on by default).
 - mailboxSize (current size, derived from messages handed to the actor and handled by it), stashSize (current size), processingTime, timeInMailbox, message count, system message count, error count, restart count
 - mailboxNumberOfMessages, read directly from the actor's mailbox rather than derived. Off by default: it is evaluated on every scrape and the default unbounded mailbox is backed by a `ConcurrentLinkedQueue`, whose `size()` walks the queue. Enable with `micrometer.pekko.mailbox.number-of-messages.enabled = true`
 
+Typed actors report the same actor metrics as classic ones. Typed supervision handles a failure inside the
+behavior, so it is counted when the typed supervisor handles it: every failure counts as an error, whatever the
+supervisor does with it, and a restart (including restart with backoff) also counts as a restart. Stash size
+follows a typed actor's `StashBuffer`. The stash drops to zero when a typed actor restarts, because the restarted
+behavior starts with a new buffer and the old one's messages are dropped. A classic restart puts the stash back on
+the mailbox instead. Both need `pekko-actor-typed` on the classpath, which any typed application already has.
+
+Typed routers (`Routers.pool` and `Routers.group`) are typed actors rather than classic routers, so their routees
+show up as ordinary actors rather than under the Actor Router metrics.
+
 #### Actor Router
 
 - One metric per router instance, summed across all routee actors

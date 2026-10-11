@@ -63,6 +63,43 @@ class StashMetricsSpec extends TestKitBaseSpec("StashMetricsSpec") with Eventual
         groupStashSize("tracked") should be (0.0)
       }
     }
+    // StashSupport.postStop sends whatever is left to dead letters
+    "drop to zero when the actor stops" in {
+      val actor = createStashingActor("tracked-stopped-stashing-actor")
+      val metrics = actorMetricsOf(actor)
+
+      (1 to 3).foreach(_ => actor ! Stashed)
+      eventually(timeout(5.seconds)) {
+        stashSizeOf(metrics) should be (3.0)
+      }
+
+      system.stop(actor)
+
+      eventually(timeout(5.seconds)) {
+        stashSizeOf(metrics) should be (0.0)
+      }
+    }
+
+    // StashSupport.preRestart puts whatever is left back on the mailbox, so the stash empties and the new
+    // instance stashes the same messages again
+    "follow the stash through a restart" in {
+      val actor = createStashingActor("tracked-restarted-stashing-actor")
+      val metrics = actorMetricsOf(actor)
+
+      (1 to 3).foreach(_ => actor ! Stashed)
+      eventually(timeout(5.seconds)) {
+        stashSizeOf(metrics) should be (3.0)
+      }
+
+      actor ! Fail
+
+      eventually(timeout(5.seconds)) {
+        metrics.restarts.count() should be (1.0)
+      }
+      eventually(timeout(5.seconds)) {
+        stashSizeOf(metrics) should be (3.0)
+      }
+    }
   }
 
   private def actorMetricsOf(ref: ActorRef): ActorMetrics =
@@ -91,6 +128,7 @@ object StashMetricsSpec {
   case object Stashed
   case object UnstashAll
   case object Done
+  case object Fail
 }
 
 class StashingActor extends Actor with Stash {
@@ -99,6 +137,7 @@ class StashingActor extends Actor with Stash {
   override def receive: Receive = {
     case Ready   => sender() ! Done
     case Stashed => stash()
+    case Fail    => throw new ArithmeticException("Division by zero.")
     case UnstashAll =>
       // become before unstashing: unstashAll puts the messages back on the mailbox, and the stashing
       // behaviour above would simply stash them all over again

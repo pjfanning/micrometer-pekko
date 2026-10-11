@@ -16,105 +16,13 @@
  */
 package com.github.pjfanning.micrometer.pekko
 
-import java.util.concurrent.TimeUnit
-
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Future}
 
-import org.apache.pekko.actor._
-import org.apache.pekko.testkit.TestProbe
-import org.apache.pekko.monitor.instrumentation.CellInfo
-import org.scalatest.concurrent.Eventually
-
-class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventually {
-
-  import ActorMetricsTestActor._
+class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with ActorMetricsBehaviours {
 
   "the actor metrics" should {
-    "respect the configured include and exclude filters" in {
-      val trackedActor = createTestActor("tracked-actor")
-      val nonTrackedActor = createTestActor("non-tracked-actor")
-      val excludedTrackedActor = createTestActor("tracked-explicitly-excluded-actor")
-
-      actorMetricsRecorderOf(trackedActor) should not be empty
-      actorMetricsRecorderOf(nonTrackedActor) shouldBe empty
-      actorMetricsRecorderOf(excludedTrackedActor) shouldBe empty
-
-      val metrics = actorMetricsRecorderOf(trackedActor).get
-      metrics.actorName shouldEqual "actormetricsspec_user_tracked_actor"
-      metrics.messages.count() shouldEqual 1.0
-    }
-
-    "count the errors thrown by a tracked actor" in {
-      val trackedActor = createTestActor("tracked-failing-actor")
-      val metrics = actorMetricsRecorderOf(trackedActor).get
-      val originalErrors = metrics.errors.count()
-
-      trackedActor ! Fail
-
-      eventually(timeout(5.seconds)) {
-        metrics.errors.count() shouldEqual (originalErrors + 1.0)
-      }
-    }
-
-    // Both timers are closed in the `finally` of ActorMonitor.processMessage, which runs after the actor
-    // has already replied, so the counts are read under `eventually`. The values themselves are left
-    // broad on purpose - only that something was recorded is deterministic.
-    "record processing time and time in mailbox for a tracked actor" in {
-      val trackedActor = createTestActor("tracked-timing-actor")
-      val metrics = actorMetricsRecorderOf(trackedActor).get
-
-      eventually(timeout(5.seconds)) {
-        metrics.processingTime.timer.count() should be >= 1L
-        metrics.timeInMailbox.timer.count() should be >= 1L
-      }
-      metrics.processingTime.timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
-      metrics.timeInMailbox.timer.totalTime(TimeUnit.NANOSECONDS) should be >= 0.0
-    }
-
-    // The default supervisor strategy restarts on a plain Exception, so the one failure is counted both
-    // as an error and as a restart. Asserted separately because a resumed or stopped actor would only
-    // move the error counter.
-    "count the restarts of a tracked actor" in {
-      val trackedActor = createTestActor("tracked-restarting-actor")
-      val metrics = actorMetricsRecorderOf(trackedActor).get
-      val originalErrors = metrics.errors.count()
-      val originalRestarts = metrics.restarts.count()
-
-      trackedActor ! Fail
-
-      eventually(timeout(5.seconds)) {
-        metrics.errors.count() shouldEqual (originalErrors + 1.0)
-        metrics.restarts.count() shouldEqual (originalRestarts + 1.0)
-      }
-    }
-
-    // Every actor is sent at least a Create system message, so the count is asserted broadly rather than
-    // pinned to the exact set of system messages pekko happens to send.
-    "count the system messages handled by a tracked actor" in {
-      val trackedActor = createTestActor("tracked-system-message-actor")
-      val metrics = actorMetricsRecorderOf(trackedActor).get
-
-      eventually(timeout(5.seconds)) {
-        metrics.systemMessages.count() should be >= 1.0
-      }
-    }
-
-    "read the mailbox depth off the mailbox of a tracked actor" in {
-      val trackedActor = createTestActor("tracked-mailbox-actor")
-      val metrics = actorMetricsRecorderOf(trackedActor).get
-
-      // an idle actor has drained its mailbox
-      eventually(timeout(5.seconds)) {
-        mailboxNumberOfMessages(metrics) should be (Some(0.0))
-      }
-
-      // and the gauge goes away with the cell, rather than being left to report NaN
-      system.stop(trackedActor)
-      eventually(timeout(5.seconds)) {
-        mailboxNumberOfMessages(metrics) should be (None)
-      }
-    }
+    behave like actorMetrics(ActorFlavour.Classic)
 
     "handle concurrent metric getOrElseUpdate calls" in {
       implicit val ec = system.dispatcher
@@ -127,30 +35,5 @@ class ActorMetricsSpec extends TestKitBaseSpec("ActorMetricsSpec") with Eventual
         compare
       }
     }
-  }
-
-  def mailboxNumberOfMessages(metrics: ActorMetrics): Option[Double] = {
-    Option(PekkoMetricRegistry.getRegistry.find(metrics.mailboxNumberOfMessagesName).gauge()).map(_.value())
-  }
-
-  def actorMetricsRecorderOf(ref: ActorRef): Option[ActorMetrics] = {
-    val name = CellInfo.cellName(system, ref)
-    val entity = Entity(name, MetricsConfig.Actor)
-    if (ActorMetrics.hasMetricsFor(entity)) {
-      ActorMetrics.metricsFor(entity)
-    } else {
-      None
-    }
-  }
-
-  def createTestActor(name: String): ActorRef = {
-    val actor = system.actorOf(Props[ActorMetricsTestActor](), name)
-    val initialiseListener = TestProbe()
-
-    // Ensure that the router has been created before returning.
-    actor.tell(Ping, initialiseListener.ref)
-    initialiseListener.expectMsg(Pong)
-
-    actor
   }
 }
