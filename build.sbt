@@ -39,7 +39,7 @@ libraryDependencies ++= Seq(
   "io.micrometer" % "micrometer-core" % micrometerVersion,
   "org.apache.pekko" %% "pekko-actor" % pekkoVersion,
   "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
-  "com.typesafe" % "config" % "1.4.9",
+  "com.typesafe" % "config" % "1.4.10",
   "org.aspectj" % "aspectjweaver" % aspectjweaverVersion,
   // Only needed by ClusterMetrics, which nothing else references, so users without a cluster never load it
   "org.apache.pekko" %% "pekko-cluster" % pekkoVersion % Provided,
