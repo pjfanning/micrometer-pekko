@@ -17,9 +17,11 @@
 package com.github.pjfanning.micrometer.pekko
 
 import org.apache.pekko.actor.{Actor, ActorRef, ActorSystem, Address, Props}
-import org.apache.pekko.cluster.ClusterEvent.{ClusterDomainEvent, CurrentClusterState, InitialStateAsSnapshot}
-import org.apache.pekko.cluster.{Cluster, MemberStatus}
+import org.apache.pekko.cluster.ClusterEvent._
+import org.apache.pekko.cluster.{Cluster, Member, MemberStatus}
 import io.micrometer.core.instrument.{ImmutableTag, Tag}
+
+import scala.collection.immutable.SortedSet
 
 /**
  * Cluster metrics are gathered by subscribing to the cluster event stream, not by weaving. `aop.xml`
@@ -79,17 +81,35 @@ private[pekko] class ClusterMetricsListener(systemName: String) extends Actor {
 
   private val cluster = Cluster(context.system)
 
+  // The state is built from the events delivered to this actor. Reading `cluster.state` instead is racy:
+  // it is maintained by a different subscriber, so when the last event of a burst (e.g. LeaderChanged)
+  // arrives here, `cluster.state` may not reflect it yet, and with no further events the gauges stay stale.
+  private var state = CurrentClusterState()
+
   override def preStart(): Unit =
     cluster.subscribe(self, InitialStateAsSnapshot, classOf[ClusterDomainEvent])
 
   override def postStop(): Unit = cluster.unsubscribe(self)
 
-  // Every event recomputes from the current state rather than adjusting counts by hand. Cluster events
-  // can be missed or arrive out of order, and a snapshot cannot drift.
   override def receive: Receive = {
-    case _: CurrentClusterState => record()
-    case _: ClusterDomainEvent  => record()
+    case snapshot: CurrentClusterState => update(snapshot)
+    case MemberRemoved(member, _)      => update(state.copy(
+        members = withoutMember(state.members, member),
+        unreachable = state.unreachable.filterNot(_.uniqueAddress == member.uniqueAddress)))
+    case event: MemberEvent            => update(state.copy(members = withoutMember(state.members, event.member) + event.member))
+    case UnreachableMember(member)     => update(state.copy(unreachable =
+        state.unreachable.filterNot(_.uniqueAddress == member.uniqueAddress) + member))
+    case ReachableMember(member)       => update(state.copy(unreachable =
+        state.unreachable.filterNot(_.uniqueAddress == member.uniqueAddress)))
+    case LeaderChanged(leader)         => update(state.copy(leader = leader))
+    case _: ClusterDomainEvent         => // not reflected in any gauge
   }
 
-  private def record(): Unit = ClusterMetrics.record(systemName, cluster.state, cluster.selfAddress)
+  private def withoutMember(members: SortedSet[Member], member: Member): SortedSet[Member] =
+    members.filterNot(_.uniqueAddress == member.uniqueAddress)
+
+  private def update(newState: CurrentClusterState): Unit = {
+    state = newState
+    ClusterMetrics.record(systemName, state, cluster.selfAddress)
+  }
 }
