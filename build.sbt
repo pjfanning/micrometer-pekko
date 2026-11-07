@@ -7,7 +7,7 @@ name := "micrometer-pekko"
 ThisBuild / scalaVersion := "2.13.18"
 
 // pekko 2.0.0 is not published for Scala 2.12
-ThisBuild / crossScalaVersions := Seq("2.13.18", "3.3.9")
+ThisBuild / crossScalaVersions := Seq("2.13.18", "3.9.0")
 
 // pekko 2.0.0 ships Java 17 bytecode, so the old -target:jvm-1.8 cannot be honoured. -release also
 // checks the code against the Java 17 platform API rather than only setting the bytecode version, and
